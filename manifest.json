@@ -1,0 +1,19 @@
+{
+  "name": "Codiga Extension",
+  "version": "1.0",
+  "manifest_version": 3,
+  "permissions": [
+    "activeTab",
+    "alarms"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*.github.com/*"],
+      "js": ["custom-elements.min.js", "content-script.js"],
+      "run_at": "document_end"
+    }
+  ] 
+}
