@@ -129,6 +129,7 @@ document.addEventListener("DOMSubtreeModified", function(event){
                             const line = violation.line;
                             const severity = violation.severity;
                             const category = violation.category;
+                            
                         })
                     }
                 );
