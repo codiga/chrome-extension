@@ -1,86 +1,15 @@
-class CodigaElement extends HTMLElement {
-    constructor() {
-        super();
-        this.attachShadow({mode: 'open'}); // sets and returns 'this.shadowRoot'
-
-        this.wrapper = document.createElement('div');
-        this.wrapper.setAttribute('class','codiga-wrapper');        
-
-        const style = document.createElement('style');
-        style.innerHTML = `
-            .codiga-wrapper { 
-                position: absolute;
-                left: 0;
-                top: 0;
-            }
-        `;
-
-        this.shadowRoot.append(style, this.wrapper);
-    }
-
-    static get observedAttributes() {
-        return ['wrapperWidth', 'wrapperHeight'];
-    }
-
-    get wrapperWidth() {
-        this.getAttribute('wrapperWidth');
-    }
-
-    get wrapperHeight() {
-        this.getAttribute('wrapperHeight');
-    }
-
-    set wrapperWidth(val) {
-        if (val == null) {
-            this.removeAttribute('wrapperWidth');
-        } else {
-            this.setAttribute('wrapperWidth', val);
-        }
-    }
-
-    set wrapperHeight(val) {
-        if (val == null) { 
-            this.removeAttribute('wrapperHeight');
-        } else {
-            this.setAttribute('wrapperHeight', val);
-        }
-    }
-
-    attributeChangedCallback(name, oldValue, newValue) {
-        if (name === 'wrapperWidth') {
-            this.wrapper.style.width = `${newValue}px`;
-        }
-
-        if (name === 'wrapperHeight') {
-            this.wrapper.style.height = `${newValue}px`;
-        }
-    }
-}   
-
-class CodigaExtension extends CodigaElement {
-    constructor() {
-        super();
-    }
-
-    attributeChangedCallback(name, oldValue, newValue) {
-        if (name === 'wrapperWidth') {
-            this.wrapper.style.width = `${newValue}px`;
-        }
-
-        if (name === 'wrapperHeight') {
-            this.wrapper.style.height = `${newValue}px`;
-        }
-    }
+// Utils
+const getPos = (el) => {
+    var rect=el.getBoundingClientRect();
+    return {x: rect.left, y: rect.top};
 }
-window.customElements.define('codiga-extension', CodigaExtension);
 
-class CodigaExtensionHighLights extends CodigaElement {
-    constructor() {
-        super();
-    }
+const getDimensions = (el) => {
+    return {width: el.clientWidth, height: el.clientHeight};
 }
-window.customElements.define('codiga-extension-highlights', CodigaExtensionHighLights);
 
+
+// General functionality
 document.addEventListener("DOMSubtreeModified", function(event){
     const codeMirrorList = Array.from(document.getElementsByClassName('CodeMirror-lines'));
     
@@ -115,25 +44,46 @@ document.addEventListener("DOMSubtreeModified", function(event){
                 codigaExtensionHighlightsElement.wrapperHeight = codeMirrorHeight;
 
                 const code = Array.from(codeElement.children).map(lineElement => {
-                    return lineElement.querySelector(".CodeMirror-line").textContent;
+                    return lineElement.querySelector(".CodeMirror-line").textContent.replace(/\u200B/g,'');
                 }).join("\n");
                 
                 chrome.runtime.sendMessage(
                     {
                         contentScriptQuery: "validateCode",
                         data: { code }
-                    }, function (response) {
-                        const violations = response.data.getFileAnalysis.violations;
+                    }, function (violations) {
+                        console.log(violations);
+
+                        codigaExtensionHighlightsElement.shadowRoot.innerHTML = '';
 
                         const elementsToHighlight = violations.map(violation => {
                             const line = violation.line;
                             const severity = violation.severity;
                             const category = violation.category;
+
+                            const lineToHighlight = codeElement.children.item(line - 1);
                             
+                            const highlightPosition = getPos(lineToHighlight);
+                            const highlightsWrapperPosition = getPos(codigaExtensionHighlightsElement);
+                            const highlightDimensions = getDimensions(lineToHighlight);
+                            
+                            const codigaHighlight = document.createElement("codiga-highlight");
+                            codigaHighlight.style.cssText += 'position: absolute; background-color: red';
+                            
+                            
+                            codigaHighlight.top = highlightPosition.y - highlightsWrapperPosition.y;
+                            codigaHighlight.left = highlightPosition.x - highlightsWrapperPosition.x;
+
+                            codigaHighlight.width = highlightDimensions.width;
+                            codigaHighlight.height = highlightDimensions.height;
+                            
+                            codigaExtensionHighlightsElement.shadowRoot.append(codigaHighlight);
+                            
+                            console.log(line, severity, category, highlightPosition, highlightDimensions);
                         })
                     }
                 );
             });
         }
-    };
+    }
 });

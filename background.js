@@ -1,5 +1,5 @@
 /** User fingerprint generation */
-const STORAGE_FINGERPRINT_KEY = "codiga-user-test";
+const STORAGE_FINGERPRINT_KEY = "codiga-user";
 
 const generateNewUUID = () => {
     return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
@@ -24,7 +24,7 @@ const generateFingerprint = () => {
             console.log("result", result);
 
             if(result && Object.keys(result).length === 0 && result.constructor === Object){
-                const fingerprint = "testingfingerprint"; //generateNewUUID();
+                const fingerprint = generateNewUUID();
                 chrome.storage.sync.set({[STORAGE_FINGERPRINT_KEY]: fingerprint}, () => {
                     resolve(fingerprint);
                 });
@@ -37,7 +37,7 @@ const generateFingerprint = () => {
 
 const createFileAnalysisMutation = (code, fingerprint) =>
 `mutation {
-    createFileAnalysis(language: Javascript, filename: "file.js", code: ${JSON.stringify(code)}, fingerprint: "${fingerprint}")
+    createFileAnalysis(language: Python, filename: "file.py", code: ${JSON.stringify(code)}, fingerprint: "${fingerprint}")
 }`
 
 const getFileAnalysisQuery = (fingerprint, analysisId) =>
@@ -63,45 +63,49 @@ const createQueryBody = (query) => JSON.stringify({
     variables: {}
 })
 
-chrome.runtime.onMessage.addListener(async function (request, sender, sendResponse) { 
-    
-    if (request.contentScriptQuery == "validateCode") {
-        const fingerprint = await generateFingerprint();
-        console.log("fingerprint", fingerprint);
-        const code = request.data.code;
+const validateCode = (request) => new Promise(async (resolve) => {
+    const fingerprint = await generateFingerprint();
+    const code = request.data.code;
 
-        var url = 'https://www.code-inspector.com/graphql';
+    var url = 'https://www.code-inspector.com/graphql';
 
-        const createAnalysisResult = await fetch(url, {
+    const createAnalysisResult = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: createQueryBody(createFileAnalysisMutation(code, fingerprint)),
+    })
+    const createAnalysisResultJSON = await createAnalysisResult.json();
+    const analysisId = createAnalysisResultJSON.data.createFileAnalysis;
+
+    const interval = setInterval(async function(){
+        const getAnalysisResult = await fetch(url, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: createQueryBody(createFileAnalysisMutation(code, fingerprint)),
-        })
-        const createAnalysisResultJSON = await createAnalysisResult.json();
-        const analysisId = createAnalysisResultJSON.data.createFileAnalysis;
-
-        const interval = setInterval(async function(){
-            const getAnalysisResult = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: createQueryBody(getFileAnalysisQuery(fingerprint, analysisId))
-            });
-            const getAnalysisResultJSON = await getAnalysisResult.json();
-            
-            console.log(getAnalysisResultJSON);
-            console.log(getAnalysisResultJSON.data.getFileAnalysis.status);
-
-            if(getAnalysisResultJSON.data.getFileAnalysis.status === "Done"){
-                clearInterval(interval);
-                console.log(getAnalysisResultJSON.data.getFileAnalysis.violations);
-                sendResponse(getAnalysisResultJSON.data.getFileAnalysis.violations);
-            }
-        }, 3000);
+            body: createQueryBody(getFileAnalysisQuery(fingerprint, analysisId))
+        });
+        const getAnalysisResultJSON = await getAnalysisResult.json();
         
+        console.log(getAnalysisResultJSON);
+        console.log(getAnalysisResultJSON.data.getFileAnalysis.status);
+
+        if(getAnalysisResultJSON.data.getFileAnalysis.status === "Done"){
+            clearInterval(interval);
+            console.log(getAnalysisResultJSON.data.getFileAnalysis.violations);
+            resolve(getAnalysisResultJSON.data.getFileAnalysis.violations);
+        }
+    }, 3000);
+});
+
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) { 
+    
+    if (request.contentScriptQuery == "validateCode") {
+        validateCode(request).then(result =>{
+            sendResponse(result);
+        })
     };
 
     return true;
