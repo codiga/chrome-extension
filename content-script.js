@@ -1,7 +1,6 @@
 // General functionality
 document.addEventListener("DOMSubtreeModified", function(event){
     const codeMirrorList = Array.from(document.getElementsByClassName('CodeMirror-lines'));
-    
     for(let codeMirrorIndex in codeMirrorList){
         const codeMirror = codeMirrorList[codeMirrorIndex];
         const codeMirrorSizer = codeMirror.closest('.CodeMirror-sizer');
@@ -33,8 +32,13 @@ document.addEventListener("DOMSubtreeModified", function(event){
                 codigaExtensionHighlightsElement.wrapperHeight = codeMirrorHeight;
 
                 const code = Array.from(codeElement.children).map(lineElement => {
-                    return lineElement.querySelector(".CodeMirror-line").textContent.replace(/\u200B/g,'');
-                }).join("\n");
+                    if(lineElement.getAttribute("class", "CodeMirror-line")){
+                        return lineElement.textContent.replace(/\u200B/g,'');
+                    } else {
+                        const codeLine = lineElement.querySelector(".CodeMirror-line")
+                        return codeLine.textContent.replace(/\u200B/g,'');
+                    }
+                }).filter(line => line).join("\n");
                 const language = pickLanguage();
                 
                 chrome.runtime.sendMessage(
@@ -66,7 +70,9 @@ document.addEventListener("DOMSubtreeModified", function(event){
                             const line = violation.line;
 
                             const lineToHighlight = codeElement.children.item(line - 1);
-                            const codeWrapperElement = lineToHighlight.querySelector(".CodeMirror-line")
+                            console.log(lineToHighlight.getAttribute("class"));
+                            const isCodeMirrorLine = lineToHighlight.getAttribute("class").includes("CodeMirror-line");
+                            const codeWrapperElement = isCodeMirrorLine?lineToHighlight:lineToHighlight.querySelector(".CodeMirror-line");
                             const codeToHighlight = codeWrapperElement.querySelector("[role=presentation]");
                             const highlightPosition = getPos(codeToHighlight);
                             const highlightDimensions = getHighlightDimensions(codeToHighlight, codeWrapperElement);
