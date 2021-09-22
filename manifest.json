@@ -23,6 +23,7 @@
         "components/CodigaExtension.js", 
         "components/CodigaExtensionHighlights.js", 
         "components/CodigaHighlight.js", 
+        "components/CodigaStatus.js",
         "content-script.js"
       ],
       "css": []
@@ -39,6 +40,7 @@
         "components/CodigaExtension.js", 
         "components/CodigaExtensionHighlights.js", 
         "components/CodigaHighlight.js", 
+        "components/CodigaStatus.js", 
         "content-script.js"
       ],
       "css": []

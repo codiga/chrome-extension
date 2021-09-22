@@ -43,11 +43,22 @@ const addLogicToCodeMirrorInstance = (codeMirror) => {
         const code = getCode(codeElement);
         const language = pickLanguage();
         
-        runCodeValidation(code, language, codigaExtensionHighlightsElement, codeElement)
+        const codigaContext = {
+            code, 
+            language, 
+            codigaExtensionHighlightsElement, 
+            codigaExtensionElement, 
+            codeElement
+        }
+
+        runCodeValidation(codigaContext)
     });
 }
 
-const runCodeValidation = (code, language, codigaExtensionHighlightsElement, codeElement) => {
+const runCodeValidation = ({code, language, codigaExtensionHighlightsElement, codigaExtensionElement, codeElement}) => {
+    const statusButton = getStatusButton(codigaExtensionElement);
+    statusButton.status = CodigaStatus.LOADING;
+
     chrome.runtime.sendMessage(
         {
             contentScriptQuery: "validateCode",
@@ -56,26 +67,8 @@ const runCodeValidation = (code, language, codigaExtensionHighlightsElement, cod
                 language 
             }
         }, function (violations) {
-            codigaExtensionHighlightsElement.shadowRoot.innerHTML = '';
-
-            const codigaHighlightsStyle = document.createElement("style");
-            codigaHighlightsStyle.innerHTML = `
-                .codiga-highlight {
-                    position: absolute;
-                    border-bottom: solid 2px red; 
-                    z-index: 3; 
-                }
-
-                .codiga-highlight:hover{
-                    background: #c1424282;
-                    border-bottom: solid 2px yellow; 
-                }
-            `;
-            codigaExtensionHighlightsElement.shadowRoot.appendChild(codigaHighlightsStyle);
-
-            violations.forEach(violation => {
-                addHiglightToViolation(violation, codigaExtensionHighlightsElement, codeElement);
-            })
+            addHighlights(codigaExtensionHighlightsElement, violations, codeElement);
+            updateStatusButton(statusButton, violations);
         }
     );
 }
@@ -89,6 +82,29 @@ const getCode = (codeElement) => {
             return codeLine.textContent.replace(/\u200B/g,'');
         }
     }).join("\n");
+}
+
+const addHighlights = (codigaExtensionHighlightsElement, violations, codeElement) => {
+    codigaExtensionHighlightsElement.shadowRoot.innerHTML = '';
+
+    const codigaHighlightsStyle = document.createElement("style");
+    codigaHighlightsStyle.innerHTML = `
+        .codiga-highlight {
+            position: absolute;
+            border-bottom: solid 2px red; 
+            z-index: 3; 
+        }
+
+        .codiga-highlight:hover{
+            background: #c1424282;
+            border-bottom: solid 2px yellow; 
+        }
+    `;
+    codigaExtensionHighlightsElement.shadowRoot.appendChild(codigaHighlightsStyle);
+
+    violations.forEach(violation => {
+        addHiglightToViolation(violation, codigaExtensionHighlightsElement, codeElement);
+    });
 }
 
 const addHiglightToViolation = (violation, codigaExtensionHighlightsElement, codeElement) => {
@@ -125,7 +141,7 @@ const addCodeMirrorListeners = () => {
     codeMirrorList.forEach(addLogicToCodeMirrorInstance);
 }
 
-const show = (tooltip, popperInstance) => {
+const showTooltip = (tooltip, popperInstance) => {
     return function(){
         tooltip.setAttribute('data-show', '');
 
@@ -135,7 +151,7 @@ const show = (tooltip, popperInstance) => {
     }
 }
   
-const hide = (tooltip) => {
+const hideTooltip = (tooltip) => {
     return function(){
         tooltip.removeAttribute('data-show');
     }
@@ -172,7 +188,7 @@ const addTooltipToHighlight = (highlight, violation) => {
     `;
 
     tooltip.innerHTML = 
-        `<div>Code Inspector violation</div>
+        `<div>Codiga violation</div>
          <div class="code-inspector-violation"> ${violation.description} </div>
          <div><b>Category: </b> ${violation.category} </div>
         `;
@@ -182,13 +198,72 @@ const addTooltipToHighlight = (highlight, violation) => {
 
     const showEvents = ['mouseenter', 'focus'];
     showEvents.forEach((event) => {
-        highlight.addEventListener(event, show(tooltip, popperInstance));
+        highlight.addEventListener(event, showTooltip(tooltip, popperInstance));
     });
     
     const hideEvents = ['mouseleave', 'blur'];
     hideEvents.forEach((event) => {
-        highlight.addEventListener(event, hide(tooltip));
+        highlight.addEventListener(event, hideTooltip(tooltip));
     });
 
     return [tooltip, style];
+}
+
+const getStatusButton = (codigaExtensionElement) => {
+    const codigaWrapper = codigaExtensionElement.shadowRoot.querySelector('.codiga-wrapper')
+    const codigaButtonDOM = codigaWrapper.querySelector('codiga-status-btn');
+
+    if(codigaButtonDOM){
+        return codigaButtonDOM;
+    }   
+
+    const codigaButton = document.createElement("codiga-status-btn");
+    codigaButton.status = CodigaStatus.LOADING;
+    codigaWrapper.appendChild(codigaButton);
+
+    const codigaStatusButtonStyle = document.createElement("style");
+    codigaStatusButtonStyle.innerHTML = `
+        .codiga-status-btn {
+            position: absolute;
+            right: .6rem;
+            bottom: .6rem;
+            z-index: 5;
+            border-radius: 100%;
+            font-weight: bold;
+            width: 26px;
+            height: 26px;
+            justify-content: center;
+            align-items: center;
+            display: flex;
+            font-size: 15px;
+            color: white;
+        }
+
+        @keyframes spin { 
+            100% { 
+                -webkit-transform: rotate(360deg); 
+                transform:rotate(360deg); 
+            } 
+        }
+
+        .clear{
+            background: #5ca258;
+        }
+
+        .loading{
+            background: #a8b160;
+            animation:spin 4s linear infinite;
+        }
+
+        .violations{
+            background: #d25b5b;
+        }
+    `;
+    codigaExtensionElement.shadowRoot.appendChild(codigaStatusButtonStyle);
+
+    return codigaButton;
+}
+
+const updateStatusButton = (statusButton, violations) => {
+    statusButton.status = violations.length || CodigaStatus.ALL_GOOD;
 }
