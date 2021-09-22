@@ -1,4 +1,5 @@
 // General functionality
+const CODIGA_ELEMENT_ID_KEY="codiga-id";
 const containerElement = getContainerElement();
 
 const config = { childList: true, subtree: true };
@@ -16,12 +17,15 @@ observer.observe(containerElement, config);
 
 const addLogicToCodeMirrorInstance = (codeMirror) => {
     codeMirror.setAttribute("detected", true);
-    const codeMirrorSizer = codeMirror.closest('.CodeMirror-sizer');
 
-    const codePresentation = codeMirror.querySelector('[role="presentation"]');
+    const codeMirrorLines = codeMirror.querySelector(".CodeMirror-lines")
+    const codeMirrorSizer = codeMirror.querySelector('.CodeMirror-sizer');
+
+    const codePresentation = codeMirrorLines.querySelector('[role="presentation"]');
 
     let codeElement = codeMirror.querySelector(".CodeMirror-code");
-    
+    codeElement.setAttribute(CODIGA_ELEMENT_ID_KEY, JSON.stringify(getPos(codeElement)));
+
     const codigaExtensionElement = document.createElement("codiga-extension");
     codigaExtensionElement.style.cssText += 'position: absolute; top: 0px; left: 0px';
     codePresentation.insertBefore(codigaExtensionElement, codePresentation.firstChild);
@@ -31,28 +35,41 @@ const addLogicToCodeMirrorInstance = (codeMirror) => {
     codePresentation.insertBefore(codigaExtensionHighlightsElement, codePresentation.firstChild);
     
     codeMirror.addEventListener("click", function(){
-        const codeMirrorWidth = codeMirrorSizer.clientWidth;
-        const codeMirrorHeight = codeMirrorSizer.clientHeight;
-
-        codigaExtensionElement.wrapperWidth = codeMirrorWidth;
-        codigaExtensionElement.wrapperHeight = codeMirrorHeight;
-
-        codigaExtensionHighlightsElement.wrapperWidth = codeMirrorWidth;
-        codigaExtensionHighlightsElement.wrapperHeight = codeMirrorHeight;
-
-        const code = getCode(codeElement);
-        const language = pickLanguage();
-        
-        const codigaContext = {
-            code, 
-            language, 
-            codigaExtensionHighlightsElement, 
-            codigaExtensionElement, 
-            codeElement
-        }
-
-        runCodeValidation(codigaContext)
+        eventListenerCallback(codeMirrorSizer, codigaExtensionElement, codigaExtensionHighlightsElement, codeElement);
     });
+
+    let textArea = codeMirror.parentElement.querySelector("textarea");
+    textArea.addEventListener("change", function(){
+        eventListenerCallback(codeMirrorSizer, codigaExtensionElement, codigaExtensionHighlightsElement, codeElement);
+    });
+
+    textArea.addEventListener("input", function(){
+        eventListenerCallback(codeMirrorSizer, codigaExtensionElement, codigaExtensionHighlightsElement, codeElement);
+    });
+}
+
+const eventListenerCallback = (codeMirrorSizer, codigaExtensionElement, codigaExtensionHighlightsElement, codeElement) => {
+    const codeMirrorWidth = codeMirrorSizer.clientWidth;
+    const codeMirrorHeight = codeMirrorSizer.clientHeight;
+
+    codigaExtensionElement.wrapperWidth = codeMirrorWidth;
+    codigaExtensionElement.wrapperHeight = codeMirrorHeight;
+
+    codigaExtensionHighlightsElement.wrapperWidth = codeMirrorWidth;
+    codigaExtensionHighlightsElement.wrapperHeight = codeMirrorHeight;
+
+    const code = getCode(codeElement);
+    const language = pickLanguage();
+    
+    const codigaContext = {
+        code, 
+        language, 
+        codigaExtensionHighlightsElement, 
+        codigaExtensionElement, 
+        codeElement
+    }
+
+    runCodeValidation(codigaContext)
 }
 
 const runCodeValidation = ({code, language, codigaExtensionHighlightsElement, codigaExtensionElement, codeElement}) => {
@@ -64,11 +81,16 @@ const runCodeValidation = ({code, language, codigaExtensionHighlightsElement, co
             contentScriptQuery: "validateCode",
             data: { 
                 code,
-                language 
+                language,
+                id: codeElement.getAttribute(CODIGA_ELEMENT_ID_KEY)
             }
         }, function (violations) {
-            addHighlights(codigaExtensionHighlightsElement, violations, codeElement);
-            updateStatusButton(statusButton, violations);
+            if(!violations){
+                statusButton.status = CodigaStatus.LOADING;
+            } else {
+                addHighlights(codigaExtensionHighlightsElement, violations, codeElement);
+                updateStatusButton(statusButton, violations);
+            }
         }
     );
 }
@@ -110,6 +132,8 @@ const addHighlights = (codigaExtensionHighlightsElement, violations, codeElement
 const addHiglightToViolation = (violation, codigaExtensionHighlightsElement, codeElement) => {
     const line = violation.line;     
     const lineToHighlight = codeElement.children.item(line - 1);
+    if(!lineToHighlight) return;
+    
     const lineToHighlightClass = lineToHighlight.getAttribute("class");
     const isCodeMirrorLine = lineToHighlightClass && lineToHighlightClass.includes("CodeMirror-line");
     const codeWrapperElement = isCodeMirrorLine?lineToHighlight:lineToHighlight.querySelector(".CodeMirror-line");
@@ -137,7 +161,7 @@ const addHiglightToViolation = (violation, codigaExtensionHighlightsElement, cod
 }
 
 const addCodeMirrorListeners = () => {
-    const codeMirrorList = Array.from(document.querySelectorAll('.CodeMirror-lines:not([detected=true])'));
+    const codeMirrorList = Array.from(document.querySelectorAll('.CodeMirror:not([detected=true])'));
     codeMirrorList.forEach(addLogicToCodeMirrorInstance);
 }
 
@@ -251,7 +275,7 @@ const getStatusButton = (codigaExtensionElement) => {
         }
 
         .loading{
-            background: #a8b160;
+            background: #061fa3;
             animation:spin 4s linear infinite;
         }
 

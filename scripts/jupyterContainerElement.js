@@ -1,3 +1,3 @@
 const getContainerElement = () => {
-    return document.querySelector("#notebook-container");
+    return document.querySelector("#notebook");
 }

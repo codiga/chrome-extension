@@ -1,13 +1,11 @@
-/** User fingerprint generation */
-const STORAGE_FINGERPRINT_KEY = "codiga-user";
+const runningValidationsCache = {}
 
+const STORAGE_FINGERPRINT_KEY = "codiga-user";
 const generateNewUUID = () => {
     return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
         (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
     )
 }
-
-//// background.js ////
 
 chrome.storage.onChanged.addListener(function (changes, namespace) {
     for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
@@ -59,44 +57,80 @@ const getFileAnalysisQuery = (fingerprint, analysisId) =>
 const createQueryBody = (query) => JSON.stringify({
     query,
     variables: {}
-})
+});
+
+class FetchChecker {
+    constructor(innerAnalysisId){
+        this.innerAnalysisId = innerAnalysisId;
+    }
+
+    shouldFetch(cacheKey) {
+        console.log(runningValidationsCache, this.innerAnalysisId, runningValidationsCache[cacheKey]);
+        return this.innerAnalysisId === runningValidationsCache[cacheKey];
+    }
+}
+
+async function getShouldFetch(excecutionId, cacheKey){
+    const fetchChecker = new FetchChecker(excecutionId);
+    
+    await new Promise(function(resolve) { 
+        const timeout = setTimeout(function(){
+            clearTimeout(timeout);
+            resolve();
+        }, 1000)
+    });
+
+    return fetchChecker.shouldFetch(cacheKey);
+}
 
 const validateCode = (request) => new Promise(async (resolve) => {
     const fingerprint = await generateFingerprint();
     const code = request.data.code;
     const language = request.data.language;
+    
+    const codeElementId = request.data.id;
+    const executionId = generateNewUUID();
 
     var url = 'https://www.code-inspector.com/graphql';
 
-    const createAnalysisResult = await fetch(url, {
+    runningValidationsCache[codeElementId] = executionId;
+    
+    const shouldFetch = await getShouldFetch(executionId, codeElementId);
+
+    console.log(shouldFetch);
+
+    const createAnalysisResult = shouldFetch?await fetch(url, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: createQueryBody(createFileAnalysisMutation(code, fingerprint, language)),
-    })
-    const createAnalysisResultJSON = await createAnalysisResult.json();
-    const analysisId = createAnalysisResultJSON.data.createFileAnalysis;
+    }):undefined;
+    
+    // It won't run unless it's the latest typed code
+    if(createAnalysisResult){
+        const createAnalysisResultJSON = await createAnalysisResult.json();
+        const analysisId = createAnalysisResultJSON.data.createFileAnalysis;
 
-    const interval = setInterval(async function(){
-        const getAnalysisResult = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: createQueryBody(getFileAnalysisQuery(fingerprint, analysisId))
-        });
-        const getAnalysisResultJSON = await getAnalysisResult.json();
+        const interval = setInterval(async function(){
+            const getAnalysisResult = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: createQueryBody(getFileAnalysisQuery(fingerprint, analysisId))
+            });
+            const getAnalysisResultJSON = await getAnalysisResult.json();
 
-        if(getAnalysisResultJSON.data.getFileAnalysis.status === "Done"){
-            clearInterval(interval);
-            resolve(getAnalysisResultJSON.data.getFileAnalysis.violations);
-        }
-    }, 3000);
+            if(getAnalysisResultJSON.data.getFileAnalysis.status === "Done"){
+                clearInterval(interval);
+                resolve(getAnalysisResultJSON.data.getFileAnalysis.violations);
+            }
+        }, 2000);
+    }
 });
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) { 
-    
     if (request.contentScriptQuery == "validateCode") {
         validateCode(request).then(result =>{
             sendResponse(result);
