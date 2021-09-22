@@ -14,8 +14,9 @@
     {
       "matches": ["https://*.github.com/*"],
       "js": [
-        "external/custom-elements.min.js", 
+        "external/custom-elements.min.js",
         "external/popper.js",
+        "scripts/githubContainerElement.js",
         "scripts/utils.js",
         "scripts/githubPickLanguage.js",
         "components/CodigaElement.js", 
@@ -31,6 +32,7 @@
       "js": [
         "external/custom-elements.min.js", 
         "external/popper.js",
+        "scripts/jupyterContainerElement.js",
         "scripts/utils.js",
         "scripts/jupyterPickLanguage.js",
         "components/CodigaElement.js", 

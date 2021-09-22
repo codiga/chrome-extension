@@ -1,104 +1,129 @@
 // General functionality
-document.addEventListener("DOMSubtreeModified", function(event){
-    const codeMirrorList = Array.from(document.getElementsByClassName('CodeMirror-lines'));
-    for(let codeMirrorIndex in codeMirrorList){
-        const codeMirror = codeMirrorList[codeMirrorIndex];
-        const codeMirrorSizer = codeMirror.closest('.CodeMirror-sizer');
+const containerElement = getContainerElement();
 
-        const presentation = codeMirror.querySelector('[role="presentation"]');
+const config = { childList: true, subtree: true };
 
-        let codigaExtensionElement;
-        let codigaExtensionHighlightsElement;
-        let codeElement = codeMirror.querySelector(".CodeMirror-code");
-        
-        if(!codeMirror.querySelectorAll("codiga-extension").length){
-            codigaExtensionElement = document.createElement("codiga-extension");
-            codigaExtensionElement.style.cssText += 'position: absolute; top: 0px; left: 0px';
-
-            codigaExtensionHighlightsElement = document.createElement("codiga-extension-highlights");
-            codigaExtensionHighlightsElement.style.cssText += 'position: absolute; top: 0px; left: 0px';
-            
-            presentation.insertBefore(codigaExtensionElement, presentation.firstChild);
-            presentation.insertBefore(codigaExtensionHighlightsElement, presentation.firstChild);
-            
-            codeMirror.addEventListener("click", function(){
-                const codeMirrorWidth = codeMirrorSizer.clientWidth;
-                const codeMirrorHeight = codeMirrorSizer.clientHeight;
-
-                codigaExtensionElement.wrapperWidth = codeMirrorWidth;
-                codigaExtensionElement.wrapperHeight = codeMirrorHeight;
-
-                codigaExtensionHighlightsElement.wrapperWidth = codeMirrorWidth;
-                codigaExtensionHighlightsElement.wrapperHeight = codeMirrorHeight;
-
-                const code = Array.from(codeElement.children).map(lineElement => {
-                    if(lineElement.getAttribute("class", "CodeMirror-line")){
-                        return lineElement.textContent.replace(/\u200B/g,'');
-                    } else {
-                        const codeLine = lineElement.querySelector(".CodeMirror-line")
-                        return codeLine.textContent.replace(/\u200B/g,'');
-                    }
-                }).join("\n");
-                const language = pickLanguage();
-                
-                chrome.runtime.sendMessage(
-                    {
-                        contentScriptQuery: "validateCode",
-                        data: { 
-                            code,
-                            language 
-                        }
-                    }, function (violations) {
-                        codigaExtensionHighlightsElement.shadowRoot.innerHTML = '';
-
-                        const codigaHighlightsStyle = document.createElement("style");
-                        codigaHighlightsStyle.innerHTML = `
-                            .codiga-highlight {
-                                position: absolute;
-                                border-bottom: solid 2px red; 
-                                z-index: 3; 
-                            }
-
-                            .codiga-highlight:hover{
-                                background: #c1424282;
-                                border-bottom: solid 2px yellow; 
-                            }
-                        `;
-                        codigaExtensionHighlightsElement.shadowRoot.appendChild(codigaHighlightsStyle);
-
-                        violations.forEach(violation => {
-                            const line = violation.line;
-                            
-                            const lineToHighlight = codeElement.children.item(line - 1);
-                            const lineToHighlightClass = lineToHighlight.getAttribute("class");
-                            const isCodeMirrorLine = lineToHighlightClass && lineToHighlightClass.includes("CodeMirror-line");
-                            const codeWrapperElement = isCodeMirrorLine?lineToHighlight:lineToHighlight.querySelector(".CodeMirror-line");
-                            const codeToHighlight = codeWrapperElement.querySelector("[role=presentation]");
-                            const highlightPosition = getPos(codeToHighlight);
-                            const highlightDimensions = getHighlightDimensions(codeToHighlight, codeWrapperElement);
-                            const highlightsWrapperPosition = getPos(codigaExtensionHighlightsElement);
-                            const codigaHighlight = document.createElement("codiga-highlight");
-                            codigaHighlight.classList.add('codiga-highlight');
-                            
-                            codigaHighlight.top = highlightPosition.y - highlightsWrapperPosition.y;
-                            codigaHighlight.left = highlightPosition.x - highlightsWrapperPosition.x;
-                            
-                            codigaHighlight.width = highlightDimensions.width;
-                            codigaHighlight.height = highlightDimensions.height;
-                            const createdElements = addTooltipToHighlight(codigaHighlight, violation);
-                            
-                            codigaExtensionHighlightsElement.shadowRoot.appendChild(codigaHighlight);
-
-                            createdElements.forEach(createdElement => {
-                                codigaExtensionHighlightsElement.shadowRoot.appendChild(createdElement);
-                            });
-                        })
-                    }
-                );
-            });
+const detectCodeMirrorInstances = (mutationsList) => {
+    for(const mutation of mutationsList){
+        if(mutation.type === 'childList'){
+            addCodeMirrorListeners()
         }
     }
-});
+};
+
+const observer = new MutationObserver(detectCodeMirrorInstances);
+observer.observe(containerElement, config);
+
+const addLogicToCodeMirrorInstance = (codeMirror) => {
+    codeMirror.setAttribute("detected", true);
+    const codeMirrorSizer = codeMirror.closest('.CodeMirror-sizer');
+
+    const codePresentation = codeMirror.querySelector('[role="presentation"]');
+
+    let codeElement = codeMirror.querySelector(".CodeMirror-code");
+    
+    const codigaExtensionElement = document.createElement("codiga-extension");
+    codigaExtensionElement.style.cssText += 'position: absolute; top: 0px; left: 0px';
+    codePresentation.insertBefore(codigaExtensionElement, codePresentation.firstChild);
+
+    const codigaExtensionHighlightsElement = document.createElement("codiga-extension-highlights");
+    codigaExtensionHighlightsElement.style.cssText += 'position: absolute; top: 0px; left: 0px';
+    codePresentation.insertBefore(codigaExtensionHighlightsElement, codePresentation.firstChild);
+    
+    codeMirror.addEventListener("click", function(){
+        const codeMirrorWidth = codeMirrorSizer.clientWidth;
+        const codeMirrorHeight = codeMirrorSizer.clientHeight;
+
+        codigaExtensionElement.wrapperWidth = codeMirrorWidth;
+        codigaExtensionElement.wrapperHeight = codeMirrorHeight;
+
+        codigaExtensionHighlightsElement.wrapperWidth = codeMirrorWidth;
+        codigaExtensionHighlightsElement.wrapperHeight = codeMirrorHeight;
+
+        const code = getCode(codeElement);
+        const language = pickLanguage();
+        
+        runCodeValidation(code, language, codigaExtensionHighlightsElement, codeElement)
+    });
+}
+
+const runCodeValidation = (code, language, codigaExtensionHighlightsElement, codeElement) => {
+    chrome.runtime.sendMessage(
+        {
+            contentScriptQuery: "validateCode",
+            data: { 
+                code,
+                language 
+            }
+        }, function (violations) {
+            codigaExtensionHighlightsElement.shadowRoot.innerHTML = '';
+
+            const codigaHighlightsStyle = document.createElement("style");
+            codigaHighlightsStyle.innerHTML = `
+                .codiga-highlight {
+                    position: absolute;
+                    border-bottom: solid 2px red; 
+                    z-index: 3; 
+                }
+
+                .codiga-highlight:hover{
+                    background: #c1424282;
+                    border-bottom: solid 2px yellow; 
+                }
+            `;
+            codigaExtensionHighlightsElement.shadowRoot.appendChild(codigaHighlightsStyle);
+
+            violations.forEach(violation => {
+                addHiglightToViolation(violation, codigaExtensionHighlightsElement, codeElement);
+            })
+        }
+    );
+}
+
+const getCode = (codeElement) => {
+    return Array.from(codeElement.children).map(lineElement => {
+        if(lineElement.getAttribute("class", "CodeMirror-line")){
+            return lineElement.textContent.replace(/\u200B/g,'');
+        } else {
+            const codeLine = lineElement.querySelector(".CodeMirror-line")
+            return codeLine.textContent.replace(/\u200B/g,'');
+        }
+    }).join("\n");
+}
+
+const addHiglightToViolation = (violation, codigaExtensionHighlightsElement, codeElement) => {
+    const line = violation.line;     
+    const lineToHighlight = codeElement.children.item(line - 1);
+    const lineToHighlightClass = lineToHighlight.getAttribute("class");
+    const isCodeMirrorLine = lineToHighlightClass && lineToHighlightClass.includes("CodeMirror-line");
+    const codeWrapperElement = isCodeMirrorLine?lineToHighlight:lineToHighlight.querySelector(".CodeMirror-line");
+    const codeToHighlight = codeWrapperElement.querySelector("[role=presentation]");
+    const highlightPosition = getPos(codeToHighlight);
+    const highlightDimensions = getHighlightDimensions(codeToHighlight, codeWrapperElement);
+    const highlightsWrapperPosition = getPos(codigaExtensionHighlightsElement);
+    const codigaHighlight = document.createElement("codiga-highlight");
+
+    codigaHighlight.classList.add('codiga-highlight');
+    
+    codigaHighlight.top = highlightPosition.y - highlightsWrapperPosition.y;
+    codigaHighlight.left = highlightPosition.x - highlightsWrapperPosition.x;
+    
+    codigaHighlight.width = highlightDimensions.width;
+    codigaHighlight.height = highlightDimensions.height;
+
+    const createdElements = addTooltipToHighlight(codigaHighlight, violation);
+    
+    codigaExtensionHighlightsElement.shadowRoot.appendChild(codigaHighlight);
+
+    createdElements.forEach(createdElement => {
+        codigaExtensionHighlightsElement.shadowRoot.appendChild(createdElement);
+    });
+}
+
+const addCodeMirrorListeners = () => {
+    const codeMirrorList = Array.from(document.querySelectorAll('.CodeMirror-lines:not([detected=true])'));
+    codeMirrorList.forEach(addLogicToCodeMirrorInstance);
+}
 
 const show = (tooltip, popperInstance) => {
     return function(){
@@ -123,7 +148,6 @@ const getHighlightDimensions = (codeToHighlight, lineToHighlight) => {
 }
 
 const addTooltipToHighlight = (highlight, violation) => {
-
     const tooltip = document.createElement("div");
     const style = document.createElement("style");
     style.innerHTML = `
