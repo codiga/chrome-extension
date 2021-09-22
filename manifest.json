@@ -27,7 +27,7 @@
       "css": []
     },
     {
-      "matches": ["https://*/*.ipynb*", "https://*/*.py*", "http://*/*.ipynb*", "http://*/*.py*"],
+      "matches": ["https://*/*.ipynb*", "http://*/*.ipynb*"],
       "js": [
         "external/custom-elements.min.js", 
         "external/popper.js",

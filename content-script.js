@@ -38,7 +38,7 @@ document.addEventListener("DOMSubtreeModified", function(event){
                         const codeLine = lineElement.querySelector(".CodeMirror-line")
                         return codeLine.textContent.replace(/\u200B/g,'');
                     }
-                }).filter(line => line).join("\n");
+                }).join("\n");
                 const language = pickLanguage();
                 
                 chrome.runtime.sendMessage(
@@ -68,16 +68,15 @@ document.addEventListener("DOMSubtreeModified", function(event){
 
                         violations.forEach(violation => {
                             const line = violation.line;
-
+                            
                             const lineToHighlight = codeElement.children.item(line - 1);
-                            console.log(lineToHighlight.getAttribute("class"));
-                            const isCodeMirrorLine = lineToHighlight.getAttribute("class").includes("CodeMirror-line");
+                            const lineToHighlightClass = lineToHighlight.getAttribute("class");
+                            const isCodeMirrorLine = lineToHighlightClass && lineToHighlightClass.includes("CodeMirror-line");
                             const codeWrapperElement = isCodeMirrorLine?lineToHighlight:lineToHighlight.querySelector(".CodeMirror-line");
                             const codeToHighlight = codeWrapperElement.querySelector("[role=presentation]");
                             const highlightPosition = getPos(codeToHighlight);
                             const highlightDimensions = getHighlightDimensions(codeToHighlight, codeWrapperElement);
                             const highlightsWrapperPosition = getPos(codigaExtensionHighlightsElement);
-
                             const codigaHighlight = document.createElement("codiga-highlight");
                             codigaHighlight.classList.add('codiga-highlight');
                             
