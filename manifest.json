@@ -14,14 +14,32 @@
     {
       "matches": ["https://*.github.com/*"],
       "js": [
-        "custom-elements.min.js", 
+        "external/custom-elements.min.js", 
+        "external/popper.js",
+        "scripts/utils.js",
+        "scripts/githubPickLanguage.js",
         "components/CodigaElement.js", 
         "components/CodigaExtension.js", 
         "components/CodigaExtensionHighlights.js", 
         "components/CodigaHighlight.js", 
         "content-script.js"
       ],
-      "run_at": "document_end"
+      "css": []
+    },
+    {
+      "matches": ["https://*/*.ipynb*", "https://*/*.py*", "http://*/*.ipynb*", "http://*/*.py*"],
+      "js": [
+        "external/custom-elements.min.js", 
+        "external/popper.js",
+        "scripts/utils.js",
+        "scripts/jupyterPickLanguage.js",
+        "components/CodigaElement.js", 
+        "components/CodigaExtension.js", 
+        "components/CodigaExtensionHighlights.js", 
+        "components/CodigaHighlight.js", 
+        "content-script.js"
+      ],
+      "css": []
     }
-  ] 
+  ]
 }

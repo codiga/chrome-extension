@@ -5,17 +5,7 @@ class CodigaElement extends HTMLElement {
 
         this.wrapper = document.createElement('div');
         this.wrapper.setAttribute('class','codiga-wrapper');        
-
-        const style = document.createElement('style');
-        style.innerHTML = `
-            .codiga-wrapper { 
-                position: absolute;
-                left: 0;
-                top: 0;
-            }
-        `;
-
-        this.shadowRoot.append(style, this.wrapper);
+        this.shadowRoot.append(this.wrapper);
     }
 
     static get observedAttributes() {

@@ -21,8 +21,6 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
 const generateFingerprint = () => {
     return new Promise((resolve) => {
         chrome.storage.sync.get([STORAGE_FINGERPRINT_KEY], (result) => {
-            console.log("result", result);
-
             if(result && Object.keys(result).length === 0 && result.constructor === Object){
                 const fingerprint = generateNewUUID();
                 chrome.storage.sync.set({[STORAGE_FINGERPRINT_KEY]: fingerprint}, () => {
@@ -35,9 +33,9 @@ const generateFingerprint = () => {
     });
 }
 
-const createFileAnalysisMutation = (code, fingerprint) =>
+const createFileAnalysisMutation = (code, fingerprint, language) =>
 `mutation {
-    createFileAnalysis(language: Python, filename: "file.py", code: ${JSON.stringify(code)}, fingerprint: "${fingerprint}")
+    createFileAnalysis(language: ${language}, filename: "file.py", code: ${JSON.stringify(code)}, fingerprint: "${fingerprint}")
 }`
 
 const getFileAnalysisQuery = (fingerprint, analysisId) =>
@@ -66,6 +64,7 @@ const createQueryBody = (query) => JSON.stringify({
 const validateCode = (request) => new Promise(async (resolve) => {
     const fingerprint = await generateFingerprint();
     const code = request.data.code;
+    const language = request.data.language;
 
     var url = 'https://www.code-inspector.com/graphql';
 
@@ -74,7 +73,7 @@ const validateCode = (request) => new Promise(async (resolve) => {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: createQueryBody(createFileAnalysisMutation(code, fingerprint)),
+        body: createQueryBody(createFileAnalysisMutation(code, fingerprint, language)),
     })
     const createAnalysisResultJSON = await createAnalysisResult.json();
     const analysisId = createAnalysisResultJSON.data.createFileAnalysis;
@@ -88,13 +87,9 @@ const validateCode = (request) => new Promise(async (resolve) => {
             body: createQueryBody(getFileAnalysisQuery(fingerprint, analysisId))
         });
         const getAnalysisResultJSON = await getAnalysisResult.json();
-        
-        console.log(getAnalysisResultJSON);
-        console.log(getAnalysisResultJSON.data.getFileAnalysis.status);
 
         if(getAnalysisResultJSON.data.getFileAnalysis.status === "Done"){
             clearInterval(interval);
-            console.log(getAnalysisResultJSON.data.getFileAnalysis.violations);
             resolve(getAnalysisResultJSON.data.getFileAnalysis.violations);
         }
     }, 3000);

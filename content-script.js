@@ -1,14 +1,3 @@
-// Utils
-const getPos = (el) => {
-    var rect=el.getBoundingClientRect();
-    return {x: rect.left, y: rect.top};
-}
-
-const getDimensions = (el) => {
-    return {width: el.clientWidth, height: el.clientHeight};
-}
-
-
 // General functionality
 document.addEventListener("DOMSubtreeModified", function(event){
     const codeMirrorList = Array.from(document.getElementsByClassName('CodeMirror-lines'));
@@ -25,10 +14,10 @@ document.addEventListener("DOMSubtreeModified", function(event){
         
         if(!codeMirror.querySelectorAll("codiga-extension").length){
             codigaExtensionElement = document.createElement("codiga-extension");
-            codigaExtensionElement.style.cssText += 'position: absolute; top: 0px; left: 0px; pointer-events: none;';
+            codigaExtensionElement.style.cssText += 'position: absolute; top: 0px; left: 0px';
 
             codigaExtensionHighlightsElement = document.createElement("codiga-extension-highlights");
-            codigaExtensionHighlightsElement.style.cssText += 'position: absolute; top: 0px; left: 0px; pointer-events: none;';
+            codigaExtensionHighlightsElement.style.cssText += 'position: absolute; top: 0px; left: 0px';
             
             presentation.insertBefore(codigaExtensionElement, presentation.firstChild);
             presentation.insertBefore(codigaExtensionHighlightsElement, presentation.firstChild);
@@ -46,40 +35,58 @@ document.addEventListener("DOMSubtreeModified", function(event){
                 const code = Array.from(codeElement.children).map(lineElement => {
                     return lineElement.querySelector(".CodeMirror-line").textContent.replace(/\u200B/g,'');
                 }).join("\n");
+                const language = pickLanguage();
                 
                 chrome.runtime.sendMessage(
                     {
                         contentScriptQuery: "validateCode",
-                        data: { code }
+                        data: { 
+                            code,
+                            language 
+                        }
                     }, function (violations) {
-                        console.log(violations);
-
                         codigaExtensionHighlightsElement.shadowRoot.innerHTML = '';
 
-                        const elementsToHighlight = violations.map(violation => {
+                        const codigaHighlightsStyle = document.createElement("style");
+                        codigaHighlightsStyle.innerHTML = `
+                            .codiga-highlight {
+                                position: absolute;
+                                border-bottom: solid 2px red; 
+                                z-index: 3; 
+                            }
+
+                            .codiga-highlight:hover{
+                                background: #c1424282;
+                                border-bottom: solid 2px yellow; 
+                            }
+                        `;
+                        codigaExtensionHighlightsElement.shadowRoot.appendChild(codigaHighlightsStyle);
+
+                        violations.forEach(violation => {
                             const line = violation.line;
-                            const severity = violation.severity;
-                            const category = violation.category;
 
                             const lineToHighlight = codeElement.children.item(line - 1);
-                            
-                            const highlightPosition = getPos(lineToHighlight);
+                            const codeWrapperElement = lineToHighlight.querySelector(".CodeMirror-line")
+                            const codeToHighlight = codeWrapperElement.querySelector("[role=presentation]");
+                            const highlightPosition = getPos(codeToHighlight);
+                            const highlightDimensions = getHighlightDimensions(codeToHighlight, codeWrapperElement);
                             const highlightsWrapperPosition = getPos(codigaExtensionHighlightsElement);
-                            const highlightDimensions = getDimensions(lineToHighlight);
-                            
+
                             const codigaHighlight = document.createElement("codiga-highlight");
-                            codigaHighlight.style.cssText += 'position: absolute; background-color: red';
-                            
+                            codigaHighlight.classList.add('codiga-highlight');
                             
                             codigaHighlight.top = highlightPosition.y - highlightsWrapperPosition.y;
                             codigaHighlight.left = highlightPosition.x - highlightsWrapperPosition.x;
-
+                            
                             codigaHighlight.width = highlightDimensions.width;
                             codigaHighlight.height = highlightDimensions.height;
+                            const createdElements = addTooltipToHighlight(codigaHighlight, violation);
                             
-                            codigaExtensionHighlightsElement.shadowRoot.append(codigaHighlight);
-                            
-                            console.log(line, severity, category, highlightPosition, highlightDimensions);
+                            codigaExtensionHighlightsElement.shadowRoot.appendChild(codigaHighlight);
+
+                            createdElements.forEach(createdElement => {
+                                codigaExtensionHighlightsElement.shadowRoot.appendChild(createdElement);
+                            });
                         })
                     }
                 );
@@ -87,3 +94,72 @@ document.addEventListener("DOMSubtreeModified", function(event){
         }
     }
 });
+
+const show = (tooltip, popperInstance) => {
+    return function(){
+        tooltip.setAttribute('data-show', '');
+
+        // We need to tell Popper to update the tooltip position
+        // after we show the tooltip, otherwise it will be incorrect
+        popperInstance.update();
+    }
+}
+  
+const hide = (tooltip) => {
+    return function(){
+        tooltip.removeAttribute('data-show');
+    }
+}
+  
+const getHighlightDimensions = (codeToHighlight, lineToHighlight) => {
+    return lineToHighlight.textContent.replace(/\u200B/g,'').length?
+        getDimensions(codeToHighlight):
+        getDimensions(lineToHighlight)
+}
+
+const addTooltipToHighlight = (highlight, violation) => {
+
+    const tooltip = document.createElement("div");
+    const style = document.createElement("style");
+    style.innerHTML = `
+        .codiga-tooltip {
+            background: white;
+            display: none;
+            padding: .5rem;
+        }
+
+        .code-inspector-violation {
+            color: #9e3766;
+            font-size: 1.1rem;
+        }
+
+        .codiga-tooltip[data-show] {
+            background: white;
+            display: block;
+            min-width: max-content;
+            color: black;
+            z-index: 10;
+        }
+    `;
+
+    tooltip.innerHTML = 
+        `<div>Code Inspector violation</div>
+         <div class="code-inspector-violation"> ${violation.description} </div>
+         <div><b>Category: </b> ${violation.category} </div>
+        `;
+    tooltip.classList.add("codiga-tooltip");
+
+    const popperInstance = Popper.createPopper(highlight, tooltip);
+
+    const showEvents = ['mouseenter', 'focus'];
+    showEvents.forEach((event) => {
+        highlight.addEventListener(event, show(tooltip, popperInstance));
+    });
+    
+    const hideEvents = ['mouseleave', 'blur'];
+    hideEvents.forEach((event) => {
+        highlight.addEventListener(event, hide(tooltip));
+    });
+
+    return [tooltip, style];
+}
