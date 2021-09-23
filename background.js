@@ -70,11 +70,11 @@ class FetchChecker {
     }
 }
 
-async function getShouldFetch(excecutionId, cacheKey){
+const getShouldFetch = async (excecutionId, cacheKey) => {
     const fetchChecker = new FetchChecker(excecutionId);
     
-    await new Promise(function(resolve) { 
-        const timeout = setTimeout(function(){
+    await new Promise((resolve) => { 
+        const timeout = setTimeout(() => {
             clearTimeout(timeout);
             resolve();
         }, 1000)
@@ -112,7 +112,7 @@ const validateCode = (request) => new Promise(async (resolve) => {
         const createAnalysisResultJSON = await createAnalysisResult.json();
         const analysisId = createAnalysisResultJSON.data.createFileAnalysis;
 
-        const interval = setInterval(async function(){
+        const interval = setInterval(async () => {
             const getAnalysisResult = await fetch(url, {
                 method: 'POST',
                 headers: {
@@ -135,7 +135,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
         validateCode(request).then(result =>{
             sendResponse(result);
         })
-    };
+    }
 
     return true;
 });

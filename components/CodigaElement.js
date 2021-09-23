@@ -9,39 +9,41 @@ class CodigaElement extends HTMLElement {
     }
 
     static get observedAttributes() {
-        return ['wrapperWidth', 'wrapperHeight'];
+        return ['width', 'height'];
     }
 
-    get wrapperWidth() {
-        return this.getAttribute('wrapperWidth');
+    get width() {
+        return this.getAttribute('width');
     }
 
-    get wrapperHeight() {
-        return this.getAttribute('wrapperHeight');
+    get height() {
+        return this.getAttribute('height');
     }
 
-    set wrapperWidth(val) {
+    set width(val) {
         if (val == null) {
-            this.removeAttribute('wrapperWidth');
+            this.removeAttribute('width');
         } else {
-            this.setAttribute('wrapperWidth', val);
+            this.setAttribute('width', val);
         }
     }
 
-    set wrapperHeight(val) {
+    set height(val) {
         if (val == null) { 
-            this.removeAttribute('wrapperHeight');
+            this.removeAttribute('height');
         } else {
-            this.setAttribute('wrapperHeight', val);
+            this.setAttribute('height', val);
         }
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
-        if (name === 'wrapperWidth') {
+        if (name === 'width') {
+            console.log("width changed");
             this.wrapper.style.width = `${newValue}px`;
         }
 
-        if (name === 'wrapperHeight') {
+        if (name === 'height') {
+            console.log("height changed");
             this.wrapper.style.height = `${newValue}px`;
         }
     }

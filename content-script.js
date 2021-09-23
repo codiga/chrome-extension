@@ -34,30 +34,28 @@ const addLogicToCodeMirrorInstance = (codeMirror) => {
     codigaExtensionHighlightsElement.style.cssText += 'position: absolute; top: 0px; left: 0px';
     codePresentation.insertBefore(codigaExtensionHighlightsElement, codePresentation.firstChild);
     
-    codeMirror.addEventListener("click", function(){
+    codeMirror.addEventListener("click", () => {
         eventListenerCallback(codeMirrorSizer, codigaExtensionElement, codigaExtensionHighlightsElement, codeElement);
     });
 
     let textArea = codeMirror.parentElement.querySelector("textarea");
-    textArea.addEventListener("change", function(){
+    textArea.addEventListener("change", () => {
         eventListenerCallback(codeMirrorSizer, codigaExtensionElement, codigaExtensionHighlightsElement, codeElement);
     });
 
-    textArea.addEventListener("input", function(){
+    textArea.addEventListener("input", () => {
         eventListenerCallback(codeMirrorSizer, codigaExtensionElement, codigaExtensionHighlightsElement, codeElement);
     });
+
+    window.addEventListener("resize", () => {
+        assignSize(codigaExtensionElement, codeMirrorSizer);
+    })
 }
 
 const eventListenerCallback = (codeMirrorSizer, codigaExtensionElement, codigaExtensionHighlightsElement, codeElement) => {
-    const codeMirrorWidth = codeMirrorSizer.clientWidth;
-    const codeMirrorHeight = codeMirrorSizer.clientHeight;
-
-    codigaExtensionElement.wrapperWidth = codeMirrorWidth;
-    codigaExtensionElement.wrapperHeight = codeMirrorHeight;
-
-    codigaExtensionHighlightsElement.wrapperWidth = codeMirrorWidth;
-    codigaExtensionHighlightsElement.wrapperHeight = codeMirrorHeight;
-
+    assignSize(codigaExtensionHighlightsElement, codeMirrorSizer);
+    assignSize(codigaExtensionElement, codeMirrorSizer);
+    
     const code = getCode(codeElement);
     const language = pickLanguage();
     
@@ -75,6 +73,8 @@ const eventListenerCallback = (codeMirrorSizer, codigaExtensionElement, codigaEx
 const runCodeValidation = ({code, language, codigaExtensionHighlightsElement, codigaExtensionElement, codeElement}) => {
     const statusButton = getStatusButton(codigaExtensionElement);
     statusButton.status = CodigaStatus.LOADING;
+    
+    resetComponentShadowDOM(codigaExtensionHighlightsElement);
 
     chrome.runtime.sendMessage(
         {
@@ -107,19 +107,44 @@ const getCode = (codeElement) => {
 }
 
 const addHighlights = (codigaExtensionHighlightsElement, violations, codeElement) => {
-    codigaExtensionHighlightsElement.shadowRoot.innerHTML = '';
+    resetComponentShadowDOM(codigaExtensionHighlightsElement);
 
     const codigaHighlightsStyle = document.createElement("style");
     codigaHighlightsStyle.innerHTML = `
         .codiga-highlight {
             position: absolute;
-            border-bottom: solid 2px red; 
             z-index: 3; 
         }
 
+        /* Slide in */
+        .codiga-highlight {
+            overflow: hidden;
+        }
+
+        @keyframes slidein {
+            from {
+              transform: translate3d(-100%, 0, 0);
+            }
+          
+            to {
+              transform: translate3d(0, 0, 0);
+            }
+        }
+
+        .codiga-highlight::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 0.2em;
+            background-color: #cc498b;
+            opacity: 1;
+            animation: slidein .2s;
+        }
+        
         .codiga-highlight:hover{
             background: #c1424282;
-            border-bottom: solid 2px yellow; 
         }
     `;
     codigaExtensionHighlightsElement.shadowRoot.appendChild(codigaHighlightsStyle);
@@ -166,7 +191,7 @@ const addCodeMirrorListeners = () => {
 }
 
 const showTooltip = (tooltip, popperInstance) => {
-    return function(){
+    return () => {
         tooltip.setAttribute('data-show', '');
 
         // We need to tell Popper to update the tooltip position
@@ -176,7 +201,7 @@ const showTooltip = (tooltip, popperInstance) => {
 }
   
 const hideTooltip = (tooltip) => {
-    return function(){
+    return () => {
         tooltip.removeAttribute('data-show');
     }
 }
