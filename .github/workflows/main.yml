@@ -16,4 +16,4 @@ jobs:
         aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
         aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         dest: 's3://codiga-chrome-extension/extension.zip'
-        source: './extension.zip'
+        source: './build/extension.zip'
