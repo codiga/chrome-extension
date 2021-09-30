@@ -65,7 +65,6 @@ class FetchChecker {
     }
 
     shouldFetch(cacheKey) {
-        console.log(runningValidationsCache, this.innerAnalysisId, runningValidationsCache[cacheKey]);
         return this.innerAnalysisId === runningValidationsCache[cacheKey];
     }
 }
@@ -97,7 +96,6 @@ const validateCode = (request) => new Promise(async (resolve) => {
     
     const shouldFetch = await getShouldFetch(executionId, codeElementId);
 
-    console.log(shouldFetch);
 
     const createAnalysisResult = shouldFetch?await fetch(url, {
         method: 'POST',

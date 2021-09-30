@@ -38,12 +38,10 @@ class CodigaElement extends HTMLElement {
 
     attributeChangedCallback(name, oldValue, newValue) {
         if (name === 'width') {
-            console.log("width changed");
             this.wrapper.style.width = `${newValue}px`;
         }
 
         if (name === 'height') {
-            console.log("height changed");
             this.wrapper.style.height = `${newValue}px`;
         }
     }

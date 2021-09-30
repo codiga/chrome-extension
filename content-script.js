@@ -4,6 +4,17 @@ const containerElement = getContainerElement();
 
 const config = { childList: true, subtree: true };
 
+const PRETTY_CATEGORIES = {
+    "Code_Style": "Code style",
+    "Error_Prone": "Error prone",
+    "Documentation": "Documentation",
+    "Security": "Security",
+    "Design": "Design",
+    "Safety": "Safety",
+    "Best_Practice": "Best practice",
+    "Unknown": "Unknown"
+}
+
 const detectCodeMirrorInstances = (mutationsList) => {
     for(const mutation of mutationsList){
         if(mutation.type === 'childList'){
@@ -236,10 +247,12 @@ const addTooltipToHighlight = (highlight, violation) => {
         }
     `;
 
+    
+    console.log(PRETTY_CATEGORIES, violation.category);
     tooltip.innerHTML = 
         `<div>Codiga violation</div>
          <div class="code-inspector-violation"> ${violation.description} </div>
-         <div><b>Category: </b> ${violation.category} </div>
+         <div><b>Category: </b> ${PRETTY_CATEGORIES[violation.category] || violation.category} </div>
         `;
     tooltip.classList.add("codiga-tooltip");
 
