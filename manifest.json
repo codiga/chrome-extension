@@ -24,6 +24,7 @@
         "external/popper.js",
         "scripts/githubContainerElement.js",
         "scripts/utils.js",
+        "scripts/githubPickFilename.js",
         "scripts/githubPickLanguage.js",
         "components/CodigaElement.js", 
         "components/CodigaExtension.js", 

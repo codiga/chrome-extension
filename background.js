@@ -31,9 +31,9 @@ const generateFingerprint = () => {
     });
 }
 
-const createFileAnalysisMutation = (code, fingerprint, language) =>
+const createFileAnalysisMutation = (code, fingerprint, language, filename) =>
 `mutation {
-    createFileAnalysis(language: ${language}, filename: "file.py", code: ${JSON.stringify(code)}, fingerprint: "${fingerprint}")
+    createFileAnalysis(language: ${language}, filename: "${filename}", code: ${JSON.stringify(code)}, fingerprint: "${fingerprint}")
 }`
 
 const getFileAnalysisQuery = (fingerprint, analysisId) =>
@@ -86,7 +86,8 @@ const validateCode = (request) => new Promise(async (resolve) => {
     const fingerprint = await generateFingerprint();
     const code = request.data.code;
     const language = request.data.language;
-    
+    const filename = request.data.filename;
+
     const codeElementId = request.data.id;
     const executionId = generateNewUUID();
 
@@ -102,7 +103,7 @@ const validateCode = (request) => new Promise(async (resolve) => {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: createQueryBody(createFileAnalysisMutation(code, fingerprint, language)),
+        body: createQueryBody(createFileAnalysisMutation(code, fingerprint, language, filename)),
     }):undefined;
     
     // It won't run unless it's the latest typed code

@@ -69,19 +69,21 @@ const eventListenerCallback = (codeMirrorSizer, codigaExtensionElement, codigaEx
     
     const code = getCode(codeElement);
     const language = pickLanguage();
-    
+    const filename = pickFilename();
+
     const codigaContext = {
         code, 
         language, 
         codigaExtensionHighlightsElement, 
         codigaExtensionElement, 
-        codeElement
+        codeElement,
+        filename
     }
 
     runCodeValidation(codigaContext)
 }
 
-const runCodeValidation = ({code, language, codigaExtensionHighlightsElement, codigaExtensionElement, codeElement}) => {
+const runCodeValidation = ({code, language, codigaExtensionHighlightsElement, codigaExtensionElement, codeElement, filename}) => {
     const statusButton = getStatusButton(codigaExtensionElement);
     statusButton.status = CodigaStatus.LOADING;
     
@@ -93,6 +95,7 @@ const runCodeValidation = ({code, language, codigaExtensionHighlightsElement, co
             data: { 
                 code,
                 language,
+                filename,
                 id: codeElement.getAttribute(CODIGA_ELEMENT_ID_KEY)
             }
         }, function (violations) {

@@ -1,6 +1,5 @@
 const pickLanguage = () => {
-    const textAreaElement = document.querySelector('textarea.file-editor-textarea.js-code-textarea');
-    const fileName = textAreaElement.getAttribute('data-filename');
+    const fileName = pickFilename();
 
     if(fileName === "Dockerfile") return "Docker";
 
