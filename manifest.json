@@ -16,16 +16,21 @@
   "background": {
     "service_worker": "background.js"
   },
+  "web_accessible_resources": [{
+    "resources": ["icons/*"],
+    "matches": ["<all_urls>"]
+  }],
   "content_scripts": [
     {
-      "matches": ["https://*.github.com/*"],
+      "matches": ["https://*.github.com/*/*/edit/*"],
       "js": [
         "external/custom-elements.min.js",
         "external/popper.js",
-        "scripts/githubContainerElement.js",
         "scripts/utils.js",
-        "scripts/githubPickFilename.js",
-        "scripts/githubPickLanguage.js",
+        "scripts/github/containerElement.js",
+        "scripts/github/pickFilename.js",
+        "scripts/github/pickLanguage.js",
+        "scripts/codeMirrorLogic.js",
         "components/CodigaElement.js", 
         "components/CodigaExtension.js", 
         "components/CodigaExtensionHighlights.js", 
@@ -40,9 +45,10 @@
       "js": [
         "external/custom-elements.min.js", 
         "external/popper.js",
-        "scripts/jupyterContainerElement.js",
         "scripts/utils.js",
-        "scripts/jupyterPickLanguage.js",
+        "scripts/jupyter/containerElement.js",
+        "scripts/jupyter/pickLanguage.js",
+        "scripts/codeMirrorLogic.js",
         "components/CodigaElement.js", 
         "components/CodigaExtension.js", 
         "components/CodigaExtensionHighlights.js", 

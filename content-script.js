@@ -1,8 +1,5 @@
 // General functionality
 const CODIGA_ELEMENT_ID_KEY="codiga-id";
-const containerElement = getContainerElement();
-
-const config = { childList: true, subtree: true };
 
 const PRETTY_CATEGORIES = {
     "Code_Style": "Code style",
@@ -15,75 +12,15 @@ const PRETTY_CATEGORIES = {
     "Unknown": "Unknown"
 }
 
-const detectCodeMirrorInstances = (mutationsList) => {
-    for(const mutation of mutationsList){
-        if(mutation.type === 'childList'){
-            addCodeMirrorListeners()
-        }
-    }
-};
-
-const observer = new MutationObserver(detectCodeMirrorInstances);
-observer.observe(containerElement, config);
-
-const addLogicToCodeMirrorInstance = (codeMirror) => {
-    codeMirror.setAttribute("detected", true);
-
-    const codeMirrorLines = codeMirror.querySelector(".CodeMirror-lines")
-    const codeMirrorSizer = codeMirror.querySelector('.CodeMirror-sizer');
-
-    const codePresentation = codeMirrorLines.querySelector('[role="presentation"]');
-
-    let codeElement = codeMirror.querySelector(".CodeMirror-code");
-    codeElement.setAttribute(CODIGA_ELEMENT_ID_KEY, JSON.stringify(getPos(codeElement)));
-
-    const codigaExtensionElement = document.createElement("codiga-extension");
-    codigaExtensionElement.style.cssText += 'position: absolute; top: 0px; left: 0px';
-    codePresentation.insertBefore(codigaExtensionElement, codePresentation.firstChild);
-
-    const codigaExtensionHighlightsElement = document.createElement("codiga-extension-highlights");
-    codigaExtensionHighlightsElement.style.cssText += 'position: absolute; top: 0px; left: 0px';
-    codePresentation.insertBefore(codigaExtensionHighlightsElement, codePresentation.firstChild);
-    
-    codeMirror.addEventListener("click", () => {
-        eventListenerCallback(codeMirrorSizer, codigaExtensionElement, codigaExtensionHighlightsElement, codeElement);
-    });
-
-    let textArea = codeMirror.parentElement.querySelector("textarea");
-    textArea.addEventListener("change", () => {
-        eventListenerCallback(codeMirrorSizer, codigaExtensionElement, codigaExtensionHighlightsElement, codeElement);
-    });
-
-    textArea.addEventListener("input", () => {
-        eventListenerCallback(codeMirrorSizer, codigaExtensionElement, codigaExtensionHighlightsElement, codeElement);
-    });
-
-    window.addEventListener("resize", () => {
-        assignSize(codigaExtensionElement, codeMirrorSizer);
-    })
-}
-
-const eventListenerCallback = (codeMirrorSizer, codigaExtensionElement, codigaExtensionHighlightsElement, codeElement) => {
-    assignSize(codigaExtensionHighlightsElement, codeMirrorSizer);
-    assignSize(codigaExtensionElement, codeMirrorSizer);
-    
-    const code = getCode(codeElement);
-    const language = pickLanguage();
-    const filename = pickFilename();
-
-    const codigaContext = {
-        code, 
-        language, 
-        codigaExtensionHighlightsElement, 
-        codigaExtensionElement, 
-        codeElement,
-        filename
-    }
-
-    runCodeValidation(codigaContext)
-}
-
-const runCodeValidation = ({code, language, codigaExtensionHighlightsElement, codigaExtensionElement, codeElement, filename}) => {
+const runCodeValidation = ({
+    code, 
+    language, 
+    codigaExtensionHighlightsElement, 
+    codigaExtensionElement, 
+    codeElement, 
+    filename, 
+    scrollContainer
+}) => {
     const statusButton = getStatusButton(codigaExtensionElement);
     statusButton.status = CodigaStatus.LOADING;
     
@@ -98,26 +35,29 @@ const runCodeValidation = ({code, language, codigaExtensionHighlightsElement, co
                 filename,
                 id: codeElement.getAttribute(CODIGA_ELEMENT_ID_KEY)
             }
-        }, function (violations) {
+        }, (violations) => {
             if(!violations){
                 statusButton.status = CodigaStatus.LOADING;
             } else {
                 addHighlights(codigaExtensionHighlightsElement, violations, codeElement);
                 updateStatusButton(statusButton, violations);
+                
+                // On scroll highlights should be updated
+                let timer = null;
+                scrollContainer.addEventListener('scroll', function() {
+                    resetComponentShadowDOM(codigaExtensionHighlightsElement);
+                    if(timer !== null) {
+                        clearTimeout(timer);        
+                    }
+                    timer = setTimeout(function() {
+                        addHighlights(codigaExtensionHighlightsElement, violations, codeElement);
+                        updateStatusButton(statusButton, violations);
+                    }, 200);
+                }, false);
+
             }
         }
     );
-}
-
-const getCode = (codeElement) => {
-    return Array.from(codeElement.children).map(lineElement => {
-        if(lineElement.getAttribute("class", "CodeMirror-line")){
-            return lineElement.textContent.replace(/\u200B/g,'');
-        } else {
-            const codeLine = lineElement.querySelector(".CodeMirror-line")
-            return codeLine.textContent.replace(/\u200B/g,'');
-        }
-    }).join("\n");
 }
 
 const addHighlights = (codigaExtensionHighlightsElement, violations, codeElement) => {
@@ -162,46 +102,10 @@ const addHighlights = (codigaExtensionHighlightsElement, violations, codeElement
         }
     `;
     codigaExtensionHighlightsElement.shadowRoot.appendChild(codigaHighlightsStyle);
-
+    
     violations.forEach(violation => {
         addHiglightToViolation(violation, codigaExtensionHighlightsElement, codeElement);
     });
-}
-
-const addHiglightToViolation = (violation, codigaExtensionHighlightsElement, codeElement) => {
-    const line = violation.line;     
-    const lineToHighlight = codeElement.children.item(line - 1);
-    if(!lineToHighlight) return;
-    
-    const lineToHighlightClass = lineToHighlight.getAttribute("class");
-    const isCodeMirrorLine = lineToHighlightClass && lineToHighlightClass.includes("CodeMirror-line");
-    const codeWrapperElement = isCodeMirrorLine?lineToHighlight:lineToHighlight.querySelector(".CodeMirror-line");
-    const codeToHighlight = codeWrapperElement.querySelector("[role=presentation]");
-    const highlightPosition = getPos(codeToHighlight);
-    const highlightDimensions = getHighlightDimensions(codeToHighlight, codeWrapperElement);
-    const highlightsWrapperPosition = getPos(codigaExtensionHighlightsElement);
-    const codigaHighlight = document.createElement("codiga-highlight");
-
-    codigaHighlight.classList.add('codiga-highlight');
-    
-    codigaHighlight.top = highlightPosition.y - highlightsWrapperPosition.y;
-    codigaHighlight.left = highlightPosition.x - highlightsWrapperPosition.x;
-    
-    codigaHighlight.width = highlightDimensions.width;
-    codigaHighlight.height = highlightDimensions.height;
-
-    const createdElements = addTooltipToHighlight(codigaHighlight, violation);
-    
-    codigaExtensionHighlightsElement.shadowRoot.appendChild(codigaHighlight);
-
-    createdElements.forEach(createdElement => {
-        codigaExtensionHighlightsElement.shadowRoot.appendChild(createdElement);
-    });
-}
-
-const addCodeMirrorListeners = () => {
-    const codeMirrorList = Array.from(document.querySelectorAll('.CodeMirror:not([detected=true])'));
-    codeMirrorList.forEach(addLogicToCodeMirrorInstance);
 }
 
 const showTooltip = (tooltip, popperInstance) => {
@@ -231,31 +135,26 @@ const addTooltipToHighlight = (highlight, violation) => {
     const style = document.createElement("style");
     style.innerHTML = `
         .codiga-tooltip {
-            background: white;
             display: none;
-            padding: .5rem;
-        }
-
-        .code-inspector-violation {
-            color: #9e3766;
-            font-size: 1.1rem;
         }
 
         .codiga-tooltip[data-show] {
-            background: white;
+            background: #300623;
+            color: white;
             display: block;
             min-width: max-content;
-            color: black;
             z-index: 10;
+            border-radius: .2rem;
+            padding: .6rem;
         }
     `;
 
     
-    console.log(PRETTY_CATEGORIES, violation.category);
     tooltip.innerHTML = 
-        `<div>Codiga violation</div>
-         <div class="code-inspector-violation"> ${violation.description} </div>
-         <div><b>Category: </b> ${PRETTY_CATEGORIES[violation.category] || violation.category} </div>
+        `
+        <img src='${chrome.runtime.getURL('icons/icon16.png')}'/>
+        <div class="codiga-tooltip-header"><b>${PRETTY_CATEGORIES[violation.category] || violation.category}</b> violation:</div>
+        <div class="codiga-inspector-violation"> ${violation.description} </div>
         `;
     tooltip.classList.add("codiga-tooltip");
 
@@ -316,7 +215,10 @@ const getStatusButton = (codigaExtensionElement) => {
         }
 
         .loading{
-            background: #061fa3;
+            background: url(${chrome.runtime.getURL('icons/icon48.png')});
+            background-position: center; /* Center the image */
+            background-repeat: no-repeat; /* Do not repeat the image */
+            background-size: cover;
             animation:spin 4s linear infinite;
         }
 

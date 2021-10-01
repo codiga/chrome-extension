@@ -24,6 +24,8 @@ const pickLanguage = () => {
         "kt": "Kotlin",
         "yaml": "Yaml",
         "json": "Json",
-        "tf": "Terraform"
+        "tf": "Terraform",
+        "tsx": "Typescript",
+        "jsx": "Javascript"
     }[extension] || "Unknown";
 }

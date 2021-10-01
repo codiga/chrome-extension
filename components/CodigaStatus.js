@@ -19,7 +19,6 @@ class CodigaStatusButton extends HTMLElement {
     get loadingHTML(){
         return `
             <div class='loading codiga-status-btn'>
-                ...
             </div>
         `
     }
