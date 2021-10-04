@@ -18,7 +18,7 @@ const runCodeValidation = ({
     codigaExtensionHighlightsElement, 
     codigaExtensionElement, 
     codeElement, 
-    filename, 
+    filename,
     scrollContainer
 }) => {
     const statusButton = getStatusButton(codigaExtensionElement);
@@ -104,7 +104,11 @@ const addHighlights = (codigaExtensionHighlightsElement, violations, codeElement
     codigaExtensionHighlightsElement.shadowRoot.appendChild(codigaHighlightsStyle);
     
     violations.forEach(violation => {
-        addHiglightToViolation(violation, codigaExtensionHighlightsElement, codeElement);
+        if(containerElement.isView){
+            addHiglightToViewViolation(violation, codigaExtensionHighlightsElement, codeElement);
+        } else {
+            addHiglightToEditViolation(violation, codigaExtensionHighlightsElement, codeElement);
+        }
     });
 }
 
@@ -128,6 +132,16 @@ const getHighlightDimensions = (codeToHighlight, lineToHighlight) => {
     return lineToHighlight.textContent.replace(/\u200B/g,'').length?
         getDimensions(codeToHighlight):
         getDimensions(lineToHighlight)
+}
+
+const getHighlightDimensionsFromElements = (codeToHighlightElements) => {
+    return codeToHighlightElements.reduce((acc, curr) => {
+        const currDim = getDimensions(curr);
+        return {
+            width: currDim.width + acc.width,
+            height: currDim.height
+        }
+    }, { width: 0, height: 0});
 }
 
 const addTooltipToHighlight = (highlight, violation) => {

@@ -1,10 +1,24 @@
+const getBoudingClientRect = (el) => {
+    let rect;
+    if(el['getBoundingClientRect']){
+        rect=el.getBoundingClientRect();
+    } else {
+        var range = document.createRange();
+        range.selectNode(el);
+        rect = range.getBoundingClientRect();
+        range.detach();
+    }
+
+    return rect;
+}
+
 const getPos = (el) => {
-    var rect=el.getBoundingClientRect();
+    const rect = getBoudingClientRect(el);
     return {x: rect.left, y: rect.top};
 }
 
 const getDimensions = (el) => {
-    var rect = el.getBoundingClientRect();
+    let rect = getBoudingClientRect(el);
     return {width: rect.width, height: rect.height};
 }
 

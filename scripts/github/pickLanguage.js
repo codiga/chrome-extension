@@ -1,6 +1,7 @@
 const pickLanguage = () => {
     const fileName = pickFilename();
 
+    if(!fileName) return undefined;
     if(fileName === "Dockerfile") return "Docker";
 
     const splittedFileName = fileName.split('.');

@@ -22,7 +22,7 @@
   }],
   "content_scripts": [
     {
-      "matches": ["https://*.github.com/*/*/edit/*"],
+      "matches": ["https://*.github.com/*"],
       "js": [
         "external/custom-elements.min.js",
         "external/popper.js",
@@ -30,7 +30,8 @@
         "scripts/github/containerElement.js",
         "scripts/github/pickFilename.js",
         "scripts/github/pickLanguage.js",
-        "scripts/codeMirrorLogic.js",
+        "scripts/github/edit/containerLogic.js",
+        "scripts/github/view/containerLogic.js",
         "components/CodigaElement.js", 
         "components/CodigaExtension.js", 
         "components/CodigaExtensionHighlights.js", 
@@ -48,7 +49,7 @@
         "scripts/utils.js",
         "scripts/jupyter/containerElement.js",
         "scripts/jupyter/pickLanguage.js",
-        "scripts/codeMirrorLogic.js",
+        "scripts/jupyter/codeMirrorLogic.js",
         "components/CodigaElement.js", 
         "components/CodigaExtension.js", 
         "components/CodigaExtensionHighlights.js", 
