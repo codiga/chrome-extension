@@ -7,23 +7,22 @@ const detectCodeMirrorInstances = (mutationsList) => {
 };
 
 if(containerElement.isEdit){
-    console.log("containerElement.isEdit");
     const observer = new MutationObserver(detectCodeMirrorInstances);
     observer.observe(containerElement.container, config);
 }
 
 const eventListenerCallback = (codeEventContext) => {
     const {
-        codeMirrorSizer, 
         codigaExtensionElement, 
         codigaExtensionHighlightsElement, 
         codeElement,
         textArea,
-        scrollContainer
+        scrollContainer,
+        codeMirror
     } = codeEventContext;
 
-    assignSize(codigaExtensionHighlightsElement, codeMirrorSizer);
-    assignSize(codigaExtensionElement, codeMirrorSizer);
+    assignSize(codigaExtensionHighlightsElement, codeMirror);
+    assignSize(codigaExtensionElement, codeMirror);
     
     const code = getCodeFromTextArea(textArea);
     const language = pickLanguage();
@@ -94,7 +93,7 @@ const addLogicToCodeMirrorInstance = (codeMirror) => {
 
     const codigaExtensionElement = document.createElement("codiga-extension");
     codigaExtensionElement.style.cssText += 'position: absolute; top: 0px; left: 0px';
-    codePresentation.insertBefore(codigaExtensionElement, codePresentation.firstChild);
+    codeMirror.insertBefore(codigaExtensionElement, codeMirror.firstChild);
 
     const codigaExtensionHighlightsElement = document.createElement("codiga-extension-highlights");
     codigaExtensionHighlightsElement.style.cssText += 'position: absolute; top: 0px; left: 0px';
@@ -102,7 +101,7 @@ const addLogicToCodeMirrorInstance = (codeMirror) => {
     
     let textArea = codeMirror.parentElement.querySelector("textarea");
     const context = {
-        codeMirrorSizer, 
+        codeMirror, 
         codigaExtensionElement, 
         codigaExtensionHighlightsElement, 
         codeElement, 
@@ -121,7 +120,7 @@ const addLogicToCodeMirrorInstance = (codeMirror) => {
     });
 
     window.addEventListener("resize", () => {
-        assignSize(codigaExtensionElement, codeMirrorSizer);
+        assignSize(codigaExtensionElement, codeMirror);
     });
 }
 

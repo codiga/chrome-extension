@@ -109,6 +109,7 @@ const validateCode = (request) => new Promise(async (resolve) => {
     // It won't run unless it's the latest typed code
     if(createAnalysisResult){
         const createAnalysisResultJSON = await createAnalysisResult.json();
+
         const analysisId = createAnalysisResultJSON.data.createFileAnalysis;
 
         const interval = setInterval(async () => {
@@ -120,12 +121,20 @@ const validateCode = (request) => new Promise(async (resolve) => {
                 body: createQueryBody(getFileAnalysisQuery(fingerprint, analysisId))
             });
             const getAnalysisResultJSON = await getAnalysisResult.json();
+            
+            const errors = getAnalysisResultJSON.data.errors;
+            if(errors) {
+                resolve({errors})
+            }
 
-            if(getAnalysisResultJSON.data.getFileAnalysis.status === "Done"){
+            if(getAnalysisResultJSON.data?.getFileAnalysis?.status === "Done"){
                 clearInterval(interval);
-                resolve(getAnalysisResultJSON.data.getFileAnalysis.violations);
+                const violations = getAnalysisResultJSON.data.getFileAnalysis.violations;
+                resolve({violations});
             }
         }, 2000);
+    } else {
+        resolve({errors: ["Error while creating the file request"]});
     }
 });
 

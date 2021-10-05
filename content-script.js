@@ -35,24 +35,27 @@ const runCodeValidation = ({
                 filename,
                 id: codeElement.getAttribute(CODIGA_ELEMENT_ID_KEY)
             }
-        }, (violations) => {
-            if(!violations){
-                statusButton.status = CodigaStatus.LOADING;
+        }, (result) => {
+            if(!result.violations){
+                statusButton.status = CodigaStatus.ALL_GOOD;
             } else {
-                addHighlights(codigaExtensionHighlightsElement, violations, codeElement);
-                updateStatusButton(statusButton, violations);
+                addHighlights(codigaExtensionHighlightsElement, result.violations, codeElement);
+                updateStatusButton(statusButton, result.violations);
                 
                 // On scroll highlights should be updated
                 let timer = null;
                 scrollContainer.addEventListener('scroll', function() {
                     resetComponentShadowDOM(codigaExtensionHighlightsElement);
+                    
                     if(timer !== null) {
                         clearTimeout(timer);        
                     }
+
                     timer = setTimeout(function() {
-                        addHighlights(codigaExtensionHighlightsElement, violations, codeElement);
-                        updateStatusButton(statusButton, violations);
-                    }, 200);
+                        updateStatusButton(statusButton, result.violations);
+                        addHighlights(codigaExtensionHighlightsElement, result.violations, codeElement);
+                    }, 150);
+                    
                 }, false);
 
             }
@@ -91,7 +94,7 @@ const addHighlights = (codigaExtensionHighlightsElement, violations, codeElement
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 0.2em;
+            height: 0.1rem;
             background-color: #cc498b;
             opacity: 1;
             animation: slidein .2s;
@@ -102,12 +105,11 @@ const addHighlights = (codigaExtensionHighlightsElement, violations, codeElement
         }
     `;
     codigaExtensionHighlightsElement.shadowRoot.appendChild(codigaHighlightsStyle);
-    
     violations.forEach(violation => {
-        if(containerElement.isView){
-            addHiglightToViewViolation(violation, codigaExtensionHighlightsElement, codeElement);
-        } else {
+        if(containerElement.isEdit){ // Edit views also have .repository-content component
             addHiglightToEditViolation(violation, codigaExtensionHighlightsElement, codeElement);
+        } else {
+            addHiglightToViewViolation(violation, codigaExtensionHighlightsElement, codeElement);
         }
     });
 }
