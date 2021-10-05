@@ -6,11 +6,6 @@ const detectCodeMirrorInstances = (mutationsList) => {
     }
 };
 
-if(containerElement.isEdit){
-    const observer = new MutationObserver(detectCodeMirrorInstances);
-    observer.observe(containerElement.container, config);
-}
-
 const eventListenerCallback = (codeEventContext) => {
     const {
         codigaExtensionElement, 

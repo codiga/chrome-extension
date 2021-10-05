@@ -1,23 +1,3 @@
-const detectCodeBoxInstances = (mutationsList) => {
-    for(const mutation of mutationsList){
-        if(mutation.type === 'childList'){
-            const codeElement = 
-                containerElement.container
-                    .querySelector('.js-file-line-container:not([detected=true])');
-            if(codeElement){
-                const topOffset = getPos(containerElement.container.querySelector('.Box-body')).top;
-                addLogicToCodeBoxInstance(codeElement, topOffset);
-            }
-        }
-    }
-};
-
-
-if(containerElement.isView){
-    const observer = new MutationObserver(detectCodeBoxInstances);
-    observer.observe(containerElement.container, config);
-}
-
 const startAnalysis = (codeEventContext) => {
     const {
         codigaExtensionElement, 
@@ -26,7 +6,7 @@ const startAnalysis = (codeEventContext) => {
     } = codeEventContext;
 
     assignSize(codigaExtensionHighlightsElement, codeBoxContainer);
-    assignSize(codigaExtensionElement, codeBoxContainer);
+    assignSize(codigaExtensionElement, containerElement.container);
     
     const code = getCodeFromTable(codeBoxContainer);
     const language = pickLanguage();
@@ -89,7 +69,7 @@ const addLogicToCodeBoxInstance = (codeBox, topOffset) => {
 
     const codigaExtensionElement = document.createElement("codiga-extension");
     codigaExtensionElement.style.cssText += `position: absolute; top: ${topOffset}px; left: 0px`;
-    codeBoxContainer.insertBefore(codigaExtensionElement, codeBoxContainer.firstChild);
+    containerElement.container.insertBefore(codigaExtensionElement, containerElement.container.firstChild);
 
     const codigaExtensionHighlightsElement = document.createElement("codiga-extension-highlights");
     codigaExtensionHighlightsElement.style.cssText += `position: absolute; top: ${topOffset}px; left: 0px`;
@@ -104,7 +84,7 @@ const addLogicToCodeBoxInstance = (codeBox, topOffset) => {
     startAnalysis(context);
 
     window.addEventListener("resize", () => {
-        assignSize(codigaExtensionElement, codeBoxContainer);
+        assignSize(codigaExtensionElement, containerElement.container);
     });
 }
 

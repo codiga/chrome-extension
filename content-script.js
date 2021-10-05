@@ -1,6 +1,4 @@
 // General functionality
-const CODIGA_ELEMENT_ID_KEY="codiga-id";
-
 const PRETTY_CATEGORIES = {
     "Code_Style": "Code style",
     "Error_Prone": "Error prone",
@@ -162,6 +160,12 @@ const addTooltipToHighlight = (highlight, violation) => {
             z-index: 10;
             border-radius: .2rem;
             padding: .6rem;
+            border: 1px solid white;
+        }
+        
+        .single-violation {
+            border-top: 1px solid white;
+            padding: .4rem 0;
         }
     `;
 
@@ -169,8 +173,16 @@ const addTooltipToHighlight = (highlight, violation) => {
     tooltip.innerHTML = 
         `
         <img src='${chrome.runtime.getURL('icons/icon16.png')}'/>
-        <div class="codiga-tooltip-header"><b>${PRETTY_CATEGORIES[violation.category] || violation.category}</b> violation:</div>
-        <div class="codiga-inspector-violation"> ${violation.description} </div>
+        <div class="violations-list">
+        ${
+            violation.group.map((violation, index) => {
+                return `<div class="single-violation">
+                    <div class="codiga-tooltip-header"><b>${index + 1}. ${PRETTY_CATEGORIES[violation.category] || violation.category}</b> violation:</div>
+                    <div class="codiga-inspector-violation"> ${violation.description} </div>
+                </div>`
+            }).join('')
+        }
+        </div>
         `;
     tooltip.classList.add("codiga-tooltip");
 
@@ -205,8 +217,8 @@ const getStatusButton = (codigaExtensionElement) => {
     codigaStatusButtonStyle.innerHTML = `
         .codiga-status-btn {
             position: absolute;
-            right: .6rem;
-            bottom: .6rem;
+            right: 1rem;
+            bottom: 1rem;
             z-index: 5;
             border-radius: 100%;
             font-weight: bold;
@@ -249,4 +261,15 @@ const getStatusButton = (codigaExtensionElement) => {
 
 const updateStatusButton = (statusButton, violations) => {
     statusButton.status = violations.length || CodigaStatus.ALL_GOOD;
+}
+
+// Start point
+if(containerElement.isView){
+    const topOffset = getPos(containerElement.container).top;
+    addLogicToCodeBoxInstance(containerElement.container, topOffset);
+}
+
+if(containerElement.isEdit){
+    const observer = new MutationObserver(detectCodeMirrorInstances);
+    observer.observe(containerElement.container, config);
 }

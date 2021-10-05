@@ -82,6 +82,14 @@ const getShouldFetch = async (excecutionId, cacheKey) => {
     return fetchChecker.shouldFetch(cacheKey);
 }
 
+const groupBy = (l, key) => {
+    return l.reduce((acc, curr) => {
+        console.log(acc, curr);
+        (acc[curr[key]] = acc[curr[key]] || []).push(curr);
+        return acc
+    }, {})
+}
+
 const validateCode = (request) => new Promise(async (resolve) => {
     const fingerprint = await generateFingerprint();
     const code = request.data.code;
@@ -129,8 +137,14 @@ const validateCode = (request) => new Promise(async (resolve) => {
 
             if(getAnalysisResultJSON.data?.getFileAnalysis?.status === "Done"){
                 clearInterval(interval);
-                const violations = getAnalysisResultJSON.data.getFileAnalysis.violations;
-                resolve({violations});
+                const groupedViolations = groupBy(getAnalysisResultJSON.data.getFileAnalysis.violations, 'line');
+                const mappedViolations = Object.keys(groupedViolations).map(key => {
+                    return {
+                        line: key,
+                        group: groupedViolations[key]
+                    }
+                });
+                resolve({violations: mappedViolations});
             }
         }, 2000);
     } else {
