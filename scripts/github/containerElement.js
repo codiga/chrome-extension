@@ -14,5 +14,5 @@ const getContainerElement = () => {
     }
 }
 
-const containerElement = getContainerElement();
+let containerElement = getContainerElement();
 const config = { childList: true, subtree: true };

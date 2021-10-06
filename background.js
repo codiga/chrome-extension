@@ -84,7 +84,6 @@ const getShouldFetch = async (excecutionId, cacheKey) => {
 
 const groupBy = (l, key) => {
     return l.reduce((acc, curr) => {
-        console.log(acc, curr);
         (acc[curr[key]] = acc[curr[key]] || []).push(curr);
         return acc
     }, {})
@@ -160,4 +159,11 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     }
 
     return true;
+});
+
+// To load content-script again when url changes
+chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
+    if (changeInfo.url || changeInfo.status === "complete") {
+        chrome.tabs.sendMessage(tabId, {action: "updateContainer"}, function(response) {}); 
+    }
 });

@@ -264,12 +264,22 @@ const updateStatusButton = (statusButton, violations) => {
 }
 
 // Start point
-if(containerElement.isView){
-    const topOffset = getPos(containerElement.container).top;
-    addLogicToCodeBoxInstance(containerElement.container, topOffset);
-}
-
-if(containerElement.isEdit){
-    const observer = new MutationObserver(detectCodeMirrorInstances);
-    observer.observe(containerElement.container, config);
-}
+chrome.runtime.onMessage.addListener(
+    function(request, sender, sendResponse) {
+        console.log(request);
+        if(request.action === "updateContainer"){
+            containerElement = getContainerElement();
+            
+            if(containerElement.isView){
+                const topOffset = getPos(containerElement.container).top;
+                addLogicToCodeBoxInstance(containerElement.container, topOffset);
+            }
+            
+            if(containerElement.isEdit){
+                const observer = new MutationObserver(detectCodeMirrorInstances);
+                observer.observe(containerElement.container, config);
+            }
+        }
+        sendResponse({result: true});
+    }
+);
