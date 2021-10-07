@@ -1,14 +1,14 @@
 import {
   runCodeValidation,
-} from "../../content_script";
-import { addTooltipToHighlight, getHighlightDimensions } from "../../content_scripts_common";
-import CodigaElement from "../../customelements/CodigaElement";
-import CodigaExtension from "../../customelements/CodigaExtension";
-import CodigaExtensionHighLights from "../../customelements/CodigaExtensionHighlights";
-import CodigaHighlight from "../../customelements/CodigaHighlight";
-import { assignSize, getPos } from "../../utils";
+} from "./content_script";
+import { addTooltipToHighlight, getHighlightDimensions } from "../content_scripts_common";
+import CodigaElement from "../customelements/CodigaElement";
+import CodigaExtension from "../customelements/CodigaExtension";
+import CodigaExtensionHighLights from "../customelements/CodigaExtensionHighlights";
+import CodigaHighlight from "../customelements/CodigaHighlight";
+import { assignSize, getPos } from "../utils";
 import { CODIGA_ELEMENT_ID_KEY } from "../containerElement";
-import { pickFilename } from "../pickFilename";
+import { pickFilename } from "./pickFilename";
 import { pickLanguage } from "../pickLanguage";
 
 export const detectCodeMirrorInstances = (
@@ -43,8 +43,8 @@ const eventListenerCallback = (codeEventContext: CodeEventContext) => {
   assignSize(codigaExtensionElement, codeMirror);
 
   const code = getCodeFromTextArea(textArea);
-  const language = pickLanguage();
   const filename = pickFilename();
+  const language = pickLanguage(filename);
 
   if (language && filename) {
     const codigaContext = {
@@ -158,7 +158,7 @@ const addLogicToCodeMirrorInstance = (codeMirror: HTMLElement) => {
   );
 
   const textArea = codeMirror.parentElement?.querySelector("textarea");
-
+  
   if (textArea) {
     const context = {
       codeMirror,
@@ -168,7 +168,7 @@ const addLogicToCodeMirrorInstance = (codeMirror: HTMLElement) => {
       textArea,
       scrollContainer: codeScroll,
     };
-
+    
     eventListenerCallback(context);
 
     textArea.addEventListener("change", () => {

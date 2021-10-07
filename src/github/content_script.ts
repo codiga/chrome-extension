@@ -1,21 +1,25 @@
-import CodigaElement from "./customelements/CodigaElement";
+import CodigaElement from "../customelements/CodigaElement";
 import {
   CODIGA_ELEMENT_ID_KEY
-} from "./github/containerElement";
-import { resetComponentShadowDOM } from "./utils";
+} from "../containerElement";
+import { resetComponentShadowDOM } from "../utils";
 import {
   CodigaStatus,
-} from "./customelements/CodigaStatus";
+} from "../customelements/CodigaStatus";
 import {
   addHiglightToEditViolation,
-} from "./github/edit/containerLogic";
+} from "./containerLogic";
 import {
-  addHiglightToViewViolation,
-} from "./github/view/containerLogic";
+  addHiglightToViewViolation, addLogicToCodeBoxInstance,
+} from "./view/containerLogic";
 import '@webcomponents/custom-elements';
 
-import { CodeInformation, getStatusButton, updateStatusButton, containerElement } from "./content_scripts_common";
-import "./content_scripts_common"; // For side effects
+import { CodeInformation, getStatusButton, updateStatusButton } from "../content_scripts_common";
+import "../content_scripts_common"; // For side effects
+import { getContainerElement } from "../containerElement";
+import { detectCodeMirrorInstances } from "../jupyter/containerLogic";
+
+let containerElement = getContainerElement();
 
 export const runCodeValidation = (codeInformation: CodeInformation) => {
   const {
@@ -149,3 +153,32 @@ const addHighlights = (
 };
 
 
+// Start point
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+
+  if (request.action === "updateContainer") {
+      containerElement = getContainerElement();
+      
+      if (containerElement.isView) {
+        const container = containerElement.container;
+        if (container) {
+          const topOffset = container.offsetTop;
+          addLogicToCodeBoxInstance(
+            containerElement.container,
+            topOffset,
+            containerElement
+          );
+        }
+      }
+
+      if (containerElement.isEdit) {
+          const container = containerElement.container;
+          if (container) {
+              const observer = new MutationObserver(detectCodeMirrorInstances);
+              observer.observe(container, { childList: true, subtree: true });
+          }
+      }
+  }
+
+  sendResponse({ result: true });
+});

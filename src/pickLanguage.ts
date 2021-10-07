@@ -1,8 +1,4 @@
-import { pickFilename } from "./pickFilename";
-
-export const pickLanguage = () => {
-  const fileName = pickFilename();
-
+export const pickLanguage = (fileName: string) => {
   if (fileName) {
     const splittedFileName = fileName.split(".");
     const extension = splittedFileName[splittedFileName.length - 1];

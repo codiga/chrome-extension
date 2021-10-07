@@ -12,7 +12,12 @@
   "content_scripts": [
     {
       "matches": ["https://*.github.com/*"],
-      "js": ["js/content_script.js"]
+      "js": ["js/content_script_github.js"]
+    },
+    {
+      "matches": ["https://*/*.ipynb*", "http://*/*.ipynb*"],
+      "js": ["js/content_script_jupyter.js"],
+      "css": []
     }
   ],
 

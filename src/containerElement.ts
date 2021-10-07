@@ -7,10 +7,10 @@ export type ContainerElement = {
 };
 
 export const getContainerElement = (): ContainerElement => {
-  // Edit code GitHub view
+  // Edit code GitHub or Jupyter view
   const codeMirrorContainer = <HTMLElement>(
     document.querySelector(".commit-create")
-  );
+  ) || <HTMLElement>document.querySelector("#notebook");;
 
   // View code GitHub view
   const codeBoxContainer = <HTMLElement>document.querySelector(".blob-wrapper");

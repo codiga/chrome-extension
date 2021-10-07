@@ -1,10 +1,10 @@
-import { pickLanguage } from "../pickLanguage";
+import { pickLanguage } from "../../pickLanguage";
 import { pickFilename } from "../pickFilename";
 import CodigaExtension from "../../customelements/CodigaExtension";
 import CodigaExtensionHighLights from "../../customelements/CodigaExtensionHighlights";
 import { assignSize, getDimensions, getPos } from "../../utils";
-import { CODIGA_ELEMENT_ID_KEY, ContainerElement } from "../containerElement";
-import { runCodeValidation } from "../../content_script";
+import { CODIGA_ELEMENT_ID_KEY, ContainerElement } from "../../containerElement";
+import { runCodeValidation } from "../content_script";
 import CodigaHighlight from "../../customelements/CodigaHighlight";
 import { addTooltipToHighlight } from "../../content_scripts_common";
 
@@ -27,8 +27,8 @@ const startAnalysis = (codeEventContext: CodeEventContext) => {
   assignSize(codigaExtensionElement, containerElement.container);
 
   const code = getCodeFromTable(codeBoxContainer);
-  const language = pickLanguage();
   const filename = pickFilename();
+  const language = pickLanguage(filename);
 
   if (language && filename) {
     const codigaContext = {
@@ -50,6 +50,7 @@ export const addHiglightToViewViolation = (
   codigaExtensionHighlightsElement: CodigaExtensionHighLights,
   codeElement: HTMLElement
 ) => {
+  console.log("hereeeeee");
   const line = violation.line;
   const lineToHighlight = Array.from(codeElement.querySelectorAll("tr")).find(
     (child) => {
