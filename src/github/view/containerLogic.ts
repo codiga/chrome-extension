@@ -4,8 +4,9 @@ import CodigaExtension from "../../customelements/CodigaExtension";
 import CodigaExtensionHighLights from "../../customelements/CodigaExtensionHighlights";
 import { assignSize, getDimensions, getPos } from "../../utils";
 import { CODIGA_ELEMENT_ID_KEY, ContainerElement } from "../containerElement";
-import { addTooltipToHighlight, runCodeValidation } from "../../content_script";
+import { runCodeValidation } from "../../content_script";
 import CodigaHighlight from "../../customelements/CodigaHighlight";
+import { addTooltipToHighlight } from "../../content_scripts_common";
 
 type CodeEventContext = {
   codigaExtensionElement: CodigaExtension;
