@@ -1,0 +1,42 @@
+{
+  "manifest_version": 3,
+
+  "name": "Codiga Extension",
+  "description": "Chrome Extension, TypeScript, Visual Studio Code",
+  "version": "0.0.1",
+
+  "options_ui": {
+    "page": "options.html"
+  },
+
+  "content_scripts": [
+    {
+      "matches": ["https://*.github.com/*"],
+      "js": ["js/content_script.js"]
+    }
+  ],
+
+  "background": {
+    "service_worker": "js/background.js"
+  },
+
+  "permissions": [
+    "activeTab",
+    "storage",
+    "tabs"
+  ],
+
+  "web_accessible_resources": [{
+    "resources": ["icon*"],
+    "matches": ["<all_urls>"]
+  }],
+
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
+  "host_permissions": [
+    "<all_urls>"
+  ]
+}
