@@ -17,7 +17,7 @@ import '@webcomponents/custom-elements';
 import { CodeInformation, getStatusButton, updateStatusButton } from "../content_scripts_common";
 import "../content_scripts_common"; // For side effects
 import { getContainerElement } from "../containerElement";
-import { detectCodeMirrorInstances } from "../jupyter/containerLogic";
+import { detectCodeMirrorInstances } from "../github/containerLogic";
 
 let containerElement = getContainerElement();
 

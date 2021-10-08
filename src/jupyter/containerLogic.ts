@@ -1,7 +1,7 @@
 import {
     runCodeValidation,
 } from "./content_script";
-import { addTooltipToHighlight, getHighlightDimensions } from "../content_scripts_common";
+import { addTooltipToHighlight } from "../content_scripts_common";
 import CodigaElement from "../customelements/CodigaElement";
 import CodigaExtension from "../customelements/CodigaExtension";
 import CodigaExtensionHighLights from "../customelements/CodigaExtensionHighlights";

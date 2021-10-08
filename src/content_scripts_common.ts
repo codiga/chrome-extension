@@ -9,9 +9,6 @@ import CodigaStatusButton, {
 
 import '@webcomponents/custom-elements';
 import CodigaHighlight from "./customelements/CodigaHighlight";
-import { getContainerElement } from "./containerElement";
-import { addLogicToCodeBoxInstance } from "./github/view/containerLogic";
-import { detectCodeMirrorInstances } from "./github/containerLogic";
 
 export const PRETTY_CATEGORIES: Record<string, string> = {
   Code_Style: "Code style",

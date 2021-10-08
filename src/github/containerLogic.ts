@@ -1,6 +1,6 @@
 import {
   runCodeValidation,
-} from "./content_script";
+} from "../github/content_script";
 import { addTooltipToHighlight, getHighlightDimensions } from "../content_scripts_common";
 import CodigaElement from "../customelements/CodigaElement";
 import CodigaExtension from "../customelements/CodigaExtension";
@@ -8,7 +8,7 @@ import CodigaExtensionHighLights from "../customelements/CodigaExtensionHighligh
 import CodigaHighlight from "../customelements/CodigaHighlight";
 import { assignSize, getPos } from "../utils";
 import { CODIGA_ELEMENT_ID_KEY } from "../containerElement";
-import { pickFilename } from "./pickFilename";
+import { pickFilename } from "../github/pickFilename";
 import { pickLanguage } from "../pickLanguage";
 
 export const detectCodeMirrorInstances = (
