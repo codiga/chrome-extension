@@ -50,7 +50,6 @@ export const addHiglightToViewViolation = (
   codigaExtensionHighlightsElement: CodigaExtensionHighLights,
   codeElement: HTMLElement
 ) => {
-  console.log("hereeeeee");
   const line = violation.line;
   const lineToHighlight = Array.from(codeElement.querySelectorAll("tr")).find(
     (child) => {

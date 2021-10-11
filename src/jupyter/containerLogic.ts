@@ -42,7 +42,6 @@ const eventListenerCallback = (codeEventContext: CodeEventContext) => {
     assignSize(codigaExtensionElement, codeMirror);
 
     const code = getCodeFromCodeElement(codeElement);
-    console.log(code);
     const filename = pickFilename();
     const language = pickLanguage(filename);
 

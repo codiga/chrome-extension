@@ -180,7 +180,6 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
 // To load content-script again when url changes
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-  console.log(tabId, changeInfo, tab);
   if (changeInfo.url || changeInfo.status === "complete") {
     chrome.tabs.sendMessage(
       tabId,

@@ -2,6 +2,7 @@ const webpack = require("webpack");
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const srcDir = path.join(__dirname, "..", "src");
+const publicDir = path.join(__dirname, "..", "public");
 
 module.exports = {
     entry: {
@@ -10,6 +11,7 @@ module.exports = {
       background: path.join(srcDir, 'background.ts'),
       content_script_github: path.join(srcDir, 'github/content_script.ts'),
       content_script_jupyter: path.join(srcDir, 'jupyter/content_script.ts'),
+      styles: path.join(__dirname, '../styles/app.scss')
     },
     output: {
         path: path.join(__dirname, "../dist/js"),
@@ -25,10 +27,21 @@ module.exports = {
                 use: "ts-loader",
                 exclude: /node_modules/,
             },
-        ],
+            {
+                test: /\.s[ac]ss$/i,
+                use: [
+                  // Creates `style` nodes from JS strings
+                  "style-loader",
+                  // Translates CSS into CommonJS
+                  "css-loader",
+                  // Compiles Sass to CSS
+                  "sass-loader",
+                ],
+            },
+        ]
     },
     resolve: {
-        extensions: [".ts", ".tsx", ".js"],
+        extensions: [".ts", ".tsx", ".js", ".scss"],
     },
     plugins: [
         new CopyPlugin({
