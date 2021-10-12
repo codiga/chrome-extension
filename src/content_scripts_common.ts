@@ -24,8 +24,8 @@ export const PRETTY_CATEGORIES: Record<string, string> = {
 export type CodeInformation = {
   code: string;
   language: string;
-  codigaExtensionHighlightsElement: any;
-  codigaExtensionElement: any;
+  codigaExtensionHighlightsElement: CodigaExtensionHighLights;
+  codigaExtensionElement: CodigaExtension;
   codeElement: HTMLElement;
   filename: string;
   scrollContainer: HTMLElement;
@@ -188,7 +188,7 @@ export const updateStatusButton = (
     statusButton.status = `${violations.length}` || CodigaStatus.LOADING;
 };
 
-  window.customElements.define("codiga-status-btn", CodigaStatusButton);
-  window.customElements.define("codiga-extension", CodigaExtension);
-  window.customElements.define("codiga-extension-highlights", CodigaExtensionHighLights);
-  window.customElements.define("codiga-highlight", CodigaHighlight);
+window.customElements.define("codiga-status-btn", CodigaStatusButton);
+window.customElements.define("codiga-extension", CodigaExtension);
+window.customElements.define("codiga-extension-highlights", CodigaExtensionHighLights);
+window.customElements.define("codiga-highlight", CodigaHighlight);

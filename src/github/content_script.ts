@@ -18,11 +18,11 @@ import { CodeInformation, getStatusButton, updateStatusButton } from "../content
 import "../content_scripts_common"; // For side effects
 import { getContainerElement } from "../containerElement";
 import { detectCodeMirrorInstances } from "../github/containerLogic";
-import { detectDiffInstances } from "./pull/containerLogic";
+import { addDiffListeners, addHiglightToPullViolation, detectDiffInstances } from "./pull/containerLogic";
 
 import GitHub from 'github-api';
-import { FragmentsOnCompositeTypesRule } from "graphql";
 import { Repository } from "github-api/dist/components/Repository";
+import parseDiff from "parse-diff";
 
 let containerElement = getContainerElement();
 const GITHUB_KEY = 'codiga-github-key';
@@ -91,7 +91,7 @@ export const runCodeValidation = (codeInformation: CodeInformation) => {
 };
 
 
-const addHighlights = (
+export const addHighlights = (
   codigaExtensionHighlightsElement: CodigaElement,
   violations: Violation[],
   codeElement: HTMLElement
@@ -138,7 +138,7 @@ const addHighlights = (
   `;
   codigaExtensionHighlightsElement.shadowRoot.appendChild(
     codigaHighlightsStyle
-  );
+  ); 
 
   violations.forEach((violation) => {
     if (containerElement.isEdit) {
@@ -148,8 +148,15 @@ const addHighlights = (
         codigaExtensionHighlightsElement,
         codeElement
       );
-    } else {
+    } else if(containerElement.isView){
       addHiglightToViewViolation(
+        violation,
+        codigaExtensionHighlightsElement,
+        codeElement
+      );
+    } else if(containerElement.isPull){
+
+      addHiglightToPullViolation(
         violation,
         codigaExtensionHighlightsElement,
         codeElement
@@ -193,12 +200,16 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             const token = obj[GITHUB_KEY];
             const gh = token?new GitHub({ token }):new GitHub();
             const repository = location.href.match(/(?<=github.com\/).*(?=\/pull)/);
-            const pr = location.href.match(/(?<=\/pull\/).*(?=\/file)/).toString();
+            const pr = location.href.match(/(?<=\/pull\/).*(?=\/file)/)!.toString();
             const [username, repoName] = repository.toString().split('/');
             const repo = gh.getRepo(username, repoName);
-            
             const filesInformation = await getPullRequestFilesInformation(repo, username, repoName, pr);
-            const mutationFunction = detectDiffInstances(repo, filesInformation);
+
+            const diffText = await getPullRequestDiff(repo, username, repoName, pr);
+            const diffInformation = parseDiff(diffText);
+            
+            const mutationFunction = detectDiffInstances(repo, filesInformation, diffInformation);
+            addDiffListeners(repo, filesInformation, diffInformation);
 
             if (container) {
                 const observer = new MutationObserver(mutationFunction);
@@ -218,6 +229,14 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 const getPullRequestFilesInformation = async (repo: Repository, owner: string, repoName: string, pullNumber: string) => {
   // Right now we only get the first 100 files of a PR
   const response = await repo._request('GET', `/repos/${owner}/${repoName}/pulls/${pullNumber}/files`, {per_page: 100});
+  return response.data;
+}
+
+const getPullRequestDiff = async (repo: Repository, owner: string, repoName: string, pullNumber: string) => {
+  // Right now we only get the first 100 files of a PR
+  const response = await repo._request('GET', `/repos/${owner}/${repoName}/pulls/${pullNumber}.diff`, {
+    AcceptHeader: 'v3.diff'
+  });
   return response.data;
 }
 
