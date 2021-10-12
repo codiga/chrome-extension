@@ -18,8 +18,14 @@ import { CodeInformation, getStatusButton, updateStatusButton } from "../content
 import "../content_scripts_common"; // For side effects
 import { getContainerElement } from "../containerElement";
 import { detectCodeMirrorInstances } from "../github/containerLogic";
+import { detectDiffInstances } from "./pull/containerLogic";
+
+import GitHub from 'github-api';
+import { FragmentsOnCompositeTypesRule } from "graphql";
+import { Repository } from "github-api/dist/components/Repository";
 
 let containerElement = getContainerElement();
+const GITHUB_KEY = 'codiga-github-key';
 
 export const runCodeValidation = (codeInformation: CodeInformation) => {
   const {
@@ -160,11 +166,11 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       containerElement = getContainerElement();
       
       if (containerElement.isView) {
-        const container = containerElement.container;
+        const container = <HTMLElement> containerElement.container;
         if (container) {
           const topOffset = container.offsetTop;
           addLogicToCodeBoxInstance(
-            containerElement.container,
+            container,
             topOffset,
             containerElement
           );
@@ -172,13 +178,62 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       }
 
       if (containerElement.isEdit) {
-          const container = containerElement.container;
+          const container = <HTMLElement> containerElement.container;
           if (container) {
               const observer = new MutationObserver(detectCodeMirrorInstances);
               observer.observe(container, { childList: true, subtree: true });
           }
       }
+      console.log(containerElement);
+      if (containerElement.isPull) {
+        const container = <HTMLElement> containerElement.container;
+
+        chrome.storage.sync.get([GITHUB_KEY], async function(obj){
+          try {
+            const token = obj[GITHUB_KEY];
+            const gh = token?new GitHub({ token }):new GitHub();
+            const repository = location.href.match(/(?<=github.com\/).*(?=\/pull)/);
+            const pr = location.href.match(/(?<=\/pull\/).*(?=\/file)/).toString();
+            const [username, repoName] = repository.toString().split('/');
+            const repo = gh.getRepo(username, repoName);
+            
+            const filesInformation = await getPullRequestFilesInformation(repo, username, repoName, pr);
+            const mutationFunction = detectDiffInstances(repo, filesInformation);
+
+            if (container) {
+                const observer = new MutationObserver(mutationFunction);
+                observer.observe(container, { childList: true, subtree: true });
+            }
+            // eventListenerCallback(context);
+          } catch (e) {
+            console.log("Error: ", e);
+          }
+        });
+    }
   }
 
   sendResponse({ result: true });
 });
+
+const getPullRequestFilesInformation = async (repo: Repository, owner: string, repoName: string, pullNumber: string) => {
+  // Right now we only get the first 100 files of a PR
+  const response = await repo._request('GET', `/repos/${owner}/${repoName}/pulls/${pullNumber}/files`, {per_page: 100});
+  return response.data;
+}
+
+/*const fetchDiff = async (diffUrl: string, token: string | undefined) => {
+  if(token) {
+    const response = await fetch(`${diffUrl}`, {
+      headers: {
+        'Accept': 'application/vnd.github.v3.diff',
+        redirect: 'manual',
+        "Authorization": `token ${token}`
+      },
+    })
+    console.log(response);
+    return response.text();
+  } else {
+    const response = await fetch(diffUrl);
+    return response.text();
+  }
+} */
