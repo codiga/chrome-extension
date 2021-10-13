@@ -25,6 +25,7 @@ import { Repository } from "github-api/dist/components/Repository";
 import parseDiff from "parse-diff";
 import { validateCode } from "../validateCode";
 import { Violation } from "../types";
+import Toastify from 'toastify-js'
 
 let containerElement = getContainerElement();
 const GITHUB_KEY = 'codiga-github-key';
@@ -162,13 +163,12 @@ export const addHighlights = (
   });
 };
 
-
 // Start point
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-
+  console.log(request);
   if (request.action === "updateContainer") {
       containerElement = getContainerElement();
-      
+      console.log("hereeeeee");
       if (containerElement.isView) {
         const container = <HTMLElement> containerElement.container;
         if (container) {
@@ -188,7 +188,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
               observer.observe(container, { childList: true, subtree: true });
           }
       }
-      console.log(containerElement);
+
       if (containerElement.isPull) {
         const container = <HTMLElement> containerElement.container;
 
@@ -214,7 +214,22 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             }
             // eventListenerCallback(context);
           } catch (e) {
-            console.log("Error: ", e);
+            console.log(e);
+
+            Toastify({
+              text: `<img src='${chrome.runtime.getURL("icon16.png")}'/><br/> GitHub API Token not set or not valid for this repository`,
+              destination: "https://github.com/settings/tokens",
+              newWindow: true,
+              close: true,
+              stopOnFocus: true,
+              escapeMarkup: false,
+              duration: 3000,
+              style: {
+                background: "#300623",
+                color: "white",
+                "font-size": ".8rem",
+              }
+              }).showToast();
           }
         });
     }

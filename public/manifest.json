@@ -12,7 +12,8 @@
   "content_scripts": [
     {
       "matches": ["https://*.github.com/*"],
-      "js": ["js/content_script_github.js"]
+      "js": ["js/content_script_github.js"],
+      "css": ["toastify.css"]
     },
     {
       "matches": ["https://*/*.ipynb*", "http://*/*.ipynb*"],
@@ -35,7 +36,7 @@
     "service_worker": "js/background.js"
   },
 
-  "permissions": ["activeTab", "storage", "tabs"],
+  "permissions": ["activeTab", "storage", "tabs", "notifications"],
 
   "web_accessible_resources": [
     {

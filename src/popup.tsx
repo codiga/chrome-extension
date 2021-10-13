@@ -26,6 +26,7 @@ const Popup = () => {
     const isTokenValid = await validateGitHubToken(gitHubToken);
 
     if(isTokenValid){
+      console.log("hereeeeeee");
       chrome.storage.sync.set({[GITHUB_KEY]: gitHubToken}, function() {
         console.log("Updated GitHub API Token");
         setStoredGitHubToken(gitHubToken);
