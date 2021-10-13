@@ -11,6 +11,7 @@ import { assignSize, getDimensions, getPos } from "../utils";
 import { CODIGA_ELEMENT_ID_KEY } from "../containerElement";
 import { pickFilename } from "./pickFilename";
 import { pickLanguage } from "../pickLanguage";
+import { Violation } from "../types";
 
 export const detectCodeMirrorInstances = (
     mutationsList: { type: string }[]
@@ -55,7 +56,6 @@ const eventListenerCallback = (codeEventContext: CodeEventContext) => {
             filename,
             scrollContainer,
         };
-
         runCodeValidation(codigaContext);
     }
 };
@@ -95,7 +95,7 @@ export const addHiglightToEditViolation = (
 
 const addCodeMirrorListeners = () => {
     const codeMirrorList = Array.from(
-    document.querySelectorAll(".CodeMirror:not([detected=true])")
+        document.querySelectorAll(".CodeMirror:not([detected=true])")
     ).map((element) => <HTMLElement>element);
     codeMirrorList.forEach(addLogicToCodeMirrorInstance);
 };

@@ -37,3 +37,10 @@ export const assignSize = (el1: CodigaElement, el2: HTMLElement) => {
   el1.width = el2Width;
   el1.height = el2Height;
 };
+
+export const groupBy = (l: Array<any>, key: string) => {
+  return l.reduce((acc, curr) => {
+    (acc[curr[key]] = acc[curr[key]] || []).push(curr);
+    return acc;
+  }, {});
+};

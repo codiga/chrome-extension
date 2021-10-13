@@ -12,11 +12,11 @@ export const getContainerElement = (): ContainerElement => {
   const codeMirrorContainer = <HTMLElement>(
     document.querySelector(".commit-create")
   ) || <HTMLElement>document.querySelector("#notebook");
-
+    
   // View code GitHub view
   const codeBoxContainer = <HTMLElement> document.querySelector(".blob-wrapper");
 
-  // Pull request in GitHubç
+  // Pull request in GitHub
   const diffContainer = <HTMLElement> document.querySelector(".diff-view");
   
   return {

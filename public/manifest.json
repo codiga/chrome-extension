@@ -16,6 +16,7 @@
     },
     {
       "matches": ["https://*/*.ipynb*", "http://*/*.ipynb*"],
+      "exclude_matches": ["https://*.github.com/*"],
       "js": ["js/content_script_jupyter.js"],
       "css": []
     }

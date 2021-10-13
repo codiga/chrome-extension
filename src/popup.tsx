@@ -21,17 +21,7 @@ const Popup = () => {
       setInputError("Required");
     }
 
-    chrome.runtime.sendMessage(
-      {
-        contentScriptQuery: "validateGitHubToken",
-        data: {
-          gitHubToken
-        }
-      },
-      (result) => {
-        console.log(result);
-      }
-    );
+    // Validate GitHub token
 
     chrome.storage.sync.set({[GITHUB_KEY]: gitHubToken}, function() {
       console.log("Updated GitHub API Token");

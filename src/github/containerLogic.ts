@@ -11,6 +11,7 @@ import { CODIGA_ELEMENT_ID_KEY } from "../containerElement";
 
 import { pickFilename } from "./pickFilename";
 import { pickLanguage } from "../pickLanguage";
+import { Violation } from "../types";
 
 export const detectCodeMirrorInstances = (
   mutationsList: { type: string }[]

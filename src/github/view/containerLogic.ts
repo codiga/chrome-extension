@@ -7,6 +7,7 @@ import { CODIGA_ELEMENT_ID_KEY, ContainerElement } from "../../containerElement"
 import { runCodeValidation } from "../content_script";
 import CodigaHighlight from "../../customelements/CodigaHighlight";
 import { addTooltipToHighlight } from "../../content_scripts_common";
+import { Violation } from "../../types";
 
 type CodeEventContext = {
   codigaExtensionElement: CodigaExtension;

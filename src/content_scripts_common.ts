@@ -9,6 +9,7 @@ import CodigaStatusButton, {
 
 import '@webcomponents/custom-elements';
 import CodigaHighlight from "./customelements/CodigaHighlight";
+import { Violation } from "./types";
 
 export const PRETTY_CATEGORIES: Record<string, string> = {
   Code_Style: "Code style",

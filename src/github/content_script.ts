@@ -23,11 +23,13 @@ import { addDiffListeners, addHiglightToPullViolation, detectDiffInstances } fro
 import GitHub from 'github-api';
 import { Repository } from "github-api/dist/components/Repository";
 import parseDiff from "parse-diff";
+import { validateCode } from "../validateCode";
+import { Violation } from "../types";
 
 let containerElement = getContainerElement();
 const GITHUB_KEY = 'codiga-github-key';
 
-export const runCodeValidation = (codeInformation: CodeInformation) => {
+export const runCodeValidation = async (codeInformation: CodeInformation) => {
   const {
     code,
     language,
@@ -42,52 +44,47 @@ export const runCodeValidation = (codeInformation: CodeInformation) => {
 
   resetComponentShadowDOM(codigaExtensionHighlightsElement);
 
-  chrome.runtime.sendMessage(
-    {
-      contentScriptQuery: "validateCode",
-      data: {
-        code,
-        language,
-        filename,
-        id: codeElement.getAttribute(CODIGA_ELEMENT_ID_KEY),
+  const result = await validateCode({
+    code,
+    language,
+    filename,
+    id: codeElement.getAttribute(CODIGA_ELEMENT_ID_KEY),
+  });
+
+  if (!result || !result.violations || !result.violations.length) {
+    statusButton.status = CodigaStatus.ALL_GOOD;
+  } else {
+    addHighlights(
+      codigaExtensionHighlightsElement,
+      result.violations,
+      codeElement
+    );
+    updateStatusButton(statusButton, result.violations);
+
+    // On scroll highlights should be updated
+    let timer: NodeJS.Timeout;
+    scrollContainer.addEventListener(
+      "scroll",
+      function () {
+        resetComponentShadowDOM(codigaExtensionHighlightsElement);
+
+        if (timer) {
+          clearTimeout(timer);
+        }
+
+        timer = setTimeout(function () {
+          updateStatusButton(statusButton, result.violations);
+          addHighlights(
+            codigaExtensionHighlightsElement,
+            result.violations,
+            codeElement
+          );
+        }, 150);
       },
-    },
-    (result) => {
-      if (!result || !result.violations || !result.violations.length) {
-        statusButton.status = CodigaStatus.ALL_GOOD;
-      } else {
-        addHighlights(
-          codigaExtensionHighlightsElement,
-          result.violations,
-          codeElement
-        );
-        updateStatusButton(statusButton, result.violations);
+      false
+    );
+  }
 
-        // On scroll highlights should be updated
-        let timer: NodeJS.Timeout;
-        scrollContainer.addEventListener(
-          "scroll",
-          function () {
-            resetComponentShadowDOM(codigaExtensionHighlightsElement);
-
-            if (timer) {
-              clearTimeout(timer);
-            }
-
-            timer = setTimeout(function () {
-              updateStatusButton(statusButton, result.violations);
-              addHighlights(
-                codigaExtensionHighlightsElement,
-                result.violations,
-                codeElement
-              );
-            }, 150);
-          },
-          false
-        );
-      }
-    }
-  );
 };
 
 

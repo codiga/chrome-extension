@@ -11,11 +11,13 @@ import '@webcomponents/custom-elements';
 import { CodeInformation, getStatusButton, updateStatusButton } from "../content_scripts_common";
 import "../content_scripts_common"; // For side effects
 import { CODIGA_ELEMENT_ID_KEY, getContainerElement } from "../containerElement";
+import { Violation } from "../types";
+import { validateCode } from "../validateCode";
 
 
 let containerElement = getContainerElement();
 
-export const runCodeValidation = (codeInformation: CodeInformation) => {
+export const runCodeValidation = async (codeInformation: CodeInformation) => {
   const {
     code,
     language,
@@ -30,52 +32,46 @@ export const runCodeValidation = (codeInformation: CodeInformation) => {
 
   resetComponentShadowDOM(codigaExtensionHighlightsElement);
 
-  chrome.runtime.sendMessage(
-    {
-      contentScriptQuery: "validateCode",
-      data: {
-        code,
-        language,
-        filename,
-        id: codeElement.getAttribute(CODIGA_ELEMENT_ID_KEY),
+  const result = await validateCode({
+    code,
+    language,
+    filename,
+    id: codeElement.getAttribute(CODIGA_ELEMENT_ID_KEY),
+  });
+  
+  if (!result || !result.violations || !result.violations.length) {
+    statusButton.status = CodigaStatus.ALL_GOOD;
+  } else {
+    addHighlights(
+      codigaExtensionHighlightsElement,
+      result.violations,
+      codeElement
+    );
+    updateStatusButton(statusButton, result.violations);
+
+    // On scroll highlights should be updated
+    let timer: NodeJS.Timeout;
+    scrollContainer.addEventListener(
+      "scroll",
+      function () {
+        resetComponentShadowDOM(codigaExtensionHighlightsElement);
+
+        if (timer) {
+          clearTimeout(timer);
+        }
+
+        timer = setTimeout(function () {
+          updateStatusButton(statusButton, result.violations);
+          addHighlights(
+            codigaExtensionHighlightsElement,
+            result.violations,
+            codeElement
+          );
+        }, 150);
       },
-    },
-    (result) => {
-      if (!result || !result.violations || !result.violations.length) {
-        statusButton.status = CodigaStatus.ALL_GOOD;
-      } else {
-        addHighlights(
-          codigaExtensionHighlightsElement,
-          result.violations,
-          codeElement
-        );
-        updateStatusButton(statusButton, result.violations);
-
-        // On scroll highlights should be updated
-        let timer: NodeJS.Timeout;
-        scrollContainer.addEventListener(
-          "scroll",
-          function () {
-            resetComponentShadowDOM(codigaExtensionHighlightsElement);
-
-            if (timer) {
-              clearTimeout(timer);
-            }
-
-            timer = setTimeout(function () {
-              updateStatusButton(statusButton, result.violations);
-              addHighlights(
-                codigaExtensionHighlightsElement,
-                result.violations,
-                codeElement
-              );
-            }, 150);
-          },
-          false
-        );
-      }
-    }
-  );
+      false
+    );
+  }
 };
 
 
@@ -137,20 +133,22 @@ const addHighlights = (
     });
 };
 
+const container = containerElement.container;
+if (container) {
+  const observer = new MutationObserver(detectCodeMirrorInstances);
+  observer.observe(container, { childList: true, subtree: true });
+}
 
 // Start point
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-    if (request.action === "updateContainer") {
-        containerElement = getContainerElement();
-        
-        if (containerElement.isEdit) {
-            const container = containerElement.container;
-            if (container) {
-                const observer = new MutationObserver(detectCodeMirrorInstances);
-                observer.observe(container, { childList: true, subtree: true });
-            }
-        }
+  if (request.action === "updateContainer") {
+    containerElement = getContainerElement();
+    const container = containerElement.container;
+    if (container) {
+        const observer = new MutationObserver(detectCodeMirrorInstances);
+        observer.observe(container, { childList: true, subtree: true });
     }
-    sendResponse({ result: true });
-  });
+  }
+  sendResponse({ result: true });
+});
   

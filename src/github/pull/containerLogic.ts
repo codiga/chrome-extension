@@ -16,6 +16,8 @@ import { pickLanguage } from "../../pickLanguage";
 import { Repository } from "github-api/dist/components/Repository";
 import parseDiff from "parse-diff";
 import { CodigaStatus } from "../../customelements/CodigaStatus";
+import { Violation } from "../../types";
+import { validateCode } from "../../validateCode";
 
 type FileInformation = {sha: string, filename: string}
 
@@ -75,42 +77,37 @@ const startAnalysis = async (codeEventContext: CodeEventContext) => {
   }
 };
 
-const runDiffViolation = (codeInformation: CodeInformation, codeContext: CodeEventContext, diffFile: parseDiff.File) => {
+const runDiffViolation = async (codeInformation: CodeInformation, codeContext: CodeEventContext, diffFile: parseDiff.File) => {
   const statusButton = getStatusButton(codeInformation.codigaExtensionElement);
   statusButton.status = CodigaStatus.LOADING;
 
   resetComponentShadowDOM(codeInformation.codigaExtensionHighlightsElement);
 
-  chrome.runtime.sendMessage(
-    {
-      contentScriptQuery: "validateCode",
-      data: {
-        code: codeInformation.code,
-        language: codeInformation.language,
-        filename: codeInformation.filename,
-        id: codeInformation.codeElement.getAttribute(CODIGA_ELEMENT_ID_KEY),
-      },
-    },
-    (result) => {
-      const addedLines = 
-          diffFile.chunks
-            .flatMap(chunk => chunk.changes.filter(change => change.type === 'add')
-            .map(change => (<parseDiff.AddChange>change).ln));
+  const result = await validateCode({
+    code: codeInformation.code,
+    language: codeInformation.language,
+    filename: codeInformation.filename,
+    id: codeInformation.codeElement.getAttribute(CODIGA_ELEMENT_ID_KEY),
+  });
 
-      const violations = result.violations.filter(violation => addedLines.includes(Number(violation.line)));
-      if (!result || !violations || !violations.length) {
-        statusButton.status = CodigaStatus.ALL_GOOD;
-      } else {
-        addHighlights(
-          codeContext.codigaExtensionHighlightsElement,
-          violations,
-          codeInformation.codeElement
-        );
+  const addedLines = 
+    diffFile.chunks
+      .flatMap(chunk => chunk.changes.filter(change => change.type === 'add')
+      .map(change => (<parseDiff.AddChange>change).ln));
 
-        updateStatusButton(statusButton, result.violations);
-      }
-    }
-  );
+  const violations = result.violations.filter(violation => addedLines.includes(Number(violation.line)));
+  
+  if (!result || !violations || !violations.length) {
+    statusButton.status = CodigaStatus.ALL_GOOD;
+  } else {
+    addHighlights(
+      codeContext.codigaExtensionHighlightsElement,
+      violations,
+      codeInformation.codeElement
+    );
+
+    updateStatusButton(statusButton, result.violations);
+  }
 }
 
 export const addHiglightToPullViolation = (
