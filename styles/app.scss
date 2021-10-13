@@ -68,3 +68,14 @@ input {
         border-color: $error-red;
     }
 }
+
+.error-block {
+    color: white;
+    background: $error-red;
+    border-radius: 4px;
+    font-size: .8rem;
+    padding: 8px;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 8px;
+}
