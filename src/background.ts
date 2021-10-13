@@ -106,6 +106,7 @@ const groupBy = (l: Array<any>, key: string) => {
 type ValidateCodeRequest = {
   data: { code: string; language: string; filename: string; id: string };
 };
+
 const validateCode = (request: ValidateCodeRequest) =>
   new Promise(async (resolve) => {
     const fingerprint = await generateFingerprint();
@@ -170,6 +171,12 @@ const validateCode = (request: ValidateCodeRequest) =>
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.contentScriptQuery == "validateCode") {
+    validateCode(request).then((result) => {
+      sendResponse(result);
+    });
+  }
+
+  if (request.contentScriptQuery == "validateGitHubToken") {
     validateCode(request).then((result) => {
       sendResponse(result);
     });
