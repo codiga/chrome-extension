@@ -54,8 +54,9 @@ const startAnalysis = async (codeEventContext: CodeEventContext) => {
   const filename = pickFilename(diffContainer);
   const language = pickLanguage(filename);
   const file = filesInformation.find(file => file.filename === filename);
-  const diffFile = diffInformation.find(file => file.from === filename);
-
+  console.log(diffInformation, filename);
+  const diffFile = diffInformation.find(file => file.to === filename);
+  console.log(diffFile);
   const codeResponse = await getBlobFromSha(repo, file.sha);
   const code = codeResponse.data;
 
@@ -97,7 +98,6 @@ const runDiffViolation = (codeInformation: CodeInformation, codeContext: CodeEve
             .map(change => (<parseDiff.AddChange>change).ln));
 
       const violations = result.violations.filter(violation => addedLines.includes(Number(violation.line)));
-      console.log("vilations: ", violations)
       if (!result || !violations || !violations.length) {
         statusButton.status = CodigaStatus.ALL_GOOD;
       } else {
@@ -119,7 +119,6 @@ export const addHiglightToPullViolation = (
   codeElement: HTMLElement
 ) => {
   const line = violation.line;
-  console.log(codeElement, violation);
   const lineToHighlight = <HTMLElement> Array.from(codeElement.querySelectorAll('.blob-num')).find((blubNum) => {
     return (
       blubNum.getAttribute('data-line-number') ===
