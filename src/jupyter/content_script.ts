@@ -13,6 +13,7 @@ import "../content_scripts_common"; // For side effects
 import { CODIGA_ELEMENT_ID_KEY, getContainerElement } from "../containerElement";
 import { Violation } from "../types";
 import { validateCode } from "../validateCode";
+import { ADD_CODE_VALIDATION } from "../constants";
 
 
 let containerElement = getContainerElement();
@@ -141,7 +142,7 @@ if (container) {
 
 // Start point
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-  if (request.action === "updateContainer") {
+  if (request.action === ADD_CODE_VALIDATION) {
     containerElement = getContainerElement();
     const container = containerElement.container;
     if (container) {

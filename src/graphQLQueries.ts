@@ -1,4 +1,4 @@
-import { gql, createClient } from "@urql/core";
+import { gql } from "@urql/core";
 import { DocumentNode } from "graphql";
 
 export const createFileAnalysisMutation = (
@@ -11,6 +11,7 @@ export const createFileAnalysisMutation = (
     createFileAnalysis(language: ${language}, filename: "${filename}", code: ${JSON.stringify(
     code
     )}, fingerprint: "${fingerprint}")
+    recordAccess(accessType: Chrome, actionType: FileAnalysisRequest)
 }`;
   
 export const getFileAnalysisQuery = (fingerprint: string, analysisId: string) =>

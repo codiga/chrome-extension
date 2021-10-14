@@ -5,6 +5,9 @@ export enum CodigaStatus {
   ALL_GOOD = "ALL_GOOD",
 }
 
+/**
+ * Status button that shows loading state, clean code state or number of violations
+ */
 export default class CodigaStatusButton extends HTMLElement {
   constructor() {
     super();

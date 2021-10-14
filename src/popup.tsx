@@ -2,9 +2,8 @@ import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { CodigaLogo } from './CodigaLogo';
 import { PopUpCheck } from './components/PopUpCheck';
+import { GITHUB_KEY } from "./constants";
 import { validateGitHubToken } from './validateGitHubToken';
-
-const GITHUB_KEY = 'codiga-github-key';
 
 const Popup = () => {
   const [gitHubToken, setGitHubToken] = useState("");
@@ -26,7 +25,6 @@ const Popup = () => {
     const isTokenValid = await validateGitHubToken(gitHubToken);
 
     if(isTokenValid){
-      console.log("hereeeeeee");
       chrome.storage.sync.set({[GITHUB_KEY]: gitHubToken}, function() {
         console.log("Updated GitHub API Token");
         setStoredGitHubToken(gitHubToken);
@@ -40,6 +38,10 @@ const Popup = () => {
 
   const restartInformation = () => {
     setStoredGitHubToken("");
+    setGitHubToken("");
+    chrome.storage.sync.remove(GITHUB_KEY, function() {
+      console.log("Cleared GitHub API Token");
+    });
   }
 
   const onTokenInput = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -57,7 +59,7 @@ const Popup = () => {
         {!(storedGitHubToken.length === 0) && <div id="popup-body" className="flex column align-center text-center">
           <div><PopUpCheck /></div>
           <div id="good-news-text">Good news! You already set your GitHub API Token.</div>
-          <button onClick={() => restartInformation()} className="side-margin-auto"> Update Token </button>
+          <button onClick={() => restartInformation()} className="side-margin-auto"> Reset Token </button>
         </div>}
         {(storedGitHubToken.length === 0) && <div id="popup-body" className="flex column">
           {globalError.length > 0 && (<div className="error-block">

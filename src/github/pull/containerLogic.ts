@@ -1,8 +1,10 @@
+/**
+ * Specific logic for the Pull Requests file change pages in GitHub
+ */
 import {
-  addHighlights,
-  runCodeValidation,
+  addHighlights
 } from "../content_script";
-import { addTooltipToHighlight, CodeInformation, getHighlightDimensions, getStatusButton, updateStatusButton } from "../../content_scripts_common";
+import { addTooltipToHighlight, CodeInformation, getStatusButton, updateStatusButton } from "../../content_scripts_common";
 import CodigaElement from "../../customelements/CodigaElement";
 import CodigaExtension from "../../customelements/CodigaExtension";
 import CodigaExtensionHighLights from "../../customelements/CodigaExtensionHighlights";
@@ -19,8 +21,13 @@ import { CodigaStatus } from "../../customelements/CodigaStatus";
 import { Violation } from "../../types";
 import { validateCode } from "../../validateCode";
 
+// File structure retrieved by GitHub API
 type FileInformation = {sha: string, filename: string}
 
+/**
+ * Required context information (HTML components reference, github repository client, files information)
+ * for running the code validation
+ */
 type CodeEventContext = {
   codigaExtensionElement: CodigaExtension;
   codigaExtensionHighlightsElement: CodigaExtensionHighLights;
@@ -30,6 +37,9 @@ type CodeEventContext = {
   diffInformation: parseDiff.File[]
 };
 
+/**
+ * Detects HTML changes in code container (e.g new code blocks added to the DOM) and adds a Codiga Listener
+ */
 export const detectDiffInstances = (repo: any, filesInformation: FileInformation[], diffInformation: parseDiff.File[]) => (
   mutationsList: { type: string }[]
 ) => {
@@ -56,9 +66,7 @@ const startAnalysis = async (codeEventContext: CodeEventContext) => {
   const filename = pickFilename(diffContainer);
   const language = pickLanguage(filename);
   const file = filesInformation.find(file => file.filename === filename);
-  console.log(diffInformation, filename);
   const diffFile = diffInformation.find(file => file.to === filename);
-  console.log(diffFile);
   const codeResponse = await getBlobFromSha(repo, file.sha);
   const code = codeResponse.data;
 

@@ -26,9 +26,9 @@ import parseDiff from "parse-diff";
 import { validateCode } from "../validateCode";
 import { Violation } from "../types";
 import Toastify from 'toastify-js'
+import { GITHUB_KEY } from "../constants";
 
 let containerElement = getContainerElement();
-const GITHUB_KEY = 'codiga-github-key';
 
 export const runCodeValidation = async (codeInformation: CodeInformation) => {
   const {
@@ -165,10 +165,8 @@ export const addHighlights = (
 
 // Start point
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-  console.log(request);
-  if (request.action === "updateContainer") {
+  if (request.action === "addCodeValidation") {
       containerElement = getContainerElement();
-      console.log("hereeeeee");
       if (containerElement.isView) {
         const container = <HTMLElement> containerElement.container;
         if (container) {
@@ -215,7 +213,6 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             // eventListenerCallback(context);
           } catch (e) {
             console.log(e);
-
             Toastify({
               text: `<img src='${chrome.runtime.getURL("icon16.png")}'/><br/> GitHub API Token not set or not valid for this repository`,
               destination: "https://github.com/settings/tokens",
@@ -251,20 +248,3 @@ const getPullRequestDiff = async (repo: Repository, owner: string, repoName: str
   });
   return response.data;
 }
-
-/*const fetchDiff = async (diffUrl: string, token: string | undefined) => {
-  if(token) {
-    const response = await fetch(`${diffUrl}`, {
-      headers: {
-        'Accept': 'application/vnd.github.v3.diff',
-        redirect: 'manual',
-        "Authorization": `token ${token}`
-      },
-    })
-    console.log(response);
-    return response.text();
-  } else {
-    const response = await fetch(diffUrl);
-    return response.text();
-  }
-} */

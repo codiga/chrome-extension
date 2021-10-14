@@ -13,6 +13,9 @@ import { pickFilename } from "./pickFilename";
 import { pickLanguage } from "../pickLanguage";
 import { Violation } from "../types";
 
+/**
+ * Detects HTML changes in code container (e.g new code blocks added to the DOM) and adds a Codiga Listener
+ */
 export const detectCodeMirrorInstances = (
   mutationsList: { type: string }[]
 ) => {

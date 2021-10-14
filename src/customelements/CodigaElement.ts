@@ -1,5 +1,9 @@
 import '@webcomponents/custom-elements';
 
+/**
+ * Abstract Webcomponent Custom Element used as base wrapper for the extension injected components
+ * (CodigaExtension, CodigaExtensionHighlights, etc) 
+ */
 export default class CodigaElement extends HTMLElement {
   wrapper: HTMLElement;
 
@@ -40,6 +44,12 @@ export default class CodigaElement extends HTMLElement {
     }
   }
 
+  /**
+   * Translates custom web components attributes 'width', 'height', etc. To actual css attributes
+   * @param name Name of the custom attribute that was updated in the web component
+   * @param oldValue Old value of the attribute
+   * @param newValue Updated value of the attribute
+   */
   attributeChangedCallback(name: string, oldValue: any, newValue: number) {
     if (name === "width") {
       this.wrapper.style.width = `${newValue}px`;

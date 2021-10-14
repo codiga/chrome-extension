@@ -1,4 +1,9 @@
 import '@webcomponents/custom-elements';
+
+/**
+ * Violation highlight web component, position and size are relative to the code so it's necessary
+ * to have all those fields observed.
+ */
 export default class CodigaHighlight extends HTMLElement {
   constructor() {
     super();

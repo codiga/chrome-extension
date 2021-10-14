@@ -1,5 +1,6 @@
 import React from "react";
 
+/** Visual check component used initially in the chrome.action popup when GitHub token is already set*/
 export const PopUpCheck = () => {
     return (<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
     <path fillRule="evenodd" clipRule="evenodd" d="M39.4809 5.08146C40.173 5.77355 40.173 6.89565 39.4809 7.58774L21.2531 25.8155C20.561 26.5076 19.4389 26.5076 18.7468 25.8155L11.9114 18.9801C11.2193 18.288 11.2193 17.1659 11.9114 16.4738C12.6035 15.7817 13.7256 15.7817 14.4177 16.4738L20 22.0561L36.9746 5.08146C37.6667 4.38937 38.7888 4.38937 39.4809 5.08146Z" fill="url(#paint0_linear)"/>
