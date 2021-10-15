@@ -36,7 +36,7 @@
     "service_worker": "js/background.js"
   },
 
-  "permissions": ["activeTab", "storage", "tabs", "notifications"],
+  "permissions": ["storage"],
 
   "web_accessible_resources": [
     {
@@ -49,6 +49,5 @@
     "16": "icon16.png",
     "48": "icon48.png",
     "128": "icon128.png"
-  },
-  "host_permissions": ["<all_urls>"]
+  }
 }
