@@ -20,6 +20,7 @@ const Popup = () => {
   const saveGitHubToken = async (gitHubToken: string) => {
     if(!gitHubToken.length){
       setInputError("Required");
+      return;
     }
 
     const isTokenValid = await validateGitHubToken(gitHubToken);

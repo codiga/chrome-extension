@@ -10,6 +10,7 @@ import CodigaStatusButton, {
 import '@webcomponents/custom-elements';
 import CodigaHighlight from "./customelements/CodigaHighlight";
 import { Violation } from "./types";
+import CodigaPopups from "./customelements/CodigaPopups";
 
 export const PRETTY_CATEGORIES: Record<string, string> = {
   Code_Style: "Code style",
@@ -107,13 +108,13 @@ export const addTooltipToHighlight = (
     const popperInstance: Instance = createPopper(highlight, tooltip);
 
     const showEvents = ["mouseenter", "focus"];
-    showEvents.forEach((event) => {
-    highlight.addEventListener(event, showTooltip(tooltip, popperInstance));
+        showEvents.forEach((event) => {
+        highlight.addEventListener(event, showTooltip(tooltip, popperInstance));
     });
 
     const hideEvents = ["mouseleave", "blur"];
     hideEvents.forEach((event) => {
-    highlight.addEventListener(event, hideTooltip(tooltip));
+        highlight.addEventListener(event, hideTooltip(tooltip));
     });
 
     return [tooltip, style];
@@ -193,3 +194,4 @@ window.customElements.define("codiga-status-btn", CodigaStatusButton);
 window.customElements.define("codiga-extension", CodigaExtension);
 window.customElements.define("codiga-extension-highlights", CodigaExtensionHighLights);
 window.customElements.define("codiga-highlight", CodigaHighlight);
+window.customElements.define("codiga-popups", CodigaPopups);

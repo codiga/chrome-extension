@@ -8,6 +8,7 @@ import { runCodeValidation } from "../content_script";
 import CodigaHighlight from "../../customelements/CodigaHighlight";
 import { addTooltipToHighlight } from "../../content_scripts_common";
 import { Violation } from "../../types";
+import { setUpHighlights } from "../../containerLogicCommons";
 
 type CodeEventContext = {
   codigaExtensionElement: CodigaExtension;
@@ -78,26 +79,13 @@ export const addHiglightToViewViolation = (
     const highlightWidth = rightBound - highlightPosition.x;
 
     const highlightHeight = getDimensions(firstChild).height;
-    const highlightsWrapperPosition = getPos(codigaExtensionHighlightsElement);
-    const codigaHighlight = <CodigaHighlight>(
-      document.createElement("codiga-highlight")
-    );
+    
+    const highlightDimensions = {
+      width: highlightWidth,
+      height: highlightHeight
+    }
 
-    codigaHighlight.classList.add("codiga-highlight");
-
-    codigaHighlight.top = highlightPosition.y - highlightsWrapperPosition.y;
-    codigaHighlight.left = highlightPosition.x - highlightsWrapperPosition.x;
-
-    codigaHighlight.width = highlightWidth;
-    codigaHighlight.height = highlightHeight;
-
-    const createdElements = addTooltipToHighlight(codigaHighlight, violation);
-
-    codigaExtensionHighlightsElement.shadowRoot.appendChild(codigaHighlight);
-
-    createdElements.forEach((createdElement) => {
-      codigaExtensionHighlightsElement.shadowRoot.appendChild(createdElement);
-    });
+    setUpHighlights(codigaExtensionHighlightsElement, highlightPosition, highlightDimensions, violation);
   }
 };
 

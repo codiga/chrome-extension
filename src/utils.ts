@@ -1,4 +1,5 @@
 import CodigaElement from "./customelements/CodigaElement";
+import { Dimensions, Position } from "./types";
 
 const getBoudingClientRect = (el: HTMLElement) => {
   let rect;
@@ -14,12 +15,12 @@ const getBoudingClientRect = (el: HTMLElement) => {
   return rect;
 };
 
-export const getPos = (el: HTMLElement) => {
+export const getPos = (el: HTMLElement): Position => {
   const rect = getBoudingClientRect(el);
   return { x: rect.left, y: rect.top };
 };
 
-export const getDimensions = (el: HTMLElement) => {
+export const getDimensions = (el: HTMLElement): Dimensions => {
   let rect = getBoudingClientRect(el);
   return { width: rect.width, height: rect.height };
 };
@@ -28,6 +29,10 @@ export const resetComponentShadowDOM = (element: HTMLElement) => {
   if (element.shadowRoot) {
     element.shadowRoot.innerHTML = "";
   }
+};
+
+export const resetComponent = (element: HTMLElement) => {
+  element.innerHTML = "";
 };
 
 export const assignSize = (el1: CodigaElement, el2: HTMLElement) => {
@@ -44,3 +49,6 @@ export const groupBy = (l: Array<any>, key: string) => {
     return acc;
   }, {});
 };
+
+export const timeout = (prom: Promise<any>, time: number) =>
+	Promise.race([prom, new Promise((_r, rej) => setTimeout(rej, time))]);

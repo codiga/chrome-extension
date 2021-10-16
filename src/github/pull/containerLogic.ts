@@ -20,6 +20,7 @@ import parseDiff from "parse-diff";
 import { CodigaStatus } from "../../customelements/CodigaStatus";
 import { Violation } from "../../types";
 import { validateCode } from "../../validateCode";
+import { setUpHighlights } from "../../containerLogicCommons";
 
 // File structure retrieved by GitHub API
 type FileInformation = {sha: string, filename: string}
@@ -135,26 +136,8 @@ export const addHiglightToPullViolation = (
 
   const highlightPosition = getPos(lineToHighlight);
   const highlightDimensions = getDimensions(lineToHighlight);
-  const highlightsWrapperPosition = getPos(codigaExtensionHighlightsElement);
-  const codigaHighlight = <CodigaHighlight>(
-    document.createElement("codiga-highlight")
-  );
 
-  codigaHighlight.classList.add("codiga-highlight");
-
-  codigaHighlight.top = highlightPosition.y - highlightsWrapperPosition.y;
-  codigaHighlight.left = highlightPosition.x - highlightsWrapperPosition.x;
-
-  codigaHighlight.width = highlightDimensions.width;
-  codigaHighlight.height = highlightDimensions.height;
-
-  const createdElements = addTooltipToHighlight(codigaHighlight, violation);
-
-  codigaExtensionHighlightsElement.shadowRoot.appendChild(codigaHighlight);
-
-  createdElements.forEach((createdElement) => {
-    codigaExtensionHighlightsElement.shadowRoot.appendChild(createdElement);
-  });
+  setUpHighlights(codigaExtensionHighlightsElement, highlightPosition, highlightDimensions, violation);
 };
 
 export const addDiffListeners = (repo: Repository, filesInformation: FileInformation[], diffInformation: parseDiff.File[]) => {

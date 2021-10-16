@@ -2,7 +2,7 @@ import CodigaElement from "../customelements/CodigaElement";
 import {
   CODIGA_ELEMENT_ID_KEY
 } from "../containerElement";
-import { resetComponentShadowDOM } from "../utils";
+import { resetComponent, resetComponentShadowDOM } from "../utils";
 import {
   CodigaStatus,
 } from "../customelements/CodigaStatus";
@@ -29,7 +29,6 @@ import Toastify from 'toastify-js'
 import { GITHUB_KEY } from "../constants";
 
 let containerElement = getContainerElement();
-
 export const runCodeValidation = async (codeInformation: CodeInformation) => {
   const {
     code,
@@ -45,47 +44,50 @@ export const runCodeValidation = async (codeInformation: CodeInformation) => {
 
   resetComponentShadowDOM(codigaExtensionHighlightsElement);
 
-  const result = await validateCode({
-    code,
-    language,
-    filename,
-    id: codeElement.getAttribute(CODIGA_ELEMENT_ID_KEY),
-  });
+  try {
+    const result = await validateCode({
+      code,
+      language,
+      filename,
+      id: codeElement.getAttribute(CODIGA_ELEMENT_ID_KEY),
+    });
+    if(!result) return;
+    if (!result.violations || !result.violations.length) {
+      statusButton.status = CodigaStatus.ALL_GOOD;
+    } else {
+      addHighlights(
+        codigaExtensionHighlightsElement,
+        result.violations,
+        codeElement
+      );
+      updateStatusButton(statusButton, result.violations);
+  
+      // On scroll highlights should be updated
+      let timer: NodeJS.Timeout;
+      scrollContainer.addEventListener(
+        "scroll",
+        function () {
+          resetComponentShadowDOM(codigaExtensionHighlightsElement);
+          resetComponent(document.querySelector("codiga-popups"));
 
-  if (!result || !result.violations || !result.violations.length) {
-    statusButton.status = CodigaStatus.ALL_GOOD;
-  } else {
-    addHighlights(
-      codigaExtensionHighlightsElement,
-      result.violations,
-      codeElement
-    );
-    updateStatusButton(statusButton, result.violations);
-
-    // On scroll highlights should be updated
-    let timer: NodeJS.Timeout;
-    scrollContainer.addEventListener(
-      "scroll",
-      function () {
-        resetComponentShadowDOM(codigaExtensionHighlightsElement);
-
-        if (timer) {
-          clearTimeout(timer);
-        }
-
-        timer = setTimeout(function () {
-          updateStatusButton(statusButton, result.violations);
-          addHighlights(
-            codigaExtensionHighlightsElement,
-            result.violations,
-            codeElement
-          );
-        }, 150);
-      },
-      false
-    );
-  }
-
+          if (timer) {
+            clearTimeout(timer);
+          }
+  
+          timer = setTimeout(function () {
+            if(statusButton.status !== CodigaStatus.LOADING){
+              addHighlights(
+                codigaExtensionHighlightsElement,
+                result.violations,
+                codeElement
+              );
+            }
+          }, 50);
+        },
+        false
+      );
+    }
+  } catch (e) {}
 };
 
 
@@ -163,7 +165,24 @@ export const addHighlights = (
   });
 };
 
+const getPullRequestFilesInformation = async (repo: Repository, owner: string, repoName: string, pullNumber: string) => {
+  // Right now we only get the first 100 files of a PR
+  const response = await repo._request('GET', `/repos/${owner}/${repoName}/pulls/${pullNumber}/files`, {per_page: 100});
+  return response.data;
+}
+
+const getPullRequestDiff = async (repo: Repository, owner: string, repoName: string, pullNumber: string) => {
+  // Right now we only get the first 100 files of a PR
+  const response = await repo._request('GET', `/repos/${owner}/${repoName}/pulls/${pullNumber}.diff`, {
+    AcceptHeader: 'v3.diff'
+  });
+  return response.data;
+}
+
 // Start point
+const popupsElement = document.createElement("codiga-popups");
+document.querySelector('body').append(popupsElement);
+
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.action === "addCodeValidation") {
       containerElement = getContainerElement();
@@ -212,7 +231,6 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             }
             // eventListenerCallback(context);
           } catch (e) {
-            console.log(e);
             Toastify({
               text: `<img src='${chrome.runtime.getURL("icon16.png")}'/><br/> GitHub API Token not set or not valid for this repository`,
               destination: "https://github.com/settings/tokens",
@@ -234,17 +252,3 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
 
   sendResponse({ result: true });
 });
-
-const getPullRequestFilesInformation = async (repo: Repository, owner: string, repoName: string, pullNumber: string) => {
-  // Right now we only get the first 100 files of a PR
-  const response = await repo._request('GET', `/repos/${owner}/${repoName}/pulls/${pullNumber}/files`, {per_page: 100});
-  return response.data;
-}
-
-const getPullRequestDiff = async (repo: Repository, owner: string, repoName: string, pullNumber: string) => {
-  // Right now we only get the first 100 files of a PR
-  const response = await repo._request('GET', `/repos/${owner}/${repoName}/pulls/${pullNumber}.diff`, {
-    AcceptHeader: 'v3.diff'
-  });
-  return response.data;
-}

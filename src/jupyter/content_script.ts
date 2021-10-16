@@ -1,5 +1,5 @@
 import CodigaElement from "../customelements/CodigaElement";
-import { resetComponentShadowDOM } from "../utils";
+import { resetComponent, resetComponentShadowDOM } from "../utils";
 import {
   CodigaStatus,
 } from "../customelements/CodigaStatus";
@@ -33,46 +33,49 @@ export const runCodeValidation = async (codeInformation: CodeInformation) => {
 
   resetComponentShadowDOM(codigaExtensionHighlightsElement);
 
-  const result = await validateCode({
-    code,
-    language,
-    filename,
-    id: codeElement.getAttribute(CODIGA_ELEMENT_ID_KEY),
-  });
-  
-  if (!result || !result.violations || !result.violations.length) {
-    statusButton.status = CodigaStatus.ALL_GOOD;
-  } else {
-    addHighlights(
-      codigaExtensionHighlightsElement,
-      result.violations,
-      codeElement
-    );
-    updateStatusButton(statusButton, result.violations);
+  try {
+    const result = await validateCode({
+      code,
+      language,
+      filename,
+      id: codeElement.getAttribute(CODIGA_ELEMENT_ID_KEY),
+    });
+    
+    if (!result.violations || !result.violations.length) {
+      statusButton.status = CodigaStatus.ALL_GOOD;
+    } else {
+      addHighlights(
+        codigaExtensionHighlightsElement,
+        result.violations,
+        codeElement
+      );
+      updateStatusButton(statusButton, result.violations);
 
-    // On scroll highlights should be updated
-    let timer: NodeJS.Timeout;
-    scrollContainer.addEventListener(
-      "scroll",
-      function () {
-        resetComponentShadowDOM(codigaExtensionHighlightsElement);
+      // On scroll highlights should be updated
+      let timer: NodeJS.Timeout;
+      scrollContainer.addEventListener(
+        "scroll",
+        function () {
+          resetComponentShadowDOM(codigaExtensionHighlightsElement);
+          resetComponent(document.querySelector("codiga-popups"));
 
-        if (timer) {
-          clearTimeout(timer);
-        }
+          if (timer) {
+            clearTimeout(timer);
+          }
 
-        timer = setTimeout(function () {
-          updateStatusButton(statusButton, result.violations);
-          addHighlights(
-            codigaExtensionHighlightsElement,
-            result.violations,
-            codeElement
-          );
-        }, 150);
-      },
-      false
-    );
-  }
+          timer = setTimeout(function () {
+            updateStatusButton(statusButton, result.violations);
+            addHighlights(
+              codigaExtensionHighlightsElement,
+              result.violations,
+              codeElement
+            );
+          }, 150);
+        },
+        false
+      );
+    } 
+  } catch(e) {} 
 };
 
 
@@ -140,7 +143,11 @@ if (container) {
   observer.observe(container, { childList: true, subtree: true });
 }
 
+
 // Start point
+const popupsElement = document.createElement("codiga-popups");
+document.querySelector('body').append(popupsElement);
+
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.action === ADD_CODE_VALIDATION) {
     containerElement = getContainerElement();

@@ -1,17 +1,17 @@
 import {
   runCodeValidation,
 } from "./content_script";
-import { addTooltipToHighlight, getHighlightDimensions } from "../content_scripts_common";
+import { getHighlightDimensions } from "../content_scripts_common";
 import CodigaElement from "../customelements/CodigaElement";
 import CodigaExtension from "../customelements/CodigaExtension";
 import CodigaExtensionHighLights from "../customelements/CodigaExtensionHighlights";
-import CodigaHighlight from "../customelements/CodigaHighlight";
 import { assignSize, getPos } from "../utils";
 import { CODIGA_ELEMENT_ID_KEY } from "../containerElement";
 
 import { pickFilename } from "./pickFilename";
 import { pickLanguage } from "../pickLanguage";
 import { Violation } from "../types";
+import { setUpHighlights } from "../containerLogicCommons";
 
 /**
  * Detects HTML changes in code container (e.g new code blocks added to the DOM) and adds a Codiga Listener
@@ -97,26 +97,8 @@ export const addHiglightToEditViolation = (
       codeToHighlight,
       <HTMLElement>codeWrapperElement
     );
-    const highlightsWrapperPosition = getPos(codigaExtensionHighlightsElement);
-    const codigaHighlight = <CodigaHighlight>(
-      document.createElement("codiga-highlight")
-    );
-
-    codigaHighlight.classList.add("codiga-highlight");
-
-    codigaHighlight.top = highlightPosition.y - highlightsWrapperPosition.y;
-    codigaHighlight.left = highlightPosition.x - highlightsWrapperPosition.x;
-
-    codigaHighlight.width = highlightDimensions.width;
-    codigaHighlight.height = highlightDimensions.height;
-
-    const createdElements = addTooltipToHighlight(codigaHighlight, violation);
-
-    codigaExtensionHighlightsElement.shadowRoot.appendChild(codigaHighlight);
-
-    createdElements.forEach((createdElement) => {
-      codigaExtensionHighlightsElement.shadowRoot.appendChild(createdElement);
-    });
+    
+    setUpHighlights(codigaExtensionHighlightsElement, highlightPosition, highlightDimensions, violation);
   }
 };
 
