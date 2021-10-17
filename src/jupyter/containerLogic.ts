@@ -31,11 +31,11 @@ type CodeEventContext = {
 };
 const eventListenerCallback = (codeEventContext: CodeEventContext) => {
     const {
-    codigaExtensionElement,
-    codigaExtensionHighlightsElement,
-    codeElement,
-    scrollContainer,
-    codeMirror,
+        codigaExtensionElement,
+        codigaExtensionHighlightsElement,
+        codeElement,
+        scrollContainer,
+        codeMirror,
     } = codeEventContext;
 
     assignSize(codigaExtensionHighlightsElement, codeMirror);
@@ -70,8 +70,9 @@ export const addHiglightToEditViolation = (
 
     const highlightPosition = getPos(lineToHighlight);
     const highlightDimensions = getDimensions(lineToHighlight)
-    
-    setUpHighlights(codigaExtensionHighlightsElement, highlightPosition, highlightDimensions, violation);
+    const elementRef = codeElement.getAttribute(CODIGA_ELEMENT_ID_KEY);
+
+    setUpHighlights(codigaExtensionHighlightsElement, elementRef, highlightPosition, highlightDimensions, violation);
 };
 
 const addCodeMirrorListeners = () => {
@@ -81,39 +82,39 @@ const addCodeMirrorListeners = () => {
     codeMirrorList.forEach(addLogicToCodeMirrorInstance);
 };
 
-const addLogicToCodeMirrorInstance = (codeMirror: HTMLElement) => {
+const addLogicToCodeMirrorInstance = (codeMirror: HTMLElement, index: number) => {
     codeMirror.setAttribute("detected", `${true}`);
     
     const codeMirrorLines = codeMirror.querySelector(".CodeMirror-lines");
     const codeScroll = <HTMLElement>(
-    codeMirror.querySelector(".CodeMirror-scroll")
+        codeMirror.querySelector(".CodeMirror-scroll")
     );
 
     const codePresentation = codeMirrorLines?.querySelector(
-    '[role="presentation"]'
+        '[role="presentation"]'
     );
 
     const codeElement = <HTMLElement>codeMirror.querySelector(".CodeMirror-code");
     codeElement?.setAttribute(
-    CODIGA_ELEMENT_ID_KEY,
-    JSON.stringify(getPos(<HTMLElement>codeElement))
+        CODIGA_ELEMENT_ID_KEY,
+        JSON.stringify(getPos(<HTMLElement>codeElement))
     );
 
     const codigaExtensionElement = <CodigaExtension>(
     document.createElement("codiga-extension")
     );
     codigaExtensionElement.style.cssText +=
-    "position: absolute; top: 0px; left: 0px";
+        "position: absolute; top: 0px; left: 0px";
     codeMirror.insertBefore(codigaExtensionElement, codeMirror.firstChild);
 
     const codigaExtensionHighlightsElement = <CodigaExtensionHighLights>(
-    document.createElement("codiga-extension-highlights")
+        document.createElement("codiga-extension-highlights")
     );
     codigaExtensionHighlightsElement.style.cssText +=
-    "position: absolute; top: 0px; left: 0px";
+        "position: absolute; top: 0px; left: 0px";
     codePresentation?.insertBefore(
-    codigaExtensionHighlightsElement,
-    codePresentation.firstChild
+        codigaExtensionHighlightsElement,
+        codePresentation.firstChild
     );
         
     const context = {

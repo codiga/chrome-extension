@@ -11,6 +11,7 @@ import '@webcomponents/custom-elements';
 import CodigaHighlight from "./customelements/CodigaHighlight";
 import { Violation } from "./types";
 import CodigaPopups from "./customelements/CodigaPopups";
+import { CODIGA_ELEMENT_ID_KEY } from "./containerElement";
 
 export const PRETTY_CATEGORIES: Record<string, string> = {
   Code_Style: "Code style",
@@ -60,32 +61,10 @@ export const getHighlightDimensions = (
   
 export const addTooltipToHighlight = (
     highlight: HTMLElement,
+    codeElementRef: string,
     violation: Violation
 ) => {
     const tooltip = document.createElement("div");
-    const style = document.createElement("style");
-    style.innerHTML = `
-        .codiga-tooltip {
-            display: none;
-        }
-
-        .codiga-tooltip[data-show] {
-            background: #300623;
-            color: white;
-            display: block;
-            min-width: max-content;
-            z-index: 10;
-            border-radius: .2rem;
-            padding: .6rem;
-            border: 1px solid white;
-        }
-        
-        .single-violation {
-            border-top: 1px solid white;
-            padding: .4rem 0;
-        }
-    `;
-
     tooltip.innerHTML = `
         <img src='${chrome.runtime.getURL("icon16.png")}'/>
         <div class="violations-list">
@@ -104,6 +83,7 @@ export const addTooltipToHighlight = (
         </div>
         `;
     tooltip.classList.add("codiga-tooltip");
+    tooltip.setAttribute('codiga-element-reference', codeElementRef);
 
     const popperInstance: Instance = createPopper(highlight, tooltip);
 
@@ -118,9 +98,16 @@ export const addTooltipToHighlight = (
         tooltip.addEventListener(event, hideTooltip(tooltip));
     });
 
-    return [tooltip, style];
+    return [tooltip];
 };
   
+export const removeTooltips = (codeElementReference: string) => {
+    document.querySelectorAll(`.codiga-tooltip[codiga-element-reference='${codeElementReference}']`)
+        .forEach((codigaTooltipElement) => {
+            codigaTooltipElement.parentElement.removeChild(codigaTooltipElement);
+        });
+}
+
 export const getStatusButton = (
     codigaExtensionElement: CodigaExtension
 ): CodigaStatusButton => {
@@ -190,6 +177,35 @@ export const updateStatusButton = (
 ) => {
     statusButton.status = `${violations.length}` || CodigaStatus.LOADING;
 };
+
+export const createPopups = () => {
+    const popupsElement = document.createElement("codiga-popups");
+    document.querySelector('body').append(popupsElement);
+
+    const style = document.createElement("style");
+    style.innerHTML = `
+        .codiga-tooltip {
+            display: none;
+        }
+
+        .codiga-tooltip[data-show] {
+            background: #300623;
+            color: white;
+            display: block;
+            min-width: max-content;
+            z-index: 10;
+            border-radius: .2rem;
+            padding: .6rem;
+            border: 1px solid white;
+        }
+        
+        .single-violation {
+            border-top: 1px solid white;
+            padding: .4rem 0;
+        }
+    `;
+    document.querySelector('head').append(style);
+}
 
 window.customElements.define("codiga-status-btn", CodigaStatusButton);
 window.customElements.define("codiga-extension", CodigaExtension);

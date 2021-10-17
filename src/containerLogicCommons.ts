@@ -5,7 +5,8 @@ import { Dimensions, Position, Violation } from "./types";
 import { getPos } from "./utils";
 
 export const setUpHighlights = (
-    codigaExtensionHighlightsElement: CodigaExtensionHighLights, 
+    codigaExtensionHighlightsElement: CodigaExtensionHighLights,
+    codigaElementRef: string, 
     highlightPosition: Position, 
     highlightDimensions: Dimensions, 
     violation: Violation
@@ -23,7 +24,7 @@ export const setUpHighlights = (
     codigaHighlight.width = highlightDimensions.width;
     codigaHighlight.height = highlightDimensions.height;
 
-    const createdTooltipElements = addTooltipToHighlight(codigaHighlight, violation);
+    const createdTooltipElements = addTooltipToHighlight(codigaHighlight, codigaElementRef, violation);
 
     codigaExtensionHighlightsElement.shadowRoot.appendChild(codigaHighlight);
     

@@ -98,7 +98,8 @@ export const addHiglightToEditViolation = (
       <HTMLElement>codeWrapperElement
     );
     
-    setUpHighlights(codigaExtensionHighlightsElement, highlightPosition, highlightDimensions, violation);
+    const elementRef = codeElement.getAttribute(CODIGA_ELEMENT_ID_KEY);
+    setUpHighlights(codigaExtensionHighlightsElement, elementRef, highlightPosition, highlightDimensions, violation);
   }
 };
 

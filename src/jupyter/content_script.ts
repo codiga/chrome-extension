@@ -8,7 +8,7 @@ import {
 } from "./containerLogic";
 import '@webcomponents/custom-elements';
 
-import { CodeInformation, getStatusButton, updateStatusButton } from "../content_scripts_common";
+import { CodeInformation, createPopups, getStatusButton, removeTooltips, updateStatusButton } from "../content_scripts_common";
 import "../content_scripts_common"; // For side effects
 import { CODIGA_ELEMENT_ID_KEY, getContainerElement } from "../containerElement";
 import { Violation } from "../types";
@@ -32,6 +32,8 @@ export const runCodeValidation = async (codeInformation: CodeInformation) => {
   statusButton.status = CodigaStatus.LOADING;
 
   resetComponentShadowDOM(codigaExtensionHighlightsElement);
+  const elementRef = codeElement.getAttribute(CODIGA_ELEMENT_ID_KEY);
+  removeTooltips(elementRef);
 
   try {
     const result = await validateCode({
@@ -57,7 +59,8 @@ export const runCodeValidation = async (codeInformation: CodeInformation) => {
         "scroll",
         function () {
           resetComponentShadowDOM(codigaExtensionHighlightsElement);
-          resetComponent(document.querySelector("codiga-popups"));
+          const elementRef = codeElement.getAttribute(CODIGA_ELEMENT_ID_KEY);
+          removeTooltips(elementRef);
 
           if (timer) {
             clearTimeout(timer);
@@ -85,6 +88,8 @@ const addHighlights = (
   codeElement: HTMLElement
 ) => {
     resetComponentShadowDOM(codigaExtensionHighlightsElement);
+    const elementRef = codeElement.getAttribute(CODIGA_ELEMENT_ID_KEY);
+    removeTooltips(elementRef);
 
     const codigaHighlightsStyle = document.createElement("style");
     codigaHighlightsStyle.innerHTML = `
@@ -145,8 +150,7 @@ if (container) {
 
 
 // Start point
-const popupsElement = document.createElement("codiga-popups");
-document.querySelector('body').append(popupsElement);
+createPopups();
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
   if (request.action === ADD_CODE_VALIDATION) {

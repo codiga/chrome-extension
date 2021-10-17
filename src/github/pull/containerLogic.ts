@@ -136,8 +136,9 @@ export const addHiglightToPullViolation = (
 
   const highlightPosition = getPos(lineToHighlight);
   const highlightDimensions = getDimensions(lineToHighlight);
+  const elementRef = codeElement.getAttribute(CODIGA_ELEMENT_ID_KEY);
 
-  setUpHighlights(codigaExtensionHighlightsElement, highlightPosition, highlightDimensions, violation);
+  setUpHighlights(codigaExtensionHighlightsElement, elementRef, highlightPosition, highlightDimensions, violation);
 };
 
 export const addDiffListeners = (repo: Repository, filesInformation: FileInformation[], diffInformation: parseDiff.File[]) => {
