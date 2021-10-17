@@ -115,6 +115,7 @@ export const addTooltipToHighlight = (
     const hideEvents = ["mouseleave", "blur"];
     hideEvents.forEach((event) => {
         highlight.addEventListener(event, hideTooltip(tooltip));
+        tooltip.addEventListener(event, hideTooltip(tooltip));
     });
 
     return [tooltip, style];
