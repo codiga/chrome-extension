@@ -81,7 +81,7 @@ export const runCodeValidation = async (codeInformation: CodeInformation) => {
           }
   
           timer = setTimeout(function () {
-            if(statusButton.status !== CodigaStatus.LOADING){
+            if(statusButton.status !== CodigaStatus.LOADING && statusButton.status !== CodigaStatus.ALL_GOOD){
               addHighlights(
                 codigaExtensionHighlightsElement,
                 result.violations,
