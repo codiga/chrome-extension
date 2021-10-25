@@ -57,6 +57,7 @@ export const runCodeValidation = async (codeInformation: CodeInformation) => {
     });
     if(!result) return;
     if (!result.violations || !result.violations.length) {
+      resetComponentShadowDOM(codigaExtensionHighlightsElement);
       statusButton.status = CodigaStatus.ALL_GOOD;
     } else {
       addHighlights(
