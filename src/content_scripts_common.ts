@@ -46,7 +46,7 @@ const showTooltip = (tooltip: HTMLDivElement, popperInstance: Instance) => {
 
 const hideTooltip = (tooltip: HTMLDivElement) => {
     return () => {
-    tooltip.removeAttribute("data-show");
+        tooltip.removeAttribute("data-show");
     };
 };
 
@@ -192,8 +192,8 @@ export const createPopups = () => {
             background: #300623;
             color: white;
             display: block;
-            min-width: max-content;
             z-index: 10;
+            max-width: 500px;
             border-radius: .2rem;
             padding: .6rem;
             border: 1px solid white;

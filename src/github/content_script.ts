@@ -2,7 +2,7 @@ import CodigaElement from "../customelements/CodigaElement";
 import {
   CODIGA_ELEMENT_ID_KEY
 } from "../containerElement";
-import { resetComponent, resetComponentShadowDOM } from "../utils";
+import { resetComponentShadowDOM } from "../utils";
 import {
   CodigaStatus,
 } from "../customelements/CodigaStatus";
@@ -26,9 +26,11 @@ import parseDiff from "parse-diff";
 import { validateCode } from "../validateCode";
 import { Violation } from "../types";
 import Toastify from 'toastify-js'
-import { GITHUB_KEY } from "../constants";
+import { ADD_CODE_VALIDATION, GITHUB_KEY } from "../constants";
 
 let containerElement = getContainerElement();
+let isShowingErrorToast = false;
+
 export const runCodeValidation = async (codeInformation: CodeInformation) => {
   const {
     code,
@@ -187,7 +189,7 @@ const getPullRequestDiff = async (repo: Repository, owner: string, repoName: str
 createPopups();
 
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-  if (request.action === "addCodeValidation") {
+  if (request.action === ADD_CODE_VALIDATION) {
       containerElement = getContainerElement();
       if (containerElement.isView) {
         const container = <HTMLElement> containerElement.container;
@@ -217,7 +219,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             const token = obj[GITHUB_KEY];
             const gh = token?new GitHub({ token }):new GitHub();
             const repository = location.href.match(/(?<=github.com\/).*(?=\/pull)/);
-            const pr = location.href.match(/(?<=\/pull\/).*(?=\/file)/)!.toString();
+            const pr = location.href.match(/(?<=\/pull\/).*(?=\/file)/)?.toString();
             const [username, repoName] = repository.toString().split('/');
             const repo = gh.getRepo(username, repoName);
             const filesInformation = await getPullRequestFilesInformation(repo, username, repoName, pr);
@@ -234,20 +236,28 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
             }
             // eventListenerCallback(context);
           } catch (e) {
-            Toastify({
-              text: `<img src='${chrome.runtime.getURL("icon16.png")}'/><br/> GitHub API Token not set or not valid for this repository`,
-              destination: "https://github.com/settings/tokens",
-              newWindow: true,
-              close: true,
-              stopOnFocus: true,
-              escapeMarkup: false,
-              duration: 3000,
-              style: {
-                background: "#300623",
-                color: "white",
-                "font-size": ".8rem",
-              }
+            if(!isShowingErrorToast){
+              Toastify({
+                text: `<img src='${chrome.runtime.getURL("icon16.png")}'/><br/> GitHub API Token not set or not valid for this repository`,
+                destination: "https://github.com/settings/tokens",
+                newWindow: true,
+                close: true,
+                stopOnFocus: true,
+                escapeMarkup: false,
+                duration: 5000,
+                style: {
+                  background: "#300623",
+                  color: "white",
+                  "font-size": ".8rem",
+                }
               }).showToast();
+
+              isShowingErrorToast = true;
+
+              setTimeout(() => {
+                isShowingErrorToast = false
+              }, 5000);
+            }
           }
         });
     }
