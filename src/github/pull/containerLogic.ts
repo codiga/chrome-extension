@@ -115,7 +115,7 @@ const runDiffViolation = async (codeInformation: CodeInformation, codeContext: C
       codeInformation.codeElement
     );
 
-    updateStatusButton(statusButton, result.violations);
+    updateStatusButton(statusButton, violations);
   }
 }
 
