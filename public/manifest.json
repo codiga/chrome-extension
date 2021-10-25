@@ -16,7 +16,7 @@
       "css": ["toastify.css"]
     },
     {
-      "matches": ["https://*/*.ipynb*", "http://*/*.ipynb*"],
+      "matches": ["https://*/*.ipynb*", "http://*/*.ipynb*", "http://localhost:*/lab/*"],
       "exclude_matches": ["https://*.github.com/*"],
       "js": ["js/content_script_jupyter.js"],
       "css": []
