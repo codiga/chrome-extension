@@ -4,11 +4,10 @@
 import {
   addHighlights
 } from "../content_script";
-import { addTooltipToHighlight, CodeInformation, getStatusButton, updateStatusButton } from "../../content_scripts_common";
+import { CodeInformation, getStatusButton, updateStatusButton } from "../../content_scripts_common";
 import CodigaElement from "../../customelements/CodigaElement";
 import CodigaExtension from "../../customelements/CodigaExtension";
 import CodigaExtensionHighLights from "../../customelements/CodigaExtensionHighlights";
-import CodigaHighlight from "../../customelements/CodigaHighlight";
 import { assignSize, getDimensions, getPos, resetComponentShadowDOM } from "../../utils";
 import { CODIGA_ELEMENT_ID_KEY } from "../../containerElement";
 
