@@ -16,7 +16,12 @@
       "css": ["toastify.css"]
     },
     {
-      "matches": ["https://*/*.ipynb*", "http://*/*.ipynb*", "http://*/lab/*", "https://*/lab/*"],
+      "matches": [
+        "https://*/*.ipynb*",
+        "http://*/*.ipynb*",
+        "http://*/lab/*",
+        "https://*/lab/*"
+      ],
       "exclude_matches": ["https://*.github.com/*"],
       "js": ["js/content_script_jupyter.js"],
       "css": []
@@ -24,10 +29,10 @@
   ],
 
   "action": {
-    "default_icon": {                  
-        "16": "icon16.png",          
-        "48": "icon48.png",        
-        "128": "icon128.png"
+    "default_icon": {
+      "16": "icon16.png",
+      "48": "icon48.png",
+      "128": "icon128.png"
     },
     "default_title": "Codiga",
     "default_popup": "popup.html"
@@ -36,7 +41,7 @@
     "service_worker": "js/background.js"
   },
 
-  "permissions": ["storage"],
+  "permissions": ["storage", "contextMenus"],
 
   "web_accessible_resources": [
     {
