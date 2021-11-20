@@ -43,18 +43,16 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 });
 
 // Recipe creation
-chrome.runtime.onInstalled.addListener(function () {
-  chrome.contextMenus.create({
-    id: "Codiga Create Recipe Context Menu",
-    title: "Create recipe: %s",
-    contexts: ["selection"],
-  });
+chrome.contextMenus.create({
+  id: "Codiga Create Recipe Context Menu",
+  title: "Create recipe: %s",
+  contexts: ["selection"],
+});
 
-  chrome.contextMenus.onClicked.addListener((event, tab) => {
-    chrome.tabs.sendMessage(
-      tab.id,
-      { action: CREATE_RECIPE_FROM_SELECTION },
-      function (response) {}
-    );
-  });
+chrome.contextMenus.onClicked.addListener((event, tab) => {
+  chrome.tabs.sendMessage(
+    tab.id,
+    { action: CREATE_RECIPE_FROM_SELECTION },
+    function (response) {}
+  );
 });

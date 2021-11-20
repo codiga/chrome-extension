@@ -1,7 +1,8 @@
 import { BASE_URL, CREATE_RECIPE_FROM_SELECTION } from "../constants";
 const Buffer = require("buffer/").Buffer;
 
-chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+  console.log("hereeeee");
   if (request.action === CREATE_RECIPE_FROM_SELECTION) {
     const selectionText = window.getSelection().toString();
     const encodedRecipe = Buffer.from(selectionText).toString("base64");
