@@ -25,6 +25,10 @@
       "exclude_matches": ["https://*.github.com/*"],
       "js": ["js/content_script_jupyter.js"],
       "css": []
+    },
+    {
+      "matches": ["<all_urls>"],
+      "js": ["js/content_script_all.js"]
     }
   ],
 

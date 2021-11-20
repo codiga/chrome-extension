@@ -2,7 +2,6 @@ const webpack = require("webpack");
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const srcDir = path.join(__dirname, "..", "src");
-const publicDir = path.join(__dirname, "..", "public");
 
 module.exports = {
     entry: {
@@ -11,6 +10,7 @@ module.exports = {
       background: path.join(srcDir, 'background.ts'),
       content_script_github: path.join(srcDir, 'github/content_script.ts'),
       content_script_jupyter: path.join(srcDir, 'jupyter/content_script.ts'),
+      content_script_all: path.join(srcDir, 'allPages/content_script.ts'),
       styles: path.join(__dirname, '../styles/app.scss')
     },
     output: {
