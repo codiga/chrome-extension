@@ -10,9 +10,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     window.open(`${BASE_URL}/assistant/recipe/create?code=${encodeURIComponent(encodedRecipe)}`, '_blank');
   }
 
-  if (request.action === ADD_CODE_VALIDATION) {
+  /*if (request.action === ADD_CODE_VALIDATION) {
     const observer = new MutationObserver(mutationsCallback(addSearchLogicToCodeMirror));
     observer.observe(document, { childList: true, subtree: true });
-  }
+  }*/
 });
 
