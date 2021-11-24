@@ -4,6 +4,11 @@ import CodigaHighlight from "./customelements/CodigaHighlight";
 import { Dimensions, Position, Violation } from "./types";
 import { getPos } from "./utils";
 
+export type LineRange = {
+  startLine: number;
+  endLine: number;
+};
+
 export const setUpHighlights = (
   codigaExtensionHighlightsElement: CodigaExtensionHighLights,
   codigaElementRef: string,

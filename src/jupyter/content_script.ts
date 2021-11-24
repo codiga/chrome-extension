@@ -1,24 +1,35 @@
 import CodigaElement from "../customelements/CodigaElement";
 import { mutationsCallback, resetComponentShadowDOM } from "../utils";
-import {
-  CodigaStatus,
-} from "../customelements/CodigaStatus";
+import { CodigaStatus } from "../customelements/CodigaStatus";
 import {
   addCodeMirrorListeners,
-  addHiglightToEditViolation
+  addHiglightToEditViolation,
 } from "./containerLogic";
-import '@webcomponents/custom-elements';
+import "@webcomponents/custom-elements";
 
-import { CodeInformation, createPopups, getStatusButton, removeTooltips, updateStatusButton } from "../content_scripts_common";
+import {
+  CodeInformation,
+  createPopups,
+  getStatusButton,
+  removeTooltips,
+  updateStatusButton,
+} from "../content_scripts_common";
 import "../content_scripts_common"; // For side effects
-import { CODIGA_ELEMENT_ID_KEY, getContainerElement } from "../containerElement";
+import {
+  CODIGA_ELEMENT_ID_KEY,
+  getContainerElement,
+} from "../containerElement";
 import { Violation } from "../types";
 import { validateCode } from "../validateCode";
 import { ADD_CODE_VALIDATION } from "../constants";
+import { LineRange } from "../containerLogicCommons";
 
 let containerElement = getContainerElement();
 
-export const runCodeValidation = async (codeInformation: CodeInformation) => {
+export const runCodeValidation = async (
+  codeInformation: CodeInformation,
+  lineRange: LineRange
+) => {
   const {
     code,
     language,
@@ -42,14 +53,15 @@ export const runCodeValidation = async (codeInformation: CodeInformation) => {
       filename,
       id: codeElement.getAttribute(CODIGA_ELEMENT_ID_KEY),
     });
-    
+
     if (!result.violations || !result.violations.length) {
       statusButton.status = CodigaStatus.ALL_GOOD;
     } else {
       addHighlights(
         codigaExtensionHighlightsElement,
         result.violations,
-        codeElement
+        codeElement,
+        lineRange
       );
       updateStatusButton(statusButton, result.violations);
 
@@ -71,28 +83,29 @@ export const runCodeValidation = async (codeInformation: CodeInformation) => {
             addHighlights(
               codigaExtensionHighlightsElement,
               result.violations,
-              codeElement
+              codeElement,
+              lineRange
             );
           }, 150);
         },
         false
       );
-    } 
-  } catch(e) {} 
+    }
+  } catch (e) {}
 };
-
 
 const addHighlights = (
   codigaExtensionHighlightsElement: CodigaElement,
   violations: Violation[],
-  codeElement: HTMLElement
+  codeElement: HTMLElement,
+  lineRange: LineRange
 ) => {
-    resetComponentShadowDOM(codigaExtensionHighlightsElement);
-    const elementRef = codeElement.getAttribute(CODIGA_ELEMENT_ID_KEY);
-    removeTooltips(elementRef);
+  resetComponentShadowDOM(codigaExtensionHighlightsElement);
+  const elementRef = codeElement.getAttribute(CODIGA_ELEMENT_ID_KEY);
+  removeTooltips(elementRef);
 
-    const codigaHighlightsStyle = document.createElement("style");
-    codigaHighlightsStyle.innerHTML = `
+  const codigaHighlightsStyle = document.createElement("style");
+  codigaHighlightsStyle.innerHTML = `
         .codiga-highlight {
             position: absolute;
             z-index: 3; 
@@ -129,25 +142,27 @@ const addHighlights = (
             background: #c1424282;
         }
     `;
-    codigaExtensionHighlightsElement.shadowRoot.appendChild(
-        codigaHighlightsStyle
-    );
+  codigaExtensionHighlightsElement.shadowRoot.appendChild(
+    codigaHighlightsStyle
+  );
 
-    violations.forEach((violation) => {
-        addHiglightToEditViolation(
-            violation,
-            codigaExtensionHighlightsElement,
-            codeElement
-        );
-    });
+  violations.forEach((violation) => {
+    addHiglightToEditViolation(
+      violation,
+      codigaExtensionHighlightsElement,
+      codeElement,
+      lineRange
+    );
+  });
 };
 
 const container = containerElement.container;
 if (container) {
-  const observer = new MutationObserver(mutationsCallback(addCodeMirrorListeners));
+  const observer = new MutationObserver(
+    mutationsCallback(addCodeMirrorListeners)
+  );
   observer.observe(container, { childList: true, subtree: true });
 }
-
 
 // Start point
 createPopups();
@@ -157,10 +172,11 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     containerElement = getContainerElement();
     const container = containerElement.container;
     if (container) {
-        const observer = new MutationObserver(mutationsCallback(addCodeMirrorListeners));
-        observer.observe(container, { childList: true, subtree: true });
+      const observer = new MutationObserver(
+        mutationsCallback(addCodeMirrorListeners)
+      );
+      observer.observe(container, { childList: true, subtree: true });
     }
   }
   sendResponse({ result: true });
 });
-  
