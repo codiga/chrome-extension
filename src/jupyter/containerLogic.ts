@@ -32,11 +32,6 @@ const eventListenerCallback = (codeEventContext: CodeEventContext) => {
   assignSize(codigaExtensionHighlightsElement, codeMirror);
   assignSize(codigaExtensionElement, codeMirror);
 
-  const lineRange: LineRange = {
-    startLine: Number(codeMirror.getAttribute("codiga-start")),
-    endLine: Number(codeMirror.getAttribute("codiga-end")),
-  };
-
   const code = getAllCode();
   const filename = pickFilename();
   const language = pickLanguage(filename);
@@ -51,7 +46,7 @@ const eventListenerCallback = (codeEventContext: CodeEventContext) => {
       filename,
       scrollContainer,
     };
-    runCodeValidation(codigaContext, lineRange);
+    runCodeValidation(codigaContext, codeMirror);
   }
 };
 
@@ -153,12 +148,11 @@ const addLogicToCodeMirrorInstance = (
   };
 
   codeContexts.push(context);
-  codeContexts.forEach(ctx => eventListenerCallback(ctx));
-
   const onCodeElementChange = () => {
     setCodeMirrorLinesRange();
-    codeContexts.forEach(ctx => eventListenerCallback(ctx));
+    codeContexts.forEach((ctx) => eventListenerCallback(ctx));
   };
+
   const observer = new MutationObserver(onCodeElementChange);
   observer.observe(codeElement, { childList: true, subtree: true });
 

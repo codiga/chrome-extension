@@ -34,35 +34,30 @@ class CodeValidator {
   private constructor() {}
 
   static getInstance() {
-    if(!this.instance){
-      this.instance = new CodeValidator(); 
+    if (!this.instance) {
+      this.instance = new CodeValidator();
     }
     return this.instance;
   }
 
-  validateCodePromise = ({
-    code,
-    language,
-    filename,
-    id
-  }) => {
-    if(code != this.code){
+  validateCodePromise = ({ code, language, filename, id }) => {
+    if (code != this.code) {
       this.code = code;
       this.promise = validateCode({
         code,
         language,
         filename,
-        id
+        id,
       });
     }
 
     return this.promise;
-  }
+  };
 }
 
 export const runCodeValidation = async (
   codeInformation: CodeInformation,
-  lineRange: LineRange
+  codeMirror: HTMLElement
 ) => {
   const {
     code,
@@ -86,17 +81,24 @@ export const runCodeValidation = async (
       code,
       language,
       filename,
-      id: elementRef
+      id: elementRef,
     });
 
-    const checkViolationIsInRange = (violation: {line: number}) => {
+    const lineRange: LineRange = {
+      startLine: Number(codeMirror.getAttribute("codiga-start")),
+      endLine: Number(codeMirror.getAttribute("codiga-end")),
+    };
+
+    const checkViolationIsInRange = (violation: { line: number }) => {
       return (
         violation.line >= lineRange.startLine &&
         violation.line < lineRange.endLine
       );
     };
 
-    const findViolationInRange = result.violations.find(checkViolationIsInRange);
+    const findViolationInRange = result.violations.find(
+      checkViolationIsInRange
+    );
     if (
       !result.violations ||
       !result.violations.length ||
@@ -104,13 +106,16 @@ export const runCodeValidation = async (
     ) {
       statusButton.status = CodigaStatus.ALL_GOOD;
     } else {
+      updateStatusButton(
+        statusButton,
+        result.violations.filter(checkViolationIsInRange)
+      );
       addHighlights(
         codigaExtensionHighlightsElement,
         result.violations,
         codeElement,
         lineRange
       );
-      updateStatusButton(statusButton, result.violations.filter(checkViolationIsInRange));
 
       // On scroll highlights should be updated
       let timer: NodeJS.Timeout;
@@ -125,7 +130,10 @@ export const runCodeValidation = async (
           }
 
           timer = setTimeout(function () {
-            updateStatusButton(statusButton, result.violations.filter(checkViolationIsInRange));
+            updateStatusButton(
+              statusButton,
+              result.violations.filter(checkViolationIsInRange)
+            );
             addHighlights(
               codigaExtensionHighlightsElement,
               result.violations,
