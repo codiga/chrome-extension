@@ -85,7 +85,7 @@ export const addHiglightToEditViolation = (
 
 export const addCodeMirrorListeners = () => {
   const codeMirrorList = Array.from(
-    document.querySelectorAll(".CodeMirror:not([detected=true])")
+    document.querySelectorAll(".jp-CodeCell:not([detected=true])")
   ).map((element) => <HTMLElement>element);
   codeMirrorList.forEach(addLogicToCodeMirrorInstance);
 };
@@ -94,7 +94,7 @@ export const addCodeMirrorListeners = () => {
 // instance as attributes to the CodeMirror element.
 const setCodeMirrorLinesRange = () => {
   const detectedCodeMirrorInstances = Array.from(
-    document.querySelectorAll(".CodeMirror[detected=true]")
+    document.querySelectorAll(".jp-CodeCell[detected=true]")
   ).map((element) => <HTMLElement>element);
 
   detectedCodeMirrorInstances.reduce((acc, cm) => {
@@ -165,7 +165,8 @@ const addLogicToCodeMirrorInstance = (
 };
 
 const getAllCode = () => {
-  return Array.from(document.querySelectorAll(".CodeMirror-code"))
+  return Array.from(document.querySelectorAll(".jp-CodeCell[detected=true]"))
+    .flatMap((codeBlock) => codeBlock.querySelector(".CodeMirror-code"))
     .map((cm) => <HTMLElement>cm)
     .reduce((acc, curr) => {
       return acc + getCodeFromCodeElement(curr) + "\n";

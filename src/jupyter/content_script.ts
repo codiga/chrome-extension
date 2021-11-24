@@ -54,7 +54,19 @@ export const runCodeValidation = async (
       id: codeElement.getAttribute(CODIGA_ELEMENT_ID_KEY),
     });
 
-    if (!result.violations || !result.violations.length) {
+    const checkViolationIsInRange = (violation: {line: number}) => {
+      return (
+        violation.line >= lineRange.startLine &&
+        violation.line < lineRange.endLine
+      );
+    };
+
+    const findViolationInRange = result.violations.find(checkViolationIsInRange);
+    if (
+      !result.violations ||
+      !result.violations.length ||
+      !findViolationInRange
+    ) {
       statusButton.status = CodigaStatus.ALL_GOOD;
     } else {
       addHighlights(
@@ -63,7 +75,7 @@ export const runCodeValidation = async (
         codeElement,
         lineRange
       );
-      updateStatusButton(statusButton, result.violations);
+      updateStatusButton(statusButton, result.violations.filter(checkViolationIsInRange));
 
       // On scroll highlights should be updated
       let timer: NodeJS.Timeout;
@@ -79,7 +91,7 @@ export const runCodeValidation = async (
           }
 
           timer = setTimeout(function () {
-            updateStatusButton(statusButton, result.violations);
+            updateStatusButton(statusButton, result.violations.filter(checkViolationIsInRange));
             addHighlights(
               codigaExtensionHighlightsElement,
               result.violations,
