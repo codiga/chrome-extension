@@ -4,32 +4,40 @@ import CodigaHighlight from "./customelements/CodigaHighlight";
 import { Dimensions, Position, Violation } from "./types";
 import { getPos } from "./utils";
 
+export type LineRange = {
+  startLine: number;
+  endLine: number;
+};
+
 export const setUpHighlights = (
-    codigaExtensionHighlightsElement: CodigaExtensionHighLights,
-    codigaElementRef: string, 
-    highlightPosition: Position, 
-    highlightDimensions: Dimensions, 
-    violation: Violation
+  codigaExtensionHighlightsElement: CodigaExtensionHighLights,
+  codigaElementRef: string,
+  highlightPosition: Position,
+  highlightDimensions: Dimensions,
+  violation: Violation
 ) => {
-    const highlightsWrapperPosition = getPos(codigaExtensionHighlightsElement);
-    const codigaHighlight = <CodigaHighlight>(
-        document.createElement("codiga-highlight")
-    );
+  const highlightsWrapperPosition = getPos(codigaExtensionHighlightsElement);
+  const codigaHighlight = <CodigaHighlight>(
+    document.createElement("codiga-highlight")
+  );
 
-    codigaHighlight.classList.add("codiga-highlight");
+  codigaHighlight.classList.add("codiga-highlight");
 
-    codigaHighlight.top = highlightPosition.y - highlightsWrapperPosition.y;
-    codigaHighlight.left = highlightPosition.x - highlightsWrapperPosition.x;
+  codigaHighlight.top = highlightPosition.y - highlightsWrapperPosition.y;
+  codigaHighlight.left = highlightPosition.x - highlightsWrapperPosition.x;
 
-    codigaHighlight.width = highlightDimensions.width;
-    codigaHighlight.height = highlightDimensions.height;
+  codigaHighlight.width = highlightDimensions.width;
+  codigaHighlight.height = highlightDimensions.height;
 
-    const createdTooltipElements = addTooltipToHighlight(codigaHighlight, codigaElementRef, violation);
+  const createdTooltipElements = addTooltipToHighlight(
+    codigaHighlight,
+    codigaElementRef,
+    violation
+  );
 
-    codigaExtensionHighlightsElement.shadowRoot.appendChild(codigaHighlight);
-    
-    
-    createdTooltipElements.forEach((createdElement) => {
-        document.querySelector("codiga-popups").appendChild(createdElement);
-    });
-}
+  codigaExtensionHighlightsElement.shadowRoot.appendChild(codigaHighlight);
+
+  createdTooltipElements.forEach((createdElement) => {
+    document.querySelector("codiga-popups").appendChild(createdElement);
+  });
+};

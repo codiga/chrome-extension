@@ -51,4 +51,13 @@ export const groupBy = (l: Array<any>, key: string) => {
 };
 
 export const timeout = (prom: Promise<any>, time: number) =>
-	Promise.race([prom, new Promise((_r, rej) => setTimeout(rej, time))]);
+  Promise.race([prom, new Promise((_r, rej) => setTimeout(rej, time))]);
+
+export const mutationsCallback =
+  (callback: Function) => (mutationsList: { type: string }[]) => {
+    for (const mutation of mutationsList) {
+      if (mutation.type === "childList") {
+        callback();
+      }
+    }
+  };
