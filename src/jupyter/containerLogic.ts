@@ -82,7 +82,11 @@ export const addHiglightToEditViolation = (
 export const addCodeMirrorListeners = () => {
   const codeMirrorList = Array.from(
     document.querySelectorAll(".jp-CodeCell:not([detected=true])")
-  ).map((element) => <HTMLElement>element);
+  )
+    .concat(
+      Array.from(document.querySelectorAll(".code_cell:not([detected=true])"))
+    )
+    .map((element) => <HTMLElement>element);
   codeMirrorList.forEach(addLogicToCodeMirrorInstance);
 };
 
@@ -91,7 +95,11 @@ export const addCodeMirrorListeners = () => {
 const setCodeMirrorLinesRange = () => {
   const detectedCodeMirrorInstances = Array.from(
     document.querySelectorAll(".jp-CodeCell[detected=true]")
-  ).map((element) => <HTMLElement>element);
+  )
+    .concat(
+      Array.from(document.querySelectorAll(".code_cell[detected=true]"))
+    )
+    .map((element) => <HTMLElement>element);
 
   detectedCodeMirrorInstances.reduce((acc, cm) => {
     cm.setAttribute("codiga-start", `${acc}`);
@@ -163,6 +171,9 @@ const addLogicToCodeMirrorInstance = (
 
 const getAllCode = () => {
   return Array.from(document.querySelectorAll(".jp-CodeCell[detected=true]"))
+    .concat(
+      Array.from(document.querySelectorAll(".code_cell[detected=true]"))
+    )
     .flatMap((codeBlock) => codeBlock.querySelector(".CodeMirror-code"))
     .map((cm) => <HTMLElement>cm)
     .reduce((acc, curr) => {
