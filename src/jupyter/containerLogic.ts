@@ -156,6 +156,7 @@ const addLogicToCodeMirrorInstance = (
   };
 
   codeContexts.push(context);
+  codeContexts.forEach((ctx) => eventListenerCallback(ctx));
   const onCodeElementChange = () => {
     setCodeMirrorLinesRange();
     codeContexts.forEach((ctx) => eventListenerCallback(ctx));
