@@ -19,12 +19,46 @@ import {
   CODIGA_ELEMENT_ID_KEY,
   getContainerElement,
 } from "../containerElement";
-import { Violation } from "../types";
+import { ValidateCodeResult, Violation } from "../types";
 import { validateCode } from "../validateCode";
 import { ADD_CODE_VALIDATION } from "../constants";
 import { LineRange } from "../containerLogicCommons";
 
 let containerElement = getContainerElement();
+
+class CodeValidator {
+  private promise: Promise<ValidateCodeResult>;
+  private code = "";
+  private static instance = undefined;
+
+  private constructor() {}
+
+  static getInstance() {
+    if(!this.instance){
+      this.instance = new CodeValidator(); 
+    }
+    return this.instance;
+  }
+
+  validateCodePromise = ({
+    code,
+    language,
+    filename,
+    id
+  }) => {
+    if(code != this.code){
+      this.code = code;
+      this.promise = validateCode({
+        code,
+        language,
+        filename,
+        id
+      });
+    }
+
+    return this.promise;
+  }
+}
 
 export const runCodeValidation = async (
   codeInformation: CodeInformation,
@@ -46,12 +80,13 @@ export const runCodeValidation = async (
   const elementRef = codeElement.getAttribute(CODIGA_ELEMENT_ID_KEY);
   removeTooltips(elementRef);
 
+  const codeValidator = CodeValidator.getInstance();
   try {
-    const result = await validateCode({
+    const result = await codeValidator.validateCodePromise({
       code,
       language,
       filename,
-      id: codeElement.getAttribute(CODIGA_ELEMENT_ID_KEY),
+      id: elementRef
     });
 
     const checkViolationIsInRange = (violation: {line: number}) => {
@@ -83,7 +118,6 @@ export const runCodeValidation = async (
         "scroll",
         function () {
           resetComponentShadowDOM(codigaExtensionHighlightsElement);
-          const elementRef = codeElement.getAttribute(CODIGA_ELEMENT_ID_KEY);
           removeTooltips(elementRef);
 
           if (timer) {

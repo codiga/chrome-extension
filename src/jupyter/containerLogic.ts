@@ -18,6 +18,8 @@ type CodeEventContext = {
   codeMirror: HTMLElement;
 };
 
+const codeContexts = [];
+
 const eventListenerCallback = (codeEventContext: CodeEventContext) => {
   const {
     codigaExtensionElement,
@@ -35,7 +37,6 @@ const eventListenerCallback = (codeEventContext: CodeEventContext) => {
     endLine: Number(codeMirror.getAttribute("codiga-end")),
   };
 
-  setCodeMirrorLinesRange();
   const code = getAllCode();
   const filename = pickFilename();
   const language = pickLanguage(filename);
@@ -151,10 +152,12 @@ const addLogicToCodeMirrorInstance = (
     scrollContainer: codeScroll,
   };
 
-  eventListenerCallback(context);
+  codeContexts.push(context);
+  codeContexts.forEach(ctx => eventListenerCallback(ctx));
 
   const onCodeElementChange = () => {
-    eventListenerCallback(context);
+    setCodeMirrorLinesRange();
+    codeContexts.forEach(ctx => eventListenerCallback(ctx));
   };
   const observer = new MutationObserver(onCodeElementChange);
   observer.observe(codeElement, { childList: true, subtree: true });
