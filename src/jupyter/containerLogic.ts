@@ -12,16 +12,6 @@ import { pickLanguage } from "../pickLanguage";
 import { Violation } from "../types";
 import { setUpHighlights } from "../containerLogicCommons";
 
-export const detectCodeMirrorInstances = (
-    mutationsList: { type: string }[]
-) => {
-    for (const mutation of mutationsList) {
-    if (mutation.type === "childList") {
-        addCodeMirrorListeners();
-    }
-    }
-};
-
 type CodeEventContext = {
     codigaExtensionElement: CodigaExtension;
     codigaExtensionHighlightsElement: CodigaExtensionHighLights;
@@ -75,7 +65,7 @@ export const addHiglightToEditViolation = (
     setUpHighlights(codigaExtensionHighlightsElement, elementRef, highlightPosition, highlightDimensions, violation);
 };
 
-const addCodeMirrorListeners = () => {
+export const addCodeMirrorListeners = () => {
     const codeMirrorList = Array.from(
         document.querySelectorAll(".CodeMirror:not([detected=true])")
     ).map((element) => <HTMLElement>element);

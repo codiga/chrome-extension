@@ -1,10 +1,11 @@
 import CodigaElement from "../customelements/CodigaElement";
-import { resetComponent, resetComponentShadowDOM } from "../utils";
+import { mutationsCallback, resetComponentShadowDOM } from "../utils";
 import {
   CodigaStatus,
 } from "../customelements/CodigaStatus";
 import {
-  addHiglightToEditViolation, detectCodeMirrorInstances,
+  addCodeMirrorListeners,
+  addHiglightToEditViolation
 } from "./containerLogic";
 import '@webcomponents/custom-elements';
 
@@ -14,7 +15,6 @@ import { CODIGA_ELEMENT_ID_KEY, getContainerElement } from "../containerElement"
 import { Violation } from "../types";
 import { validateCode } from "../validateCode";
 import { ADD_CODE_VALIDATION } from "../constants";
-
 
 let containerElement = getContainerElement();
 
@@ -144,7 +144,7 @@ const addHighlights = (
 
 const container = containerElement.container;
 if (container) {
-  const observer = new MutationObserver(detectCodeMirrorInstances);
+  const observer = new MutationObserver(mutationsCallback(addCodeMirrorListeners));
   observer.observe(container, { childList: true, subtree: true });
 }
 
@@ -157,7 +157,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     containerElement = getContainerElement();
     const container = containerElement.container;
     if (container) {
-        const observer = new MutationObserver(detectCodeMirrorInstances);
+        const observer = new MutationObserver(mutationsCallback(addCodeMirrorListeners));
         observer.observe(container, { childList: true, subtree: true });
     }
   }

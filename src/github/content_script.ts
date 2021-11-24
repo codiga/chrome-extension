@@ -2,11 +2,12 @@ import CodigaElement from "../customelements/CodigaElement";
 import {
   CODIGA_ELEMENT_ID_KEY
 } from "../containerElement";
-import { resetComponentShadowDOM } from "../utils";
+import { mutationsCallback, resetComponentShadowDOM } from "../utils";
 import {
   CodigaStatus,
 } from "../customelements/CodigaStatus";
 import {
+  addCodeMirrorListeners,
   addHiglightToEditViolation,
 } from "./containerLogic";
 import {
@@ -17,7 +18,6 @@ import '@webcomponents/custom-elements';
 import { CodeInformation, createPopups, getStatusButton, removeTooltips, updateStatusButton } from "../content_scripts_common";
 import "../content_scripts_common"; // For side effects
 import { getContainerElement } from "../containerElement";
-import { detectCodeMirrorInstances } from "../github/containerLogic";
 import { addDiffListeners, addHiglightToPullViolation, detectDiffInstances } from "./pull/containerLogic";
 
 import GitHub from 'github-api';
@@ -207,7 +207,7 @@ chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
       if (containerElement.isEdit) {
           const container = <HTMLElement> containerElement.container;
           if (container) {
-              const observer = new MutationObserver(detectCodeMirrorInstances);
+              const observer = new MutationObserver(mutationsCallback(addCodeMirrorListeners));
               observer.observe(container, { childList: true, subtree: true });
           }
       }
