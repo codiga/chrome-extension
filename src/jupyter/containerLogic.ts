@@ -18,8 +18,11 @@ type CodeEventContext = {
   codeMirror: HTMLElement;
 };
 
+<<<<<<< HEAD
 const codeContexts = [];
 
+=======
+>>>>>>> 96c36655173b2f9b8ff062daa7cd5bfde0add7f0
 const eventListenerCallback = (codeEventContext: CodeEventContext) => {
   const {
     codigaExtensionElement,
@@ -32,6 +35,15 @@ const eventListenerCallback = (codeEventContext: CodeEventContext) => {
   assignSize(codigaExtensionHighlightsElement, codeMirror);
   assignSize(codigaExtensionElement, codeMirror);
 
+<<<<<<< HEAD
+=======
+  const lineRange: LineRange = {
+    startLine: Number(codeMirror.getAttribute("codiga-start")),
+    endLine: Number(codeMirror.getAttribute("codiga-end")),
+  };
+
+  setCodeMirrorLinesRange();
+>>>>>>> 96c36655173b2f9b8ff062daa7cd5bfde0add7f0
   const code = getAllCode();
   const filename = pickFilename();
   const language = pickLanguage(filename);
@@ -46,7 +58,11 @@ const eventListenerCallback = (codeEventContext: CodeEventContext) => {
       filename,
       scrollContainer,
     };
+<<<<<<< HEAD
     runCodeValidation(codigaContext, codeMirror);
+=======
+    runCodeValidation(codigaContext, lineRange);
+>>>>>>> 96c36655173b2f9b8ff062daa7cd5bfde0add7f0
   }
 };
 
@@ -81,12 +97,17 @@ export const addHiglightToEditViolation = (
 
 export const addCodeMirrorListeners = () => {
   const codeMirrorList = Array.from(
+<<<<<<< HEAD
     document.querySelectorAll(".jp-CodeCell:not([detected=true])")
   )
     .concat(
       Array.from(document.querySelectorAll(".code_cell:not([detected=true])"))
     )
     .map((element) => <HTMLElement>element);
+=======
+    document.querySelectorAll(".CodeMirror:not([detected=true])")
+  ).map((element) => <HTMLElement>element);
+>>>>>>> 96c36655173b2f9b8ff062daa7cd5bfde0add7f0
   codeMirrorList.forEach(addLogicToCodeMirrorInstance);
 };
 
@@ -94,12 +115,17 @@ export const addCodeMirrorListeners = () => {
 // instance as attributes to the CodeMirror element.
 const setCodeMirrorLinesRange = () => {
   const detectedCodeMirrorInstances = Array.from(
+<<<<<<< HEAD
     document.querySelectorAll(".jp-CodeCell[detected=true]")
   )
     .concat(
       Array.from(document.querySelectorAll(".code_cell[detected=true]"))
     )
     .map((element) => <HTMLElement>element);
+=======
+    document.querySelectorAll(".CodeMirror[detected=true]")
+  ).map((element) => <HTMLElement>element);
+>>>>>>> 96c36655173b2f9b8ff062daa7cd5bfde0add7f0
 
   detectedCodeMirrorInstances.reduce((acc, cm) => {
     cm.setAttribute("codiga-start", `${acc}`);
@@ -129,6 +155,7 @@ const addLogicToCodeMirrorInstance = (
     CODIGA_ELEMENT_ID_KEY,
     JSON.stringify(getPos(<HTMLElement>codeElement))
   );
+<<<<<<< HEAD
 
   const codigaExtensionElement = <CodigaExtension>(
     document.createElement("codiga-extension")
@@ -182,6 +209,55 @@ const getAllCode = () => {
     }, "");
 };
 
+=======
+
+  const codigaExtensionElement = <CodigaExtension>(
+    document.createElement("codiga-extension")
+  );
+  codigaExtensionElement.style.cssText +=
+    "position: absolute; top: 0px; left: 0px";
+  codeMirror.insertBefore(codigaExtensionElement, codeMirror.firstChild);
+
+  const codigaExtensionHighlightsElement = <CodigaExtensionHighLights>(
+    document.createElement("codiga-extension-highlights")
+  );
+  codigaExtensionHighlightsElement.style.cssText +=
+    "position: absolute; top: 0px; left: 0px";
+  codePresentation?.insertBefore(
+    codigaExtensionHighlightsElement,
+    codePresentation.firstChild
+  );
+
+  const context = {
+    codeMirror,
+    codigaExtensionElement,
+    codigaExtensionHighlightsElement,
+    codeElement,
+    scrollContainer: codeScroll,
+  };
+
+  eventListenerCallback(context);
+
+  const onCodeElementChange = () => {
+    eventListenerCallback(context);
+  };
+  const observer = new MutationObserver(onCodeElementChange);
+  observer.observe(codeElement, { childList: true, subtree: true });
+
+  window.addEventListener("resize", () => {
+    assignSize(codigaExtensionElement, codeMirror);
+  });
+};
+
+const getAllCode = () => {
+  return Array.from(document.querySelectorAll(".CodeMirror-code"))
+    .map((cm) => <HTMLElement>cm)
+    .reduce((acc, curr) => {
+      return acc + getCodeFromCodeElement(curr) + "\n";
+    }, "");
+};
+
+>>>>>>> 96c36655173b2f9b8ff062daa7cd5bfde0add7f0
 const getCodeFromCodeElement = (codeElement: HTMLElement): string => {
   return Array.from(codeElement.children)
     .map((lineElement) => {

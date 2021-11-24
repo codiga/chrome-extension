@@ -45,7 +45,7 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
 // Recipe creation
 chrome.contextMenus.create({
   id: "Codiga Create Recipe Context Menu",
-  title: "Create recipe: %s",
+  title: "Create Codiga Recipe",
   contexts: ["selection"],
 });
 
