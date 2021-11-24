@@ -18,6 +18,8 @@ type CodeEventContext = {
   codeMirror: HTMLElement;
 };
 
+const codeContexts = [];
+
 const eventListenerCallback = (codeEventContext: CodeEventContext) => {
   const {
     codigaExtensionElement,
@@ -30,12 +32,6 @@ const eventListenerCallback = (codeEventContext: CodeEventContext) => {
   assignSize(codigaExtensionHighlightsElement, codeMirror);
   assignSize(codigaExtensionElement, codeMirror);
 
-  const lineRange: LineRange = {
-    startLine: Number(codeMirror.getAttribute("codiga-start")),
-    endLine: Number(codeMirror.getAttribute("codiga-end")),
-  };
-
-  setCodeMirrorLinesRange();
   const code = getAllCode();
   const filename = pickFilename();
   const language = pickLanguage(filename);
@@ -50,7 +46,7 @@ const eventListenerCallback = (codeEventContext: CodeEventContext) => {
       filename,
       scrollContainer,
     };
-    runCodeValidation(codigaContext, lineRange);
+    runCodeValidation(codigaContext, codeMirror);
   }
 };
 
@@ -85,8 +81,12 @@ export const addHiglightToEditViolation = (
 
 export const addCodeMirrorListeners = () => {
   const codeMirrorList = Array.from(
-    document.querySelectorAll(".CodeMirror:not([detected=true])")
-  ).map((element) => <HTMLElement>element);
+    document.querySelectorAll(".jp-CodeCell:not([detected=true])")
+  )
+    .concat(
+      Array.from(document.querySelectorAll(".code_cell:not([detected=true])"))
+    )
+    .map((element) => <HTMLElement>element);
   codeMirrorList.forEach(addLogicToCodeMirrorInstance);
 };
 
@@ -94,8 +94,12 @@ export const addCodeMirrorListeners = () => {
 // instance as attributes to the CodeMirror element.
 const setCodeMirrorLinesRange = () => {
   const detectedCodeMirrorInstances = Array.from(
-    document.querySelectorAll(".CodeMirror[detected=true]")
-  ).map((element) => <HTMLElement>element);
+    document.querySelectorAll(".jp-CodeCell[detected=true]")
+  )
+    .concat(
+      Array.from(document.querySelectorAll(".code_cell[detected=true]"))
+    )
+    .map((element) => <HTMLElement>element);
 
   detectedCodeMirrorInstances.reduce((acc, cm) => {
     cm.setAttribute("codiga-start", `${acc}`);
@@ -151,11 +155,13 @@ const addLogicToCodeMirrorInstance = (
     scrollContainer: codeScroll,
   };
 
-  eventListenerCallback(context);
-
+  codeContexts.push(context);
+  codeContexts.forEach((ctx) => eventListenerCallback(ctx));
   const onCodeElementChange = () => {
-    eventListenerCallback(context);
+    setCodeMirrorLinesRange();
+    codeContexts.forEach((ctx) => eventListenerCallback(ctx));
   };
+
   const observer = new MutationObserver(onCodeElementChange);
   observer.observe(codeElement, { childList: true, subtree: true });
 
@@ -165,7 +171,11 @@ const addLogicToCodeMirrorInstance = (
 };
 
 const getAllCode = () => {
-  return Array.from(document.querySelectorAll(".CodeMirror-code"))
+  return Array.from(document.querySelectorAll(".jp-CodeCell[detected=true]"))
+    .concat(
+      Array.from(document.querySelectorAll(".code_cell[detected=true]"))
+    )
+    .flatMap((codeBlock) => codeBlock.querySelector(".CodeMirror-code"))
     .map((cm) => <HTMLElement>cm)
     .reduce((acc, curr) => {
       return acc + getCodeFromCodeElement(curr) + "\n";

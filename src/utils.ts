@@ -22,7 +22,7 @@ export const getPos = (el: HTMLElement): Position => {
 
 export const getDimensions = (el: HTMLElement): Dimensions => {
   let rect = getBoudingClientRect(el);
-  return { width: rect.width, height: rect.height };
+  return { width: rect.width > 1?rect.width:100, height: rect.height };
 };
 
 export const resetComponentShadowDOM = (element: HTMLElement) => {
