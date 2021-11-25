@@ -3,12 +3,30 @@ import { runCodeValidation } from "./content_script";
 import CodigaElement from "../customelements/CodigaElement";
 import CodigaExtension from "../customelements/CodigaExtension";
 import CodigaExtensionHighLights from "../customelements/CodigaExtensionHighlights";
-import { assignSize, getDimensions, getPos } from "../utils";
+import {
+  assignSize,
+  getDetectedSelector,
+  getDimensions,
+  getPos,
+} from "../utils";
 import { CODIGA_ELEMENT_ID_KEY } from "../containerElement";
 import { pickFilename } from "./pickFilename";
 import { pickLanguage } from "../pickLanguage";
 import { Violation } from "../types";
 import { LineRange, setUpHighlights } from "../containerLogicCommons";
+import {
+  CODE_CELL_CLASS,
+  CODE_MIRROR_CODE_CLASS,
+  CODE_MIRROR_LINE,
+  CODE_MIRROR_LINES_CLASS,
+  CODE_MIRROR_LINE_CLASS,
+  CODE_MIRROR_SCROLL_CLASS,
+  CODIGA_END,
+  CODIGA_EXTENSION,
+  CODIGA_START,
+  JP_CODE_CELL_CLASS,
+  ROLE_PRESENTATION,
+} from "../constants";
 
 type CodeEventContext = {
   codigaExtensionElement: CodigaExtension;
@@ -81,10 +99,12 @@ export const addHiglightToEditViolation = (
 
 export const addCodeMirrorListeners = () => {
   const codeMirrorList = Array.from(
-    document.querySelectorAll(".jp-CodeCell:not([detected=true])")
+    document.querySelectorAll(getDetectedSelector(JP_CODE_CELL_CLASS, false))
   )
     .concat(
-      Array.from(document.querySelectorAll(".code_cell:not([detected=true])"))
+      Array.from(
+        document.querySelectorAll(getDetectedSelector(CODE_CELL_CLASS, false))
+      )
     )
     .map((element) => <HTMLElement>element);
   codeMirrorList.forEach(addLogicToCodeMirrorInstance);
@@ -94,17 +114,19 @@ export const addCodeMirrorListeners = () => {
 // instance as attributes to the CodeMirror element.
 const setCodeMirrorLinesRange = () => {
   const detectedCodeMirrorInstances = Array.from(
-    document.querySelectorAll(".jp-CodeCell[detected=true]")
+    document.querySelectorAll(getDetectedSelector(JP_CODE_CELL_CLASS))
   )
     .concat(
-      Array.from(document.querySelectorAll(".code_cell[detected=true]"))
+      Array.from(
+        document.querySelectorAll(getDetectedSelector(CODE_CELL_CLASS))
+      )
     )
     .map((element) => <HTMLElement>element);
 
   detectedCodeMirrorInstances.reduce((acc, cm) => {
-    cm.setAttribute("codiga-start", `${acc}`);
-    const codeMirrorLines = cm.querySelectorAll(".CodeMirror-line").length;
-    cm.setAttribute("codiga-end", `${acc + codeMirrorLines}`);
+    cm.setAttribute(CODIGA_START, `${acc}`);
+    const codeMirrorLines = cm.querySelectorAll(CODE_MIRROR_LINE_CLASS).length;
+    cm.setAttribute(CODIGA_END, `${acc + codeMirrorLines}`);
     return acc + codeMirrorLines;
   }, 1);
 };
@@ -115,23 +137,23 @@ const addLogicToCodeMirrorInstance = (
 ) => {
   codeMirror.setAttribute("detected", `${true}`);
 
-  const codeMirrorLines = codeMirror.querySelector(".CodeMirror-lines");
+  const codeMirrorLines = codeMirror.querySelector(CODE_MIRROR_LINES_CLASS);
   const codeScroll = <HTMLElement>(
-    codeMirror.querySelector(".CodeMirror-scroll")
+    codeMirror.querySelector(CODE_MIRROR_SCROLL_CLASS)
   );
 
-  const codePresentation = codeMirrorLines?.querySelector(
-    '[role="presentation"]'
-  );
+  const codePresentation = codeMirrorLines?.querySelector(ROLE_PRESENTATION);
 
-  const codeElement = <HTMLElement>codeMirror.querySelector(".CodeMirror-code");
+  const codeElement = <HTMLElement>(
+    codeMirror.querySelector(CODE_MIRROR_CODE_CLASS)
+  );
   codeElement?.setAttribute(
     CODIGA_ELEMENT_ID_KEY,
     JSON.stringify(getPos(<HTMLElement>codeElement))
   );
 
   const codigaExtensionElement = <CodigaExtension>(
-    document.createElement("codiga-extension")
+    document.createElement(CODIGA_EXTENSION)
   );
   codigaExtensionElement.style.cssText +=
     "position: absolute; top: 0px; left: 0px";
@@ -171,11 +193,15 @@ const addLogicToCodeMirrorInstance = (
 };
 
 const getAllCode = () => {
-  return Array.from(document.querySelectorAll(".jp-CodeCell[detected=true]"))
+  return Array.from(
+    document.querySelectorAll(getDetectedSelector(JP_CODE_CELL_CLASS))
+  )
     .concat(
-      Array.from(document.querySelectorAll(".code_cell[detected=true]"))
+      Array.from(
+        document.querySelectorAll(getDetectedSelector(CODE_CELL_CLASS))
+      )
     )
-    .flatMap((codeBlock) => codeBlock.querySelector(".CodeMirror-code"))
+    .flatMap((codeBlock) => codeBlock.querySelector(CODE_MIRROR_CODE_CLASS))
     .map((cm) => <HTMLElement>cm)
     .reduce((acc, curr) => {
       return acc + getCodeFromCodeElement(curr) + "\n";
@@ -185,10 +211,10 @@ const getAllCode = () => {
 const getCodeFromCodeElement = (codeElement: HTMLElement): string => {
   return Array.from(codeElement.children)
     .map((lineElement) => {
-      if (lineElement.getAttribute("class")?.includes("CodeMirror-line")) {
+      if (lineElement.getAttribute("class")?.includes(CODE_MIRROR_LINE)) {
         return lineElement.textContent.replace(/\u200B/g, "");
       } else {
-        const codeLine = lineElement.querySelector(".CodeMirror-line");
+        const codeLine = lineElement.querySelector(CODE_MIRROR_LINE_CLASS);
         return codeLine.textContent.replace(/\u200B/g, "");
       }
     })

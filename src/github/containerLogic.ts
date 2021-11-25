@@ -5,13 +5,14 @@ import { getHighlightDimensions } from "../content_scripts_common";
 import CodigaElement from "../customelements/CodigaElement";
 import CodigaExtension from "../customelements/CodigaExtension";
 import CodigaExtensionHighLights from "../customelements/CodigaExtensionHighlights";
-import { assignSize, getPos } from "../utils";
+import { assignSize, getDetectedSelector, getPos } from "../utils";
 import { CODIGA_ELEMENT_ID_KEY } from "../containerElement";
 
 import { pickFilename } from "./pickFilename";
 import { pickLanguage } from "../pickLanguage";
 import { Violation } from "../types";
 import { setUpHighlights } from "../containerLogicCommons";
+import { CODE_MIRROR_CLASS, CODE_MIRROR_CODE_CLASS, CODE_MIRROR_GUTTER_WRAPPER_CLASS, CODE_MIRROR_LINE, CODE_MIRROR_LINES_CLASS, CODE_MIRROR_LINE_CLASS, CODE_MIRROR_SCROLL_CLASS, ROLE_PRESENTATION } from "../constants";
 
 type CodeEventContext = {
   codigaExtensionElement: CodigaExtension;
@@ -61,7 +62,7 @@ export const addHiglightToEditViolation = (
   const line = violation.line;
   const lineToHighlight = Array.from(codeElement.children).find((child) => {
     return (
-      child.querySelector(".CodeMirror-gutter-wrapper")?.textContent ===
+      child.querySelector(CODE_MIRROR_GUTTER_WRAPPER_CLASS)?.textContent ===
       `${line}`
     );
   });
@@ -69,12 +70,12 @@ export const addHiglightToEditViolation = (
 
   const lineToHighlightClass = lineToHighlight.getAttribute("class");
   const isCodeMirrorLine =
-    lineToHighlightClass && lineToHighlightClass.includes("CodeMirror-line");
+    lineToHighlightClass && lineToHighlightClass.includes(CODE_MIRROR_LINE);
   const codeWrapperElement = isCodeMirrorLine
     ? lineToHighlight
-    : lineToHighlight.querySelector(".CodeMirror-line");
+    : lineToHighlight.querySelector(CODE_MIRROR_LINE_CLASS);
   const codeToHighlightElement = codeWrapperElement?.querySelector(
-    "[role=presentation]"
+    ROLE_PRESENTATION
   );
 
   if (codeToHighlightElement) {
@@ -92,7 +93,7 @@ export const addHiglightToEditViolation = (
 
 export const addCodeMirrorListeners = () => {
   const codeMirrorList = Array.from(
-    document.querySelectorAll(".CodeMirror:not([detected=true])")
+    document.querySelectorAll(getDetectedSelector(CODE_MIRROR_CLASS, false))
   ).map((element) => <HTMLElement>element);
   codeMirrorList.forEach(addLogicToCodeMirrorInstance);
 };
@@ -100,16 +101,16 @@ export const addCodeMirrorListeners = () => {
 const addLogicToCodeMirrorInstance = (codeMirror: HTMLElement) => {
   codeMirror.setAttribute("detected", `${true}`);
 
-  const codeMirrorLines = codeMirror.querySelector(".CodeMirror-lines");
+  const codeMirrorLines = codeMirror.querySelector(CODE_MIRROR_LINES_CLASS);
   const codeScroll = <HTMLElement>(
-    codeMirror.querySelector(".CodeMirror-scroll")
+    codeMirror.querySelector(CODE_MIRROR_SCROLL_CLASS)
   );
 
   const codePresentation = codeMirrorLines?.querySelector(
     '[role="presentation"]'
   );
 
-  const codeElement = <HTMLElement>codeMirror.querySelector(".CodeMirror-code");
+  const codeElement = <HTMLElement>codeMirror.querySelector(CODE_MIRROR_CODE_CLASS);
   codeElement?.setAttribute(
     CODIGA_ELEMENT_ID_KEY,
     JSON.stringify(getPos(<HTMLElement>codeElement))

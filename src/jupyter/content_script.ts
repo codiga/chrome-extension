@@ -21,7 +21,7 @@ import {
 } from "../containerElement";
 import { ValidateCodeResult, Violation } from "../types";
 import { validateCode } from "../validateCode";
-import { ADD_CODE_VALIDATION } from "../constants";
+import { ADD_CODE_VALIDATION, CODIGA_END, CODIGA_START } from "../constants";
 import { LineRange } from "../containerLogicCommons";
 
 let containerElement = getContainerElement();
@@ -85,8 +85,8 @@ export const runCodeValidation = async (
     });
 
     const lineRange: LineRange = {
-      startLine: Number(codeMirror.getAttribute("codiga-start")),
-      endLine: Number(codeMirror.getAttribute("codiga-end")),
+      startLine: Number(codeMirror.getAttribute(CODIGA_START)),
+      endLine: Number(codeMirror.getAttribute(CODIGA_END)),
     };
 
     const checkViolationIsInRange = (violation: { line: number }) => {

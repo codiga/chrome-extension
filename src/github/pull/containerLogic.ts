@@ -20,6 +20,7 @@ import { CodigaStatus } from "../../customelements/CodigaStatus";
 import { Violation } from "../../types";
 import { validateCode } from "../../validateCode";
 import { setUpHighlights } from "../../containerLogicCommons";
+import { BLOB_CODE_INNER } from "../../constants";
 
 // File structure retrieved by GitHub API
 type FileInformation = {sha: string, filename: string}
@@ -129,7 +130,7 @@ export const addHiglightToPullViolation = (
       blubNum.getAttribute('data-line-number') ===
       `${line}`
     );
-  }).parentElement.querySelector('.blob-code-inner');
+  }).parentElement.querySelector(BLOB_CODE_INNER);
 
   if (!lineToHighlight) return;
 

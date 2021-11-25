@@ -12,17 +12,17 @@ import CodigaHighlight from "./customelements/CodigaHighlight";
 import { Violation } from "./types";
 import CodigaPopups from "./customelements/CodigaPopups";
 import { CODIGA_ELEMENT_ID_KEY } from "./containerElement";
-
-export const PRETTY_CATEGORIES: Record<string, string> = {
-  Code_Style: "Code style",
-  Error_Prone: "Error prone",
-  Documentation: "Documentation",
-  Security: "Security",
-  Design: "Design",
-  Safety: "Safety",
-  Best_Practice: "Best practice",
-  Unknown: "Unknown",
-};
+import {
+  CODIGA_ELEMENT_REFERENCE,
+  CODIGA_EXTENSION,
+  CODIGA_EXTENSION_HIGHLIGHTS,
+  CODIGA_HIGHLIGHT,
+  CODIGA_POPUPS,
+  CODIGA_STATUS_BTN,
+  CODIGA_TOOLTIP,
+  CODIGA_WRAPPER_CLASS,
+  PRETTY_CATEGORIES,
+} from "./constants";
 
 export type CodeInformation = {
   code: string;
@@ -82,8 +82,8 @@ export const addTooltipToHighlight = (
           .join("")}
         </div>
         `;
-  tooltip.classList.add("codiga-tooltip");
-  tooltip.setAttribute("codiga-element-reference", codeElementRef);
+  tooltip.classList.add(CODIGA_TOOLTIP);
+  tooltip.setAttribute(CODIGA_ELEMENT_REFERENCE, codeElementRef);
 
   const popperInstance: Instance = createPopper(highlight, tooltip);
 
@@ -104,7 +104,7 @@ export const addTooltipToHighlight = (
 export const removeTooltips = (codeElementReference: string) => {
   document
     .querySelectorAll(
-      `.codiga-tooltip[codiga-element-reference='${codeElementReference}']`
+      `.${CODIGA_TOOLTIP}[${CODIGA_ELEMENT_REFERENCE}='${codeElementReference}']`
     )
     .forEach((codigaTooltipElement) => {
       codigaTooltipElement.parentElement.removeChild(codigaTooltipElement);
@@ -115,15 +115,15 @@ export const getStatusButton = (
   codigaExtensionElement: CodigaExtension
 ): CodigaStatusButton => {
   const codigaWrapper =
-    codigaExtensionElement.shadowRoot.querySelector(".codiga-wrapper");
-  const codigaButtonDOM = codigaWrapper?.querySelector("codiga-status-btn");
+    codigaExtensionElement.shadowRoot.querySelector(CODIGA_WRAPPER_CLASS);
+  const codigaButtonDOM = codigaWrapper?.querySelector(CODIGA_STATUS_BTN);
 
   if (codigaButtonDOM) {
     return <CodigaStatusButton>codigaButtonDOM;
   }
 
   const codigaButton = <CodigaStatusButton>(
-    document.createElement("codiga-status-btn")
+    document.createElement(CODIGA_STATUS_BTN)
   );
   codigaButton.status = CodigaStatus.LOADING;
   codigaWrapper?.appendChild(codigaButton);
@@ -182,7 +182,7 @@ export const updateStatusButton = (
 };
 
 export const createPopups = () => {
-  const popupsElement = document.createElement("codiga-popups");
+  const popupsElement = document.createElement(CODIGA_POPUPS);
   document.querySelector("body").append(popupsElement);
 
   const style = document.createElement("style");
@@ -210,11 +210,11 @@ export const createPopups = () => {
   document.querySelector("head").append(style);
 };
 
-window.customElements.define("codiga-status-btn", CodigaStatusButton);
-window.customElements.define("codiga-extension", CodigaExtension);
+window.customElements.define(CODIGA_STATUS_BTN, CodigaStatusButton);
+window.customElements.define(CODIGA_EXTENSION, CodigaExtension);
 window.customElements.define(
-  "codiga-extension-highlights",
+  CODIGA_EXTENSION_HIGHLIGHTS,
   CodigaExtensionHighLights
 );
-window.customElements.define("codiga-highlight", CodigaHighlight);
-window.customElements.define("codiga-popups", CodigaPopups);
+window.customElements.define(CODIGA_HIGHLIGHT, CodigaHighlight);
+window.customElements.define(CODIGA_POPUPS, CodigaPopups);

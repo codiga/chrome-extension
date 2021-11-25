@@ -1,3 +1,4 @@
+import { CODIGA_HIGHLIGHT, CODIGA_POPUPS } from "./constants";
 import { addTooltipToHighlight } from "./content_scripts_common";
 import CodigaExtensionHighLights from "./customelements/CodigaExtensionHighlights";
 import CodigaHighlight from "./customelements/CodigaHighlight";
@@ -18,10 +19,10 @@ export const setUpHighlights = (
 ) => {
   const highlightsWrapperPosition = getPos(codigaExtensionHighlightsElement);
   const codigaHighlight = <CodigaHighlight>(
-    document.createElement("codiga-highlight")
+    document.createElement(CODIGA_HIGHLIGHT)
   );
 
-  codigaHighlight.classList.add("codiga-highlight");
+  codigaHighlight.classList.add(CODIGA_HIGHLIGHT);
 
   codigaHighlight.top = highlightPosition.y - highlightsWrapperPosition.y;
   codigaHighlight.left = highlightPosition.x - highlightsWrapperPosition.x;
@@ -38,6 +39,6 @@ export const setUpHighlights = (
   codigaExtensionHighlightsElement.shadowRoot.appendChild(codigaHighlight);
 
   createdTooltipElements.forEach((createdElement) => {
-    document.querySelector("codiga-popups").appendChild(createdElement);
+    document.querySelector(CODIGA_POPUPS).appendChild(createdElement);
   });
 };
