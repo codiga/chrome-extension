@@ -7,6 +7,7 @@ import { CODIGA_ELEMENT_ID_KEY, ContainerElement } from "../../containerElement"
 import { runCodeValidation } from "../content_script";
 import { Violation } from "../../types";
 import { setUpHighlights } from "../../containerLogicCommons";
+import { BLOB_CODE_CLASS, CODIGA_EXTENSION, CODIGA_EXTENSION_HIGHLIGHTS } from "../../constants";
 
 type CodeEventContext = {
   codigaExtensionElement: CodigaExtension;
@@ -61,7 +62,7 @@ export const addHiglightToViewViolation = (
   );
   if (!lineToHighlight) return;
 
-  const codeToHighlight = lineToHighlight.querySelector(".blob-code");
+  const codeToHighlight = lineToHighlight.querySelector(BLOB_CODE_CLASS);
   if (
     codeToHighlight &&
     codeToHighlight.firstChild &&
@@ -102,7 +103,7 @@ export const addLogicToCodeBoxInstance = (
   );
 
   const codigaExtensionElement = <CodigaExtension>(
-    document.createElement("codiga-extension")
+    document.createElement(CODIGA_EXTENSION)
   );
   codigaExtensionElement.style.cssText += `position: absolute; top: ${topOffset}px; left: 0px`;
   containerElement.container.insertBefore(
@@ -111,7 +112,7 @@ export const addLogicToCodeBoxInstance = (
   );
 
   const codigaExtensionHighlightsElement = <CodigaExtensionHighLights>(
-    document.createElement("codiga-extension-highlights")
+    document.createElement(CODIGA_EXTENSION_HIGHLIGHTS)
   );
   codigaExtensionHighlightsElement.style.cssText += `position: absolute; top: ${topOffset}px; left: 0px`;
   codeBoxContainer.insertBefore(
@@ -137,7 +138,7 @@ const getCodeFromTable = (codeBox: HTMLElement) => {
   return Array.from(codeBox.querySelectorAll("tr"))
     .map((tr) => {
       return tr
-        .querySelector(".blob-code")
+        .querySelector(BLOB_CODE_CLASS)
         ?.textContent?.replace(/\u200B/g, "")
         .replace("\n", "");
     })

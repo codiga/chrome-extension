@@ -61,3 +61,7 @@ export const mutationsCallback =
       }
     }
   };
+
+export const getDetectedSelector =  (selector: string, isDetected: boolean=true) => {
+  return `${selector}${isDetected?"[detected=true]":":not([detected=true])"}`
+}
