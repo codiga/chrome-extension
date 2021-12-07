@@ -1,11 +1,11 @@
 import { v4 as uuidv4 } from "uuid";
 import { createClient } from "@urql/core";
-import { groupBy, timeout } from "./utils";
+import { groupBy } from "./utils";
 import  {ValidateCodeResult, ValidateCodeInformation, Violation} from './types';
 import { createFileAnalysisMutation, getFileAnalysisQuery } from "./graphQLQueries";
 
 const client = createClient({
-  url: "https://www.code-inspector.com/graphql",
+  url: "https://api.codiga.io/graphql",
   requestPolicy: 'cache-and-network'
 });
 
