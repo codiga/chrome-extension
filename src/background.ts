@@ -2,6 +2,7 @@ import {
   ADD_CODE_VALIDATION,
   GITHUB_KEY,
   CREATE_RECIPE_FROM_SELECTION,
+  ANALYSIS_ENABLED_KEY,
 } from "./constants";
 
 /**
@@ -15,13 +16,17 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
     );
 
     if (GITHUB_KEY === key) {
-      chrome.tabs.query({}, function (tabs) {
-        for (var i = 0; i < tabs.length; ++i) {
-          chrome.tabs.sendMessage(
-            tabs[i].id,
-            { action: ADD_CODE_VALIDATION },
-            function (response) {}
-          );
+      chrome.storage.sync.get(ANALYSIS_ENABLED_KEY, (obj) => {
+        if (obj[ANALYSIS_ENABLED_KEY] === "true") {
+          chrome.tabs.query({}, function (tabs) {
+            for (var i = 0; i < tabs.length; ++i) {
+              chrome.tabs.sendMessage(
+                tabs[i].id,
+                { action: ADD_CODE_VALIDATION },
+                function (response) {}
+              );
+            }
+          });
         }
       });
     }
@@ -34,11 +39,15 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
 // To load content-script again when url changes
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
   if (changeInfo.url || changeInfo.status === "complete") {
-    chrome.tabs.sendMessage(
-      tabId,
-      { action: ADD_CODE_VALIDATION },
-      function (response) {}
-    );
+    chrome.storage.sync.get(ANALYSIS_ENABLED_KEY, (obj) => {
+      if (obj[ANALYSIS_ENABLED_KEY] === "true") {
+        chrome.tabs.sendMessage(
+          tabId,
+          { action: ADD_CODE_VALIDATION },
+          function (response) {}
+        );
+      }
+    });
   }
 });
 

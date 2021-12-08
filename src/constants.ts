@@ -48,3 +48,5 @@ export const PRETTY_CATEGORIES: Record<string, string> = {
   Best_Practice: "Best practice",
   Unknown: "Unknown",
 };
+
+export const ANALYSIS_ENABLED_KEY = "codiga-analysis-enabled";
