@@ -1,29 +1,42 @@
-# chrome-extension
+# Codiga Plugin for Chrome
 
 ## General structure of the project
 
-**manifest.json**
+This is the source code for the Chrome plugin for Codiga.
 
-General settings of the plugin
+Codiga provides two main functionalities:
 
-**content-script.js**
+ - **Coding Assistant**: import or create reusable code blocks based on your context
+ - **Code Analysis**: no-configuration code analysis for 12+ language for Jupyter and GitHub
 
-Is injected into the target pages. It's loaded when the page renders, cannot call the backend but can communicate with the background scripts through messages. It's used to manipulate the DOM and add visual modifications on top of existing components.
-It's used in Codiga to add highlights and other visual components on GitHub, Jupyter, etc.
+## Quickstart 
 
-**/components**
+The plugin is available on the [Chrome web store](https://plugins.jetbrains.com/plugin/17969-codiga) 
+and you can install it by just clicking "Add to Chrome"
 
-Has visual HTML5 elements that are used to highlight errors, and add the extension blocks on top of GitHub and Jupyter components.
+![image](https://user-images.githubusercontent.com/90006571/145100624-073d5344-4fa8-4e1e-b036-8f8a572cb377.png)
 
-* **CodigaElement:** Base element for CodigaExtension and CodigaExtensionHighlights wrappers. Has common properties like width, height, and shadow root.
-* **CodigaExtension:** Extends CodigaElement, it's just a wrapper on top of Code Mirror or any code container component in the pages, here are things like the StatusButton component.
-* **CodigaExtensionHighlights:** Extends CodigaElement, it's a wrapper on top of an inner code container component, where all the highlights and tooltips are added without affecting the functionality of the code container. Users can still edit code.
-* **CodigaHighlight:** Component to highlight violations in code, when hovered on, a tooltip is shown giving an explanation of the violation.
-* **CodigaStatus:** Status mark with 3 possible states. LOADING, ALL_GOOD or # of violations. Shows up in the bottom right of the code container.
+## Use in Jupyter
 
-**/external**
+After installing it'll do automatic code analysis when you open a Jupyter Notebook or a Jupyter Lab instance in your browser.
 
-Contains external libraries for adding tooltips, being able to use custom elements, etc.
+![jupyter-codiga-gif](https://user-images.githubusercontent.com/90006571/145106392-b0f00bcb-d2ec-4c03-90b2-bc499f444f07.gif)
 
-* **custom-elements.min.js:** Allows creating custom components by extending HTMLElement and define them through window.customElements.define. (See /components) 
-* **popper.js:** Allows adding tooltips to highlights with ease
+## Use in GitHub
+
+### Public repositories
+
+For **public repositories** Codiga will also automatically start analysis while viewing or editing files, and also in Pull Requests
+
+![Dec-07-2021 16-06-53](https://user-images.githubusercontent.com/90006571/145106436-b74c40aa-8ced-4e1a-a29f-03bbaa41bb4b.gif)
+
+### Private repositories
+
+For **private repositories** Codiga will still work for viewing or editing source files, but not when analysing pull requests, it will throw a notification asking you to add a GitHub Token with access to that repository. By clicking the notification it will open a new tab where you can create GitHub tokens.
+
+![private-key-github](https://user-images.githubusercontent.com/90006571/145107901-5363b0a0-b841-41c0-9042-d84e0dc4a574.gif)
+
+
+After you create your token all you have to do is save it **locally** so the plugin can use it, for this you can simply open the extension popup and add the GitHub token.
+
+![set-codiga-token](https://user-images.githubusercontent.com/90006571/145108586-5e003193-da3d-43c3-9977-fc8b9577bf18.gif)
