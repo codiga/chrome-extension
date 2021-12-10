@@ -40,3 +40,17 @@ For **private repositories** Codiga will still work for viewing or editing sourc
 After you create your token all you have to do is save it **locally** so the plugin can use it, for this you can simply open the extension popup and add the GitHub token.
 
 ![set-codiga-token](https://user-images.githubusercontent.com/90006571/145108586-5e003193-da3d-43c3-9977-fc8b9577bf18.gif)
+
+## Coding Assistant
+
+### Create Coding Assistant recipes
+
+After you install the plugin, you will have an item named "Create Codiga Recipe" in the context menu of your browser by right clicking a selection in any page.
+
+![image](https://user-images.githubusercontent.com/90006571/145613477-6d16d4f1-16c0-48e0-ae62-ffa7853cde39.png)
+
+When you click this item it will redirect you to [Codiga's Coding Assistant](https://app.codiga.io/assistant/recipe/list) where you can manage your own private code recipes and cookbooks, or even you can make it public so they're posted in [Codiga's Marketplace](https://app.codiga.io/marketplace).
+
+![codiga-create-recipe](https://user-images.githubusercontent.com/90006571/145614983-e495c13b-8f51-4f98-a232-e9160005e2f7.gif)
+
+
