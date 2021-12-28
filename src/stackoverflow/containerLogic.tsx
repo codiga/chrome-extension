@@ -1,10 +1,7 @@
 import ReactDOM from "react-dom";
 import React from "react";
-import {
-  CODE_MIRROR_CLASS,
-  STACK_OVERFLOW_CODE_CLASS,
-} from "../constants";
-import RecipeCreateForm from "./components/RecipeCreate";
+import { CODE_MIRROR_CLASS, STACK_OVERFLOW_CODE_CLASS } from "../constants";
+import RecipeCreateButton from "./components/RecipeCreateButton";
 import { pickLanguage } from "./pickLanguage";
 
 const NOT_DETECTED_SEARCH_BAR_SELECTOR =
@@ -32,8 +29,23 @@ export const addSearchBarToCodeBlockInstance = (codeBlock: HTMLElement) => {
   const searchBarElement = document.createElement("div");
 
   codeBlock.parentElement.insertBefore(searchBarElement, codeBlock);
-  const language = pickLanguage(codeBlock.getAttribute('class'));
-  ReactDOM.render(<RecipeCreateForm code={getCodeFromBlock(codeBlock)} language={language} />, searchBarElement);
+  const language = pickLanguage(codeBlock.getAttribute("class"));
+  const isDarkMode = ![undefined, null].includes(
+    document.querySelector(".theme-dark")
+  );
+  const keywords = Array.from(document.querySelectorAll(".post-tag"))
+    .map((element) => element.textContent)
+    .filter((keyword) => keyword.length);
+
+  ReactDOM.render(
+    <RecipeCreateButton
+      code={getCodeFromBlock(codeBlock)}
+      language={language}
+      keywords={keywords}
+      isDarkMode={isDarkMode}
+    />,
+    searchBarElement
+  );
 };
 
 export const getCodeFromBlock = (codeBlock: HTMLElement): string => {
