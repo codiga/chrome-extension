@@ -3,6 +3,8 @@ export const ADD_CODE_VALIDATION = "ADD_CODE_VALIDATION";
 export const CREATE_RECIPE_FROM_SELECTION = "CREATE_RECIPE_FROM_SELECTION";
 export const BASE_URL = "https://app.codiga.io";
 
+export const STACK_OVERFLOW_CODE_CLASS = ".s-code-block";
+
 export const CODE_MIRROR_CLASS = ".CodeMirror";
 export const CODE_MIRROR_LINES_CLASS = ".CodeMirror-lines";
 export const CODE_MIRROR_LINE_CLASS = ".CodeMirror-line";

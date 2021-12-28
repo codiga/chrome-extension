@@ -1,6 +1,6 @@
 import { ADD_CODE_VALIDATION, BASE_URL, CREATE_RECIPE_FROM_SELECTION } from "../constants";
 import { mutationsCallback } from "../utils";
-import { addSearchLogicToCodeMirror } from "./containerLogic";
+import { addSearchLogicToCodeBlock } from "./containerLogic";
 const Buffer = require("buffer/").Buffer;
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -10,9 +10,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     window.open(`${BASE_URL}/assistant/recipe/create?code=${encodeURIComponent(encodedRecipe)}`, '_blank');
   }
 
-  /*if (request.action === ADD_CODE_VALIDATION) {
-    const observer = new MutationObserver(mutationsCallback(addSearchLogicToCodeMirror));
+  if (request.action === ADD_CODE_VALIDATION) {
+    const observer = new MutationObserver(mutationsCallback(addSearchLogicToCodeBlock));
     observer.observe(document, { childList: true, subtree: true });
-  }*/
+  }
 });
 
