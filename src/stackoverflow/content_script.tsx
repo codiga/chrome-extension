@@ -3,6 +3,7 @@ import { mutationsCallback } from "../utils";
 import { addSearchLogicToCodeBlock } from "./containerLogic";
 const Buffer = require("buffer/").Buffer;
 
+addSearchLogicToCodeBlock();
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === CREATE_RECIPE_FROM_SELECTION) {
     const selectionText = window.getSelection().toString();
