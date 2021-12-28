@@ -27,9 +27,8 @@
       "css": []
     },
     {
-      "matches": ["<all_urls>"],
-      "exclude_matches": ["https://app.codiga.io/*"],
-      "js": ["js/content_script_all.js"]
+      "matches": ["https://stackoverflow.com/*"],
+      "js": ["js/content_script_stackoverflow.js"]
     }
   ],
 
