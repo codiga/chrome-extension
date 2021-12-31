@@ -11,6 +11,7 @@ module.exports = {
       content_script_github: path.join(srcDir, 'github/content_script.ts'),
       content_script_jupyter: path.join(srcDir, 'jupyter/content_script.ts'),
       content_script_stackoverflow: path.join(srcDir, 'stackoverflow/content_script.tsx'),
+      content_script_all: path.join(srcDir, 'allPages/content_script.tsx'),
       styles: path.join(__dirname, '../styles/app.scss')
     },
     output: {

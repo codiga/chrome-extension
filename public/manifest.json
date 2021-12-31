@@ -3,7 +3,7 @@
 
   "name": "Codiga",
   "description": "Code analysis for GitHub and Python notebooks",
-  "version": "0.0.7",
+  "version": "0.0.8",
 
   "options_ui": {
     "page": "options.html"
@@ -29,6 +29,13 @@
     {
       "matches": ["https://stackoverflow.com/*"],
       "js": ["js/content_script_stackoverflow.js"]
+    },
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "js": ["js/content_script_all.js"],
+      "css": []
     }
   ],
 
