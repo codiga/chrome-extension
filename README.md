@@ -11,7 +11,7 @@ Codiga provides two main functionalities:
 
 ## Quickstart 
 
-The plugin is available on the [Chrome web store](https://plugins.jetbrains.com/plugin/17969-codiga) 
+The plugin is available on the [Chrome web store](https://chrome.google.com/webstore/detail/codiga/dbkhkhonmelajjempmoadocgneoadjge) 
 and you can install it by just clicking "Add to Chrome"
 
 ![image](https://user-images.githubusercontent.com/90006571/145100624-073d5344-4fa8-4e1e-b036-8f8a572cb377.png)
