@@ -3,7 +3,7 @@
 
   "name": "Codiga",
   "description": "Recipe creation for Codiga's coding assistant made easy",
-  "version": "0.0.8",
+  "version": "0.0.9",
 
   "options_ui": {
     "page": "options.html"
