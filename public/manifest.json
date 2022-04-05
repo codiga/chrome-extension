@@ -2,7 +2,7 @@
   "manifest_version": 3,
 
   "name": "Codiga",
-  "description": "Code analysis for GitHub and Python notebooks",
+  "description": "Recipe creation for Codiga's coding assistant made easy",
   "version": "0.0.8",
 
   "options_ui": {
@@ -29,8 +29,7 @@
       "48": "icon48.png",
       "128": "icon128.png"
     },
-    "default_title": "Codiga",
-    "default_popup": "popup.html"
+    "default_title": "Codiga"
   },
   "background": {
     "service_worker": "js/background.js"
