@@ -11,22 +11,6 @@
 
   "content_scripts": [
     {
-      "matches": ["https://*.github.com/*"],
-      "js": ["js/content_script_github.js"],
-      "css": ["toastify.css"]
-    },
-    {
-      "matches": [
-        "https://*/*.ipynb*",
-        "http://*/*.ipynb*",
-        "http://*/lab/*",
-        "https://*/lab/*"
-      ],
-      "exclude_matches": ["https://*.github.com/*"],
-      "js": ["js/content_script_jupyter.js"],
-      "css": []
-    },
-    {
       "matches": ["https://stackoverflow.com/*"],
       "js": ["js/content_script_stackoverflow.js"]
     },

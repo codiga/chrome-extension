@@ -4,26 +4,26 @@ import { CODE_MIRROR_CLASS, STACK_OVERFLOW_CODE_CLASS } from "../constants";
 import RecipeCreateButton from "./components/RecipeCreateButton";
 import { pickLanguage } from "./pickLanguage";
 
-const NOT_DETECTED_SEARCH_BAR_SELECTOR =
+const NOT_DETECTED_CREATE_BUTTON_SELECTOR =
   ":not([detectedCodeFunctionalities=true])";
-export const addSearchLogicToCodeBlock = () => {
+export const addCreateLogicToCodeBlock = () => {
   const codeBlockList = Array.from(
     Array.from(
       document.querySelectorAll(
-        `${CODE_MIRROR_CLASS}${NOT_DETECTED_SEARCH_BAR_SELECTOR}`
+        `${CODE_MIRROR_CLASS}${NOT_DETECTED_CREATE_BUTTON_SELECTOR}`
       )
     ).concat(
       Array.from(
         document.querySelectorAll(
-          `${STACK_OVERFLOW_CODE_CLASS}${NOT_DETECTED_SEARCH_BAR_SELECTOR}`
+          `${STACK_OVERFLOW_CODE_CLASS}${NOT_DETECTED_CREATE_BUTTON_SELECTOR}`
         )
       )
     )
   ).map((element) => element as HTMLElement);
-  codeBlockList.forEach(addSearchBarToCodeBlockInstance);
+  codeBlockList.forEach(addCreateRecipeToCodeBlockInstance);
 };
 
-export const addSearchBarToCodeBlockInstance = (codeBlock: HTMLElement) => {
+export const addCreateRecipeToCodeBlockInstance = (codeBlock: HTMLElement) => {
   codeBlock.setAttribute("detectedCodeFunctionalities", `${true}`);
 
   const searchBarElement = document.createElement("div");

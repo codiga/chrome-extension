@@ -1,53 +1,12 @@
-import {
-  ADD_CODE_VALIDATION,
-  GITHUB_KEY,
-  CREATE_RECIPE_FROM_SELECTION,
-  ANALYSIS_ENABLED_KEY,
-} from "./constants";
+import { ADD_RECIPE_CREATION, CREATE_RECIPE_FROM_SELECTION } from "./constants";
 
-/**
- * When the GitHub key this sends a request to the content_script to run code validation again
- */
-chrome.storage.onChanged.addListener(function (changes, namespace) {
-  for (let [key, { oldValue, newValue }] of Object.entries(changes)) {
-    console.log(
-      `Storage key "${key}" in namespace "${namespace}" changed.`,
-      `Old value was "${oldValue}", new value is "${newValue}".`
-    );
-
-    if (GITHUB_KEY === key) {
-      chrome.storage.sync.get(ANALYSIS_ENABLED_KEY, (obj) => {
-        if (obj[ANALYSIS_ENABLED_KEY] === "true") {
-          chrome.tabs.query({}, function (tabs) {
-            for (var i = 0; i < tabs.length; ++i) {
-              chrome.tabs.sendMessage(
-                tabs[i].id,
-                { action: ADD_CODE_VALIDATION },
-                function (response) {}
-              );
-            }
-          });
-        }
-      });
-    }
-  }
-});
-
-/**
- * When the GitHub key this sends a request to the content_script to run code validation again
- */
-// To load content-script again when url changes
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
   if (changeInfo.url || changeInfo.status === "complete") {
-    chrome.storage.sync.get(ANALYSIS_ENABLED_KEY, (obj) => {
-      if (obj[ANALYSIS_ENABLED_KEY] === "true") {
-        chrome.tabs.sendMessage(
-          tabId,
-          { action: ADD_CODE_VALIDATION },
-          function (response) {}
-        );
-      }
-    });
+    chrome.tabs.sendMessage(
+      tabId,
+      { action: ADD_RECIPE_CREATION },
+      function (response) {}
+    );
   }
 });
 
