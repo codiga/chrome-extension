@@ -35,7 +35,7 @@
     "service_worker": "js/background.js"
   },
 
-  "permissions": ["storage", "contextMenus"],
+  "permissions": ["contextMenus"],
 
   "web_accessible_resources": [
     {
