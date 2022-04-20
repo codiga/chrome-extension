@@ -700,6 +700,11 @@
   resolved "https://registry.npmjs.org/@types/stack-utils/-/stack-utils-2.0.1.tgz"
   integrity sha512-Hl219/BT5fLAaz6NDkSuhzasy49dwQS/DSdu4MdggFB8zcXv7vflBI3xp7FEmkmdDkBUI2bPUNeMttp2knYdxw==
 
+"@types/toastify-js@^1.11.0":
+  version "1.11.0"
+  resolved "https://registry.yarnpkg.com/@types/toastify-js/-/toastify-js-1.11.0.tgz#a316be1fe3e164214b2b884266aa33167032f565"
+  integrity sha512-ifVUCImUYrnX1SraZrBS8GDXhWTwuTXZYRbftqrKHiwe6TVUO8mp441A4fYG8LXdyuiEavCdcgdLw3QBerK6oQ==
+
 "@types/uuid@^8.3.1":
   version "8.3.1"
   resolved "https://registry.npmjs.org/@types/uuid/-/uuid-8.3.1.tgz"
@@ -2947,10 +2952,10 @@ react-is@^17.0.1:
   resolved "https://registry.npmjs.org/react-is/-/react-is-17.0.2.tgz"
   integrity sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==
 
-react-shadow-root@^6.1.0:
-  version "6.1.0"
-  resolved "https://registry.yarnpkg.com/react-shadow-root/-/react-shadow-root-6.1.0.tgz#a5f3b5deac5759f7a557e4a2ed6042aba4ea71b7"
-  integrity sha512-ju416JZcvYMC98njQ0ANCF2KTQvN1+2lwmemdExK3ReRCPIgkesIh4dzobd/J5K2hUQve04dp/e6dd2RqgJY4g==
+react-shadow-root@^6.2.0:
+  version "6.2.0"
+  resolved "https://registry.yarnpkg.com/react-shadow-root/-/react-shadow-root-6.2.0.tgz#35f8516fd9957a68e01971f57604ad7e5c42f7f6"
+  integrity sha512-ruFCVvbzFjWordVAZnrIcVNZpHz7whpNW2sRrAYBPmRpE9uTyN0Xt/1lkw52ktAmoSUkEptF2hjfISHmPirKTg==
 
 react-toggle@^4.1.2:
   version "4.1.2"
@@ -3337,7 +3342,7 @@ to-regex-range@^5.0.1:
 
 toastify-js@^1.11.2:
   version "1.11.2"
-  resolved "https://registry.npmjs.org/toastify-js/-/toastify-js-1.11.2.tgz"
+  resolved "https://registry.yarnpkg.com/toastify-js/-/toastify-js-1.11.2.tgz#5c66cb05cee30b09e5bd8961ab809e41a3ce716c"
   integrity sha512-bMBNKhZLPX/sDhpwM7KHIRUTtqCylQeoZDiEWy5zE7iDUJ92XmP8AKgDAp9rXx6pR5GXGFtQHHoH62toahbHgQ==
 
 tough-cookie@^4.0.0:

@@ -1,4 +1,10 @@
-import { BASE_URL, CREATE_RECIPE_FROM_SELECTION } from "../constants";
+import {
+  BASE_URL,
+  CODIGA_API_TOKEN,
+  CREATE_RECIPE_FROM_SELECTION,
+} from "../constants";
+import Toastify from "toastify-js";
+
 const Buffer = require("buffer/").Buffer;
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
@@ -11,5 +17,34 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       )}`,
       "_blank"
     );
+  }
+});
+
+chrome.storage.sync.get([CODIGA_API_TOKEN], async function (obj) {
+  const token = obj[CODIGA_API_TOKEN];
+
+  if (!token) {
+    Toastify({
+      text: `<img src='${chrome.runtime.getURL(
+        "icon16.png"
+      )}'/><br/> We invite you to add your Codiga token`,
+      destination: "https://app.codiga.io/api-tokens",
+      newWindow: true,
+      close: true,
+      stopOnFocus: true,
+      escapeMarkup: false,
+      duration: 5000,
+      style: {
+        background: "#300623",
+        color: "white",
+        fontSize: "0.8rem",
+        transform: "translate(0px, 0px)",
+        top: "15px",
+        position: "absolute",
+        right: "15px",
+        zIndex: "100000",
+        padding: "1rem"
+      },
+    }).showToast();
   }
 });

@@ -3,6 +3,7 @@
     src: url(/public/OpenSans-Regular.ttf) format("truetype");
 }
 @import './variables.scss';
+@import './popup.scss';
 
 .flex {
     display: flex;
