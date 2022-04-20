@@ -8,14 +8,13 @@ const Popup = () => {
   const [codigaToken, setGitHubToken] = useState("");
   const [storedCodigaToken, setStoredCodigaToken] = useState("");
   const [inputError, setInputError] = useState("");
-  const [globalError, setGlobalError] = useState("");
 
   useEffect(() => {
     chrome.storage.sync.get(CODIGA_API_TOKEN, function (obj) {
         setStoredCodigaToken(obj[CODIGA_API_TOKEN] || "");
     });
   }, []);
-  
+
   const saveGitHubToken = async (gitHubToken: string) => {
     if (!gitHubToken.length) {
       setInputError("Required");
@@ -66,18 +65,18 @@ const Popup = () => {
         )}
         {storedCodigaToken.length === 0 && (
           <div id="popup-body" className="flex column">
-            {globalError.length > 0 && (
+            {/*globalError.length > 0 && (
               <div className="error-block">{globalError}</div>
-            )}
+            )*/}
             <span className="flex">
               Set your{" "}
-              <a href="https://app.codiga.io/api-tokens" target="_blank">
+              <a href="https://app.codiga.io/api-tokens" target="_blank" rel="noreferrer">
                 Codiga API Token
               </a>
               :
             </span>
             <ol>
-              <li>It's used to search your private snippets from the browser</li>
+              <li>It&apos;s used to search your private snippets from the browser</li>
               <li>It will only be stored in your local storage</li>
             </ol>
             <input
