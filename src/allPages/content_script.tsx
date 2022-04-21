@@ -2,6 +2,7 @@ import {
   BASE_URL,
   CODIGA_API_TOKEN,
   CREATE_RECIPE_FROM_SELECTION,
+  INSTALL_NOTIFICATION_SHOWN,
 } from "../constants";
 import Toastify from "toastify-js";
 
@@ -20,10 +21,11 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 });
 
-chrome.storage.sync.get([CODIGA_API_TOKEN], async function (obj) {
+chrome.storage.sync.get([CODIGA_API_TOKEN, INSTALL_NOTIFICATION_SHOWN], async function (obj) {
   const token = obj[CODIGA_API_TOKEN];
+  const installedNotificationShown = obj[INSTALL_NOTIFICATION_SHOWN];;
 
-  if (!token) {
+  if (!token && !installedNotificationShown) {
     Toastify({
       text: `<img src='${chrome.runtime.getURL(
         "icon16.png"
@@ -46,5 +48,9 @@ chrome.storage.sync.get([CODIGA_API_TOKEN], async function (obj) {
         padding: "1rem"
       },
     }).showToast();
+
+    chrome.storage.sync.set({ [INSTALL_NOTIFICATION_SHOWN]: "true" }, function () {
+      console.log("Updated shown notification flag");
+    });
   }
 });

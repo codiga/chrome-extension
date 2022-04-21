@@ -4,3 +4,5 @@ export const ADD_RECIPE_CREATION = "ADD_RECIPE_CREATION";
 export const STACK_OVERFLOW_CODE_CLASS = ".s-code-block";
 export const CODE_MIRROR_CLASS = ".CodeMirror";
 export const CODIGA_API_TOKEN = "codiga-api-token";
+export const INSTALL_NOTIFICATION_SHOWN = "install-notification-shown";
+
