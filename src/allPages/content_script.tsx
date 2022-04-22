@@ -23,7 +23,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 chrome.storage.sync.get([CODIGA_API_TOKEN, INSTALL_NOTIFICATION_SHOWN], async function (obj) {
   const token = obj[CODIGA_API_TOKEN];
-  const installedNotificationShown = obj[INSTALL_NOTIFICATION_SHOWN];;
+  const installedNotificationShown = obj[INSTALL_NOTIFICATION_SHOWN];
 
   if (!token && !installedNotificationShown) {
     Toastify({
