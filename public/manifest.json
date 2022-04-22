@@ -3,7 +3,7 @@
 
   "name": "Codiga",
   "description": "Create, share and use Code Snippets from your browser",
-  "version": "0.0.9",
+  "version": "0.0.10",
 
   "options_ui": {
     "page": "options.html"
@@ -29,13 +29,14 @@
       "48": "icon48.png",
       "128": "icon128.png"
     },
+    "default_popup": "popup.html",
     "default_title": "Codiga"
   },
   "background": {
     "service_worker": "js/background.js"
   },
 
-  "permissions": ["contextMenus"],
+  "permissions": ["storage", "contextMenus"],
 
   "web_accessible_resources": [
     {
