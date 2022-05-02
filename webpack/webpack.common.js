@@ -7,9 +7,10 @@ module.exports = {
     entry: {
       popup: path.join(srcDir, 'popup.tsx'),
       background: path.join(srcDir, 'background.ts'),
-      content_script_stackoverflow: path.join(srcDir, 'stackoverflow/content_script.tsx'),
-      content_script_all: path.join(srcDir, 'allPages/content_script.tsx'),
-      styles: path.join(__dirname, '../styles/app.scss')
+      content_script_stackoverflow: path.join(srcDir, 'stackoverflow/contentScript.tsx'),
+      content_script_all: path.join(srcDir, 'allPages/contentScript.tsx'),
+      styles: path.join(__dirname, '../styles/app.scss'),
+      web_styles: path.join(__dirname, '../styles/webapp.scss')
     },
     output: {
         path: path.join(__dirname, "../dist/js"),

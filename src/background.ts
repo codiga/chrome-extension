@@ -1,4 +1,4 @@
-import { ADD_RECIPE_CREATION, CREATE_RECIPE_FROM_SELECTION } from "./constants";
+import { ADD_CODE_ASSISTANCE, ADD_RECIPE_CREATION, CREATE_RECIPE_FROM_SELECTION } from "./constants";
 
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
   if (changeInfo.url || changeInfo.status === "complete") {
@@ -8,6 +8,12 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
       function (response) {}
     );
   }
+
+  chrome.tabs.sendMessage(
+    tabId,
+    { action: ADD_CODE_ASSISTANCE },
+    function (response) {}
+  );
 });
 
 // Recipe creation
