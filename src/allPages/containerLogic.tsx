@@ -9,11 +9,7 @@ import {
   REPLIT_EDITOR_CURSOR,
   REPLIT_EDITOR_SCROLL,
 } from "../constants";
-import {
-  generateFingerprint,
-  getAssistantRecipesByShortcut,
-} from "../graphql/fetcher";
-import { getRecipesByShortcut } from "../graphql/queries";
+import { getAssistantRecipesByShortcut } from "../graphql/fetcher";
 import { AssistantRecipe } from "../types";
 import { getDetectedSelector, getDimensions, getPos } from "../utils";
 import {
@@ -25,12 +21,11 @@ import {
 import {
   enableShortcutsPolling,
   fetchPeriodicShortcuts,
-  fetchShortcuts,
   getShortcutCache,
 } from "./shortcutCache";
 
 export const CODIGA_ELEMENT_ID_KEY = "codiga-id";
-export var cacheCode = "";
+export let cacheCode = "";
 
 export const addCodeMirrorListeners = () => {
   const codeMirrorList = Array.from(
@@ -100,7 +95,7 @@ const getRecipes = async (
 };
 
 const eventListenerCallback = async (codeEventContext: CodeEventContext) => {
-  const { codeElement, shortcutDropdownElement, language } = codeEventContext;
+  const { codeElement, shortcutDropdownElement } = codeEventContext;
 
   const activeLineCode = getCodeFromActiveLine(codeElement);
   const code = getCodeFromCodeElement(codeElement);
@@ -129,7 +124,7 @@ const eventListenerCallback = async (codeEventContext: CodeEventContext) => {
                 activeLineIndex,
               };
             })
-            .catch((_) => {
+            .catch(() => {
               shortcutDropdownElement.context = {
                 recipes: [],
                 code,

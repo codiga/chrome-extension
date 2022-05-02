@@ -5,14 +5,18 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
     chrome.tabs.sendMessage(
       tabId,
       { action: ADD_RECIPE_CREATION },
-      function (response) {}
+      function () {
+        return;
+      }
     );
   }
 
   chrome.tabs.sendMessage(
     tabId,
     { action: ADD_CODE_ASSISTANCE },
-    function (response) {}
+    function () {
+      return;
+    }
   );
 });
 
@@ -27,6 +31,8 @@ chrome.contextMenus.onClicked.addListener((event, tab) => {
   chrome.tabs.sendMessage(
     tab.id,
     { action: CREATE_RECIPE_FROM_SELECTION },
-    function (response) {}
+    function () {
+      return;
+    }
   );
 });

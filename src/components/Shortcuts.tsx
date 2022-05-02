@@ -13,6 +13,7 @@ const Shortcuts = (props: PropsType) => {
     <div>
       {context.recipes.map((shortcut) => (
         <button
+          key={shortcut.shortcut}
           onClick={() => {
             const content = document.querySelector(".cm-content");
             const splitCode = context.code.split("\n");

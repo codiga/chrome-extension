@@ -1,16 +1,14 @@
 import { Dimensions, Position } from "./types";
 
 const getBoudingClientRect = (el: HTMLElement) => {
-  let rect;
-  if (el && el.getBoundingClientRect) {
-    rect = el.getBoundingClientRect();
-  } else {
-    var range = document.createRange();
-    range.selectNode(el);
-    rect = range.getBoundingClientRect();
-    range.detach();
+  if (el && el.getBoundingClientRect()) {
+    return el.getBoundingClientRect();
   }
 
+  var range = document.createRange();
+  range.selectNode(el);
+  const rect = range.getBoundingClientRect();
+  range.detach();
   return rect;
 };
 
@@ -21,7 +19,7 @@ export const getPos = (el: HTMLElement): Position => {
 
 export const getDimensions = (el: HTMLElement): Dimensions => {
   let rect = getBoudingClientRect(el);
-  return { width: rect.width > 1?rect.width:100, height: rect.height };
+  return { width: rect.width > 1 ? rect.width : 100, height: rect.height };
 };
 
 export const resetComponentShadowDOM = (element: HTMLElement) => {
@@ -34,14 +32,14 @@ export const resetComponent = (element: HTMLElement) => {
   element.innerHTML = "";
 };
 
-export const groupBy = (l: Array<any>, key: string) => {
+export const groupBy = (l: Array<unknown>, key: string) => {
   return l.reduce((acc, curr) => {
     (acc[curr[key]] = acc[curr[key]] || []).push(curr);
     return acc;
   }, {});
 };
 
-export const timeout = (prom: Promise<any>, time: number) =>
+export const timeout = (prom: Promise<unknown>, time: number) =>
   Promise.race([prom, new Promise((_r, rej) => setTimeout(rej, time))]);
 
 export const mutationsCallback =
@@ -53,6 +51,8 @@ export const mutationsCallback =
     }
   };
 
-export const getDetectedSelector =  (selector: string, isDetected: boolean=true) => {
-  return `${selector}${isDetected?"[detected=true]":":not([detected=true])"}`
-} 
+export const getDetectedSelector = (selector: string, isDetected = true) => {
+  return `${selector}${
+    isDetected ? "[detected=true]" : ":not([detected=true])"
+  }`;
+};

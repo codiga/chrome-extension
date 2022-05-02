@@ -192,7 +192,7 @@ export const fetchShortcuts = async () => {
  */
 export const fetchPeriodicShortcuts = async () => {
   if (enablePeriodicPolling) {
-    await fetchShortcuts().catch((e) => {
+    await fetchShortcuts().catch(() => {
       console.error("error while fetching shortcuts");
     });
     garbageCollection(cache);

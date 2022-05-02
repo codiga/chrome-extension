@@ -5,7 +5,6 @@ import React from "react";
 import Shortcuts from "./Shortcuts";
 import { Position, ShortcutContext } from "../types";
 
-
 const style = `
   .codiga-shortcut-dropdown button {
     padding: 0.3rem;
@@ -21,7 +20,7 @@ const style = `
     cursor: pointer;
     background: #F0F1F2;
   }
-`
+`;
 
 export default class ShortcutDropdown extends HTMLElement {
   root: ReactDOM.Root;
@@ -33,10 +32,9 @@ export default class ShortcutDropdown extends HTMLElement {
 
     const mountPoint = document.createElement("div");
     mountPoint.setAttribute("class", "codiga-shortcut-dropdown");
-    this.attachShadow({ mode: "open" })
+    this.attachShadow({ mode: "open" });
 
-
-    const innerStyle = document.createElement("style")
+    const innerStyle = document.createElement("style");
     innerStyle.innerHTML = style;
 
     this.shadowRoot.append(innerStyle);
@@ -90,7 +88,7 @@ export default class ShortcutDropdown extends HTMLElement {
     return ["top", "left"];
   }
 
-  attributeChangedCallback(name: string, oldValue: any, newValue: number) {
+  attributeChangedCallback(name: string, oldValue: number, newValue: number) {
     if (name === "top") {
       this.style.top = `${newValue}px`;
     }

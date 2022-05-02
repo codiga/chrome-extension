@@ -53,8 +53,7 @@ export const getAssistantRecipesByShortcut = async (request: {
 };
 
 export async function getRecipesForClientByShorcutLastTimestamp(
-  language: string,
-  dependencies: string[]
+  language: string
 ): Promise<number | undefined> {
   // Convert array of parameters into k1=v1;k2=v2
 
