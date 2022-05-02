@@ -5,7 +5,7 @@ const getBoudingClientRect = (el: HTMLElement) => {
     return el.getBoundingClientRect();
   }
 
-  var range = document.createRange();
+  let range = document.createRange();
   range.selectNode(el);
   const rect = range.getBoundingClientRect();
   range.detach();
@@ -18,7 +18,7 @@ export const getPos = (el: HTMLElement): Position => {
 };
 
 export const getDimensions = (el: HTMLElement): Dimensions => {
-  let rect = getBoudingClientRect(el);
+  const rect = getBoudingClientRect(el);
   return { width: rect.width > 1 ? rect.width : 100, height: rect.height };
 };
 
