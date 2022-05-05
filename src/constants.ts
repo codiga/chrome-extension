@@ -21,7 +21,7 @@ export const REPLIT_EDITOR_ACTIVE_LINE = ".cm-activeLine";
 export const REPLIT_EDITOR_CURSOR = ".cm-cursor-primary";
 export const REPLIT_EDITOR_SCROLL = ".cm-scroller";
 export const REPLIT_FILE_TREE = ".dir-node";
-export const REPLIT_ACTIVE_FILE = ".node.active";
+export const REPLIT_ACTIVE_FILE = ".file-path";
 
 export const ROLE_PRESENTATION = "[role=presentation]";
 

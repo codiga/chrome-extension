@@ -9,6 +9,7 @@ module.exports = {
       background: path.join(srcDir, 'background.ts'),
       content_script_stackoverflow: path.join(srcDir, 'stackoverflow/contentScript.tsx'),
       content_script_all: path.join(srcDir, 'allPages/contentScript.tsx'),
+      content_script_replit: path.join(srcDir, 'replit/contentScript.tsx'),
       styles: path.join(__dirname, '../styles/app.scss'),
       web_styles: path.join(__dirname, '../styles/webapp.scss')
     },

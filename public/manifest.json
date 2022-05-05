@@ -18,7 +18,11 @@
       "matches": [
         "<all_urls>"
       ],
-      "js": ["js/content_script_all.js", "js/web_styles.js"]
+      "js": ["js/content_script_all.js"]
+    },
+    {
+      "matches": ["https://replit.com/*"],
+      "js": ["js/content_script_replit.js", "js/web_styles.js"]
     }
   ],
 

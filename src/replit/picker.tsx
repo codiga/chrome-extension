@@ -40,8 +40,7 @@ export const getLanguageFromFilename = (fileName: string) => {
 };
 
 export const pickFilename = () => {
-  const fileTree = document.querySelector(REPLIT_FILE_TREE);
-  const activeFile = fileTree.querySelector(REPLIT_ACTIVE_FILE);
+  const activeFile = document.querySelector(REPLIT_ACTIVE_FILE);
   return activeFile.textContent;
 };
 
