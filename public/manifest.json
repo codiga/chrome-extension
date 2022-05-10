@@ -3,7 +3,7 @@
 
   "name": "Codiga",
   "description": "Create, share and use Code Snippets from your browser",
-  "version": "0.0.10",
+  "version": "0.0.11",
 
   "options_ui": {
     "page": "options.html"
