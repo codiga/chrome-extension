@@ -56,9 +56,6 @@ export const CodigaLogo = () => {
           <stop stopColor="#F71C9D" />
           <stop offset="1" stopColor="#FC8926" />
         </linearGradient>
-        <clipPath id="clip0">
-          <rect width="61" height="23" fill="white" />
-        </clipPath>
       </defs>
     </svg>
   );

@@ -7,7 +7,7 @@ import {
   } from "../constants";
   import Toastify from "toastify-js";
   import {
-    addCodeMirrorListeners,
+    addCodeMirrorListeners, addCodigaPanel,
   } from "./containerLogic";
   import { mutationsCallback } from "../utils";
   import ShortcutDropdown from "../components/ShortcutDropdown";
@@ -18,10 +18,12 @@ import {
     if (request.action === ADD_CODE_ASSISTANCE) {
       const container = document.querySelector("body");
       if (container) {
-        const observer = new MutationObserver(
+        addCodigaPanel(container);
+        // Remove this to add shortcut functionality
+        /*const observer = new MutationObserver(
           mutationsCallback(addCodeMirrorListeners)
         );
-        observer.observe(container, { childList: true, subtree: true });
+        observer.observe(container, { childList: true, subtree: true });*/
       }
     }
   });

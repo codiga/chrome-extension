@@ -60,3 +60,7 @@ export const getDetectedSelector = (selector: string, isDetected = true) => {
     isDetected ? "[detected=true]" : ":not([detected=true])"
   }`;
 };
+
+export function copyToClipboard(text: string) {
+  navigator.clipboard.writeText(text);
+}

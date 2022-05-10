@@ -41,7 +41,7 @@ export const getLanguageFromFilename = (fileName: string) => {
 
 export const pickFilename = () => {
   const activeFile = document.querySelector(REPLIT_ACTIVE_FILE);
-  return activeFile.textContent;
+  return activeFile?activeFile.textContent:"";
 };
 
 export const pickLanguage = () => {

@@ -38,10 +38,19 @@ module.exports = {
                   "sass-loader",
                 ],
             },
+            {
+                test: /\.css$/i,
+                use: [
+                  // Creates `style` nodes from JS strings
+                  "style-loader",
+                  // Translates CSS into CommonJS
+                  "css-loader"
+                ],
+            },
         ]
     },
     resolve: {
-        extensions: [".ts", ".tsx", ".js", ".scss"],
+        extensions: [".ts", ".tsx", ".js", ".scss", ".css"],
     },
     plugins: [
         new CopyPlugin({

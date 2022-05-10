@@ -23,6 +23,9 @@ import {
   fetchPeriodicShortcuts,
   getShortcutCache,
 } from "./shortcutCache";
+import * as ReactDOM from "react-dom/client";
+import React from "react";
+import CodigaDrawer from "../components/panel/Drawer";
 
 export const CODIGA_ELEMENT_ID_KEY = "codiga-id";
 export let cacheCode = "";
@@ -258,3 +261,15 @@ const getCodeFromActiveLine = (codeElement: HTMLElement): string => {
     .find((el) => el.classList.contains("cm-activeLine"))
     .textContent.replace(/\u200B/g, "");
 };
+
+
+/**
+ * Panel for looking for snippets easily from Replit
+ */
+export const addCodigaPanel = (container: HTMLElement) => {
+  const mountPoint = document.createElement("div");
+  const root = ReactDOM.createRoot(mountPoint);
+  root.render(<CodigaDrawer />);
+
+  container.append(mountPoint);
+}
