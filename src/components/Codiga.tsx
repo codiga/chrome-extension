@@ -27,8 +27,8 @@ export const Codiga = () => {
           y2="41.2061"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stop-color="#F71C9D" />
-          <stop offset="1" stop-color="#FC8926" />
+          <stop stopColor="#F71C9D" />
+          <stop offset="1" stopColor="#FC8926" />
         </linearGradient>
       </defs>
     </svg>

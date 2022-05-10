@@ -1,4 +1,4 @@
-import { useLazyQuery, useQuery } from "@apollo/client";
+import { useLazyQuery } from "@apollo/client";
 import React, { useEffect, useState } from "react";
 import { DebounceInput } from "react-debounce-input";
 import {
@@ -8,7 +8,6 @@ import {
   UserResponse,
 } from "../../graphql/queries";
 import { pickLanguage } from "../../replit/picker";
-import { AssistantRecipe } from "../../types";
 import SnippetCard from "./SnippetCard";
 
 export type SnippetsToSearch = "all" | "private" | "public";
@@ -20,7 +19,7 @@ const RecipeSearchPanel = (props: { isOpen: boolean }) => {
     useState<SnippetsToSearch>("all");
   const [favoriteOnly, setFavoriteOnly] = useState(false);
 
-  const [getRecipesSemantic, { data, loading, error }] =
+  const [getRecipesSemantic, { data, loading }] =
     useLazyQuery<SemanticRecipesResponse>(GET_RECIPES_SEMANTIC, {
       variables: {
         term: searchInput ? searchInput : null,
@@ -33,7 +32,7 @@ const RecipeSearchPanel = (props: { isOpen: boolean }) => {
       },
     });
 
-  const [getUser, { data: userData, loading: userLoading, error: userError }] =
+  const [getUser, { data: userData }] =
     useLazyQuery<UserResponse>(GET_USER, {
       variables: {
         term: searchInput ? searchInput : null,
@@ -73,6 +72,7 @@ const RecipeSearchPanel = (props: { isOpen: boolean }) => {
           <a
             target="_blank"
             style={{ marginLeft: "0.5rem" }}
+            rel="noreferrer"
             href={`https://app.codiga.io/hub/user/${userData.user.accountType.toLowerCase()}/${userData.user.username.toLowerCase()}/assistant`}
           >
             {userData.user.username.toLowerCase()}
@@ -86,7 +86,7 @@ const RecipeSearchPanel = (props: { isOpen: boolean }) => {
           snippets.
         </div>
       )}
-      
+
       <form>
         {/* register your input into the hook by invoking the "register" function */}
 

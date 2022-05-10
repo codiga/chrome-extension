@@ -4,7 +4,7 @@ const getBoudingClientRect = (el: HTMLElement) => {
   if (el) {
     if (el.getBoundingClientRect()) return el.getBoundingClientRect();
 
-    let range = document.createRange();
+    const range = document.createRange();
     range.selectNode(el);
     const rect = range.getBoundingClientRect();
     range.detach();

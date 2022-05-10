@@ -66,6 +66,7 @@ const SnippetCard = ({ snippet }: { snippet: AssistantRecipe }) => {
           <a
             target="_blank"
             style={{ marginLeft: "0.5rem" }}
+            rel="noreferrer"
             href={`https://app.codiga.io/hub/user/${snippet.owner.accountType.toLowerCase()}/${snippet.owner.username.toLowerCase()}/assistant`}
           >
             {snippet.owner.username.toLowerCase()}

@@ -17,7 +17,6 @@ import RecipeSearchPanel from "./RecipeSearchPanel";
 
 const CODIGA_BASE_URL = "https://api.codiga.io/graphql";
 
-let apolloClient: ApolloClient<NormalizedCacheObject>;
 const httpLink = new HttpLink({
   uri: CODIGA_BASE_URL,
 });

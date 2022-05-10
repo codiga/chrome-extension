@@ -1,15 +1,12 @@
 import {
     ADD_CODE_ASSISTANCE,
-    BASE_URL,
     CODIGA_API_TOKEN,
-    CREATE_RECIPE_FROM_SELECTION,
     INSTALL_NOTIFICATION_SHOWN,
   } from "../constants";
   import Toastify from "toastify-js";
   import {
-    addCodeMirrorListeners, addCodigaPanel,
+   addCodigaPanel,
   } from "./containerLogic";
-  import { mutationsCallback } from "../utils";
   import ShortcutDropdown from "../components/ShortcutDropdown";
   
   const Buffer = require("buffer/").Buffer;
