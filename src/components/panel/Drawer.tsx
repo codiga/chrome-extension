@@ -29,14 +29,17 @@ const CodigaDrawer = () => {
   const [client, setClient] = useState<ApolloClient<NormalizedCacheObject>>();
 
   const buttonStyle: CSSProperties = {
-    position: "absolute",
+    position: "fixed",
     right: 0,
-    top: "50px",
+    top: "60px",
     background: "#300623",
     cursor: "pointer",
     padding: "0.2rem",
     display: "flex",
+    zIndex: 10000,
     border: "none",
+    borderRadius: "3px",
+    boxShadow: "rgba(0, 0, 0, 0.16) 0px 1px 4px",
     alignItems: "center",
     justifyContent: "center",
     color: "white",
@@ -78,7 +81,9 @@ const CodigaDrawer = () => {
             open={isOpen}
             onClose={toggleDrawer}
             direction="right"
+            style={{ color: "black" }}
             size={600}
+            zIndex={20000}
             enableOverlay={false}
           >
             <div>

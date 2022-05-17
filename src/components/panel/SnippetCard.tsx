@@ -17,9 +17,10 @@ const SnippetCard = ({ snippet }: { snippet: AssistantRecipe }) => {
     borderRadius: "15px",
     display: "flex",
     alignItems: "center",
-    fontSize: "13px",
+    maxHeight: "1.2rem",
+    fontSize: "15px",
     color: "white",
-    padding: ".2rem .4rem",
+    padding: "1rem",
     fontWeigth: "bold",
     border: "none",
     cursor: "pointer",
@@ -37,7 +38,7 @@ const SnippetCard = ({ snippet }: { snippet: AssistantRecipe }) => {
         }}
       >
         <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <h2>{snippet.name}</h2>
+          <h2 style={{ fontSize: "1.7rem", color: "black" }}>{snippet.name}</h2>
           {isCopied && (
             <button
               style={copyButtonStyle}
@@ -72,22 +73,21 @@ const SnippetCard = ({ snippet }: { snippet: AssistantRecipe }) => {
             {snippet.owner.username.toLowerCase()}
           </a>
         </div>
-        <div style={{ margin: "1rem" }}>
+        <div style={{ margin: "1rem", padding: "0.5rem" }}>
           <pre
             style={{
               margin: 0,
-              paddingTop: "0.5em",
-              paddingBottom: "0.5em",
-              paddingLeft: "1em",
-              paddingRight: "1em",
               overflow: "auto",
+              padding: "0.8rem",
               border: "1px solid gray",
+              backgroundColor: "#282c34",
+              color: "white"
             }}
           >
-            <code>{code}</code>
+            <code style={{ backgroundColor: "transparent" }}>{code}</code>
           </pre>
         </div>
-        <div style={{ marginTop: "1rem" }}>
+        <div style={{ marginTop: "1rem", fontSize: "1rem" }}>
           <ReactMarkdown>{snippet.description}</ReactMarkdown>
         </div>
       </div>

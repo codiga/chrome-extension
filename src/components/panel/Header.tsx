@@ -16,8 +16,8 @@ const CodigaHeader = (props: { toggleDrawer: () => void }) => {
 
   const buttonStyles = {
     padding: "1rem",
-    background: "inherit",
-    color: "inherit",
+    background: "none",
+    color: "white",
     border: "none",
     cursor: "pointer",
     fontWeight: 700

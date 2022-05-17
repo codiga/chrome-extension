@@ -5,6 +5,7 @@ export const Codiga = () => {
     <svg
       width="40"
       height="40"
+      style={{ margin: "0" }}
       viewBox="0 0 226 260"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"

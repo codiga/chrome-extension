@@ -22,6 +22,7 @@
     "@urql/core": "^2.3.3",
     "@webcomponents/custom-elements": "^1.5.0",
     "buffer": "^6.0.3",
+    "clsx": "^1.1.1",
     "css-loader": "^6.4.0",
     "github-api": "^3.4.0",
     "gql": "^1.1.2",

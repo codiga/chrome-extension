@@ -15,13 +15,16 @@
       "js": ["js/content_script_stackoverflow.js"]
     },
     {
-      "matches": [
-        "<all_urls>"
-      ],
+      "matches": ["<all_urls>"],
       "js": ["js/content_script_all.js"]
     },
     {
-      "matches": ["https://replit.com/*"],
+      "matches": [
+        "https://replit.com/*",
+        "https://github.com/*",
+        "https://bitbucket.org/",
+        "https://stackoverflow.com/*"
+      ],
       "js": ["js/content_script_replit.js", "js/web_styles.js"]
     }
   ],

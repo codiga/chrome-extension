@@ -3,7 +3,6 @@ export const BASE_URL = "https://app.codiga.io";
 export const ADD_RECIPE_CREATION = "ADD_RECIPE_CREATION";
 export const STACK_OVERFLOW_CODE_CLASS = ".s-code-block";
 
-
 export const CODE_MIRROR_CLASS = ".CodeMirror";
 export const CODIGA_API_TOKEN = "codiga-api-token";
 export const INSTALL_NOTIFICATION_SHOWN = "install-notification-shown";
@@ -34,3 +33,60 @@ export const ADD_CODE_ASSISTANCE = "ADD_CODE_ASSISTANCE";
 export const CODING_ASSISTANT_SHORTCUTS_POLLING_MS = 10000;
 // 10 minutes
 export const CODING_ASSISTANT_MAX_TIME_IN_CACHE_MS = 600000;
+
+export enum Language {
+  LANGUAGE_TYPESCRIPT = "Typescript",
+  LANGUAGE_JAVASCRIPT = "Javascript",
+  LANGUAGE_PYTHON = "Python",
+  LANGUAGE_JAVA = "Java",
+  LANGUAGE_UNKNOWN = "Unknown",
+  LANGUAGE_DOCKER = "Docker",
+  LANGUAGE_OBJECTIVE_C = "Objectivec",
+  LANGUAGE_TERRAFORM = "Terraform",
+  LANGUAGE_JSON = "Json",
+  LANGUAGE_YAML = "Yaml",
+  LANGUAGE_SWIFT = "Swift",
+  LANGUAGE_SOLIDITY = "Solidity",
+  LANGUAGE_SQL = "Sql",
+  LANGUAGE_SHELL = "Shell",
+  LANGUAGE_SCALA = "Scala",
+  LANGUAGE_REACT = "React",
+  LANGUAGE_PASCAL = "Pascal",
+  LANGUAGE_RUST = "Rust",
+  LANGUAGE_RUBY = "Ruby",
+  LANGUAGE_PHP = "Php",
+  LANGUAGE_PERL = "Perl",
+  LANGUAGE_KOTLIN = "Kotlin",
+  LANGUAGE_HTML = "Html",
+  LANGUAGE_HASKELL = "Haskell",
+  LANGUAGE_GO = "Go",
+  LANGUAGE_DART = "Dart",
+  LANGUAGE_CSHARP = "Csharp",
+  LANGUAGE_CSS = "Css",
+  LANGUAGE_CPP = "Cpp",
+  LANGUAGE_C = "C",
+  LANGUAGE_APEX = "Apex",
+  LANGUAGE_VISUAL = "Visual",
+  ALL_LANGUAGES = "All languages",
+}
+
+export const FILTERED_LANGUAGES = [
+  Language.LANGUAGE_UNKNOWN,
+  Language.ALL_LANGUAGES,
+  Language.LANGUAGE_REACT,
+  Language.LANGUAGE_PASCAL,
+  Language.LANGUAGE_VISUAL,
+  Language.LANGUAGE_PERL,
+];
+
+export const ALL_LANGUAGES = Object.values(Language)
+  .filter((lng) => !FILTERED_LANGUAGES.includes(lng))
+  .map((l) => l.toString());
+
+export const ALL_LANGUAGES_ENUM = Object.values(Language).filter(
+  (lng) => !FILTERED_LANGUAGES.includes(lng)
+);
+
+export const ALL_LANGUAGES_DEFAULT = [Language.ALL_LANGUAGES.toString()].concat(
+  ALL_LANGUAGES
+);
