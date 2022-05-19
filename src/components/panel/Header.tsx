@@ -1,4 +1,5 @@
 import React from "react";
+import { CloseIcon } from "../CloseIcon";
 import { CodigaLogo } from "../CodigaLogo";
 
 const CodigaHeader = (props: { toggleDrawer: () => void }) => {
@@ -11,7 +12,7 @@ const CodigaHeader = (props: { toggleDrawer: () => void }) => {
     color: "white",
     display: "flex",
     alignItems: "center",
-    justifyContent: "space-between"
+    justifyContent: "space-between",
   };
 
   const buttonStyles = {
@@ -20,14 +21,16 @@ const CodigaHeader = (props: { toggleDrawer: () => void }) => {
     color: "white",
     border: "none",
     cursor: "pointer",
-    fontWeight: 700
-  }
+    fontWeight: 700,
+  };
 
   return (
     <>
       <div style={headerStyles}>
         <CodigaLogo />
-        <button onClick={toggleDrawer} style={buttonStyles}>X</button>
+        <button onClick={toggleDrawer} style={buttonStyles}>
+          <CloseIcon />
+        </button>
       </div>
     </>
   );

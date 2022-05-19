@@ -11,20 +11,25 @@ const SnippetCard = ({ snippet }: { snippet: AssistantRecipe }) => {
     "utf8"
   );
 
-  const copyButtonStyle = {
-    backgroundImage: "linear-gradient(90deg, #F81C9D 0%, #FC8926 100%)",
-    backgroundOrigin: "border-box",
-    borderRadius: "15px",
-    display: "flex",
-    alignItems: "center",
-    maxHeight: "1.2rem",
-    fontSize: "15px",
-    color: "white",
-    padding: "1rem",
-    fontWeigth: "bold",
-    border: "none",
-    cursor: "pointer",
-    minWidth: "max-content",
+  const copyButtonStyle = (isCopied: boolean) => {
+    return {
+      backgroundImage: isCopied
+        ? "none"
+        : "linear-gradient(90deg, #F81C9D 0%, #FC8926 100%)",
+      backgroundColor: isCopied ? "#383838" : "none",
+      backgroundOrigin: "border-box",
+      borderRadius: "15px",
+      display: "flex",
+      alignItems: "center",
+      maxHeight: "1.2rem",
+      fontSize: "15px",
+      color: "white",
+      padding: "1rem",
+      fontWeigth: "bold",
+      border: isCopied ? "1px solid #bc267a" : "none",
+      cursor: "pointer",
+      minWidth: "max-content",
+    };
   };
 
   return (
@@ -41,7 +46,7 @@ const SnippetCard = ({ snippet }: { snippet: AssistantRecipe }) => {
           <h2 style={{ fontSize: "1.7rem", color: "black" }}>{snippet.name}</h2>
           {isCopied && (
             <button
-              style={copyButtonStyle}
+              style={copyButtonStyle(isCopied)}
               onClick={() => {
                 setCopied(true);
                 copyToClipboard(code);
@@ -52,7 +57,7 @@ const SnippetCard = ({ snippet }: { snippet: AssistantRecipe }) => {
           )}
           {!isCopied && (
             <button
-              style={copyButtonStyle}
+              style={copyButtonStyle(isCopied)}
               onClick={() => {
                 setCopied(true);
                 copyToClipboard(code);
@@ -81,7 +86,7 @@ const SnippetCard = ({ snippet }: { snippet: AssistantRecipe }) => {
               padding: "0.8rem",
               border: "1px solid gray",
               backgroundColor: "#282c34",
-              color: "white"
+              color: "white",
             }}
           >
             <code style={{ backgroundColor: "transparent" }}>{code}</code>
