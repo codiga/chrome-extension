@@ -98,9 +98,9 @@ const RecipeSearchPanel = (props: { isOpen: boolean }) => {
         <DebounceInput
           placeholder="Search for snippets"
           style={{
-            width: "100%",
+            width: "90%",
             height: "1.3rem",
-            padding: "1rem",
+            padding: "0.6rem",
             margin: "0.5rem 0",
             backgroundColor: "white",
             color: "black",
