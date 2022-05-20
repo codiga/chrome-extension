@@ -23,9 +23,14 @@ import {
   fetchPeriodicShortcuts,
   getShortcutCache,
 } from "./shortcutCache";
+import * as ReactDOM from "react-dom/client";
+import React from "react";
+import CodigaDrawer from "../components/panel/Drawer";
 
 export const CODIGA_ELEMENT_ID_KEY = "codiga-id";
 export let cacheCode = "";
+
+let currentFile = undefined;
 
 export const addCodeMirrorListeners = () => {
   const codeMirrorList = Array.from(
@@ -72,6 +77,7 @@ const getRecipes = async (
     dependencies
   );
 
+
   /**
    * If we find recipes from the cache, get them and filter
    * using the one that start with the given term.
@@ -80,7 +86,7 @@ const getRecipes = async (
   if (recipesFromCache) {
     return recipesFromCache.filter((r) => {
       if (term) {
-        return r.shortcut && r.shortcut.startsWith(term.toLowerCase());
+        return r.shortcut && r.shortcut.startsWith(term.slice(1).toLowerCase());
       } else {
         return r.shortcut !== null;
       }
@@ -103,7 +109,7 @@ const eventListenerCallback = async (codeEventContext: CodeEventContext) => {
   if (activeLineCode != cacheCode) {
     cacheCode = activeLineCode;
 
-    const shortcutMatch = activeLineCode.match(/\.([a-zA-Z]*)*/);
+    const shortcutMatch = activeLineCode.match(/(\.([a-zA-Z]*))*/);
     const activeLineIndex = Array.from(codeElement.children).findIndex((el) => {
       return el.classList.contains(REPLIT_EDITOR_ACTIVE_LINE.slice(1));
     });
@@ -209,27 +215,35 @@ export const addLogicToCodeMirrorInstance = (codeMirror: HTMLElement) => {
 
     const cursorPosition = getPos(cursor);
     const codeElementPosition = getPos(codeElement);
-    const scrollerPoition = getPos(scrollerElement);
+    const scrollerPosition = getPos(scrollerElement);
     const activeLineDimensions = getDimensions(activeLine);
 
-    shortcutDropdownElement.top =
-      cursorPosition.y - scrollerPoition.y + activeLineDimensions.height;
-    shortcutDropdownElement.left =
-      cursorPosition.x - codeElementPosition.x - codeElement.offsetTop;
+    if (cursor && scrollerElement && codeElement) {
+      shortcutDropdownElement.top =
+        cursorPosition.y - scrollerPosition.y + activeLineDimensions.height;
 
-    enableShortcutsPolling();
-    fetchPeriodicShortcuts();
+      if (codeElement && codeElementPosition)
+        shortcutDropdownElement.left =
+          cursorPosition.x - codeElementPosition.x - codeElement.offsetTop;
 
-    eventListenerCallback(context);
+      if (pickFilename() != currentFile) {
+        currentFile = pickFilename();
+        enableShortcutsPolling();
+        fetchPeriodicShortcuts(currentFile);
+      }
+      eventListenerCallback(context);
+    }
   };
 
-  const observer = new MutationObserver(onCodeElementChange);
+  if (codeElement) {
+    const observer = new MutationObserver(onCodeElementChange);
 
-  observer.observe(codeElement, {
-    subtree: true,
-    childList: true,
-    characterData: true,
-  });
+    observer.observe(codeElement, {
+      subtree: true,
+      childList: true,
+      characterData: true,
+    });
+  }
 };
 
 // get all code from a give CodeMirror instance
@@ -247,3 +261,15 @@ const getCodeFromActiveLine = (codeElement: HTMLElement): string => {
     .find((el) => el.classList.contains("cm-activeLine"))
     .textContent.replace(/\u200B/g, "");
 };
+
+
+/**
+ * Panel for looking for snippets easily from Replit
+ */
+export const addCodigaPanel = (container: HTMLElement) => {
+  const mountPoint = document.createElement("div");
+  const root = ReactDOM.createRoot(mountPoint);
+  root.render(<CodigaDrawer />);
+
+  container.append(mountPoint);
+}

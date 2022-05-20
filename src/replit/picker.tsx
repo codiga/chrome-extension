@@ -1,4 +1,6 @@
 import {
+  ALL_LANGUAGES,
+  Language,
   REPLIT_ACTIVE_FILE,
   REPLIT_EDITOR_CONTENT,
   REPLIT_FILE_TREE,
@@ -34,15 +36,14 @@ export const getLanguageFromFilename = (fileName: string) => {
         tsx: "Typescript",
         hs: "Haskell",
         jsx: "Javascript",
-      }[extension] || "Unknown"
+      }[extension] || Language.ALL_LANGUAGES
     );
   }
 };
 
 export const pickFilename = () => {
-  const fileTree = document.querySelector(REPLIT_FILE_TREE);
-  const activeFile = fileTree.querySelector(REPLIT_ACTIVE_FILE);
-  return activeFile.textContent;
+  const activeFile = document.querySelector(REPLIT_ACTIVE_FILE);
+  return activeFile ? activeFile.textContent : "";
 };
 
 export const pickLanguage = () => {
