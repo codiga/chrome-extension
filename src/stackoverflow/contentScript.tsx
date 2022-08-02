@@ -13,7 +13,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     const selectionText = window.getSelection().toString();
     const encodedRecipe = Buffer.from(selectionText).toString("base64");
     window.open(
-      `${BASE_URL}/assistant/recipe/create?code=${encodeURIComponent(
+      `${BASE_URL}/assistant/snippet/create?code=${encodeURIComponent(
         encodedRecipe
       )}`,
       "_blank"

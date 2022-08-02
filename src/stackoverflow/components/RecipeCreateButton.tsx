@@ -39,10 +39,10 @@ const RecipeCreateButton = ({
 
   return (
     <ReactShadowRoot>
-      <div id="codiga-create-recipe" style={blockStyle}>
+      <div id="codiga-create-snippet" style={blockStyle}>
         {/* The shadow root will be attached to this DIV */}
         <a
-          href={`${BASE_URL}/assistant/recipe/create?code=${encodeURIComponent(
+          href={`${BASE_URL}/assistant/snippet/create?code=${encodeURIComponent(
             encodedRecipe
           )}${language ? `&language=${language}` : ""}${
             keywords && keywords.length ? `&keywords=${keywords.join(",")}` : ""
@@ -56,7 +56,7 @@ const RecipeCreateButton = ({
             style={{ marginRight: ".4rem" }}
             src={`${chrome.runtime.getURL("icon16.png")}`}
           />{" "}
-          + Recipe
+          + Snippet
         </a>
       </div>
     </ReactShadowRoot>

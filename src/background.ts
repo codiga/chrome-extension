@@ -20,10 +20,10 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
   });
 });
 
-// Recipe creation
+// Snippet creation
 chrome.contextMenus.create({
-  id: "Codiga Create Recipe Context Menu",
-  title: "Create Codiga Recipe",
+  id: "Codiga Create Snippet Context Menu",
+  title: "Create Codiga Snippet",
   contexts: ["selection"],
 });
 
