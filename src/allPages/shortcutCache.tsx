@@ -129,8 +129,7 @@ export const fetchShortcuts = async () => {
   };
 
   const lastTimestamp = await getRecipesForClientByShorcutLastTimestamp(
-    language,
-    dependencies
+    language
   );
 
   /**
