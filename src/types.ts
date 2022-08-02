@@ -14,5 +14,5 @@ export type AssistantRecipe = {
 export type ShortcutContext = {
   code: string;
   recipes: AssistantRecipe[];
-  activeLineIndex: number
+  activeLineIndex: number;
 };

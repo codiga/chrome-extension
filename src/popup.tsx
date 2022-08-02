@@ -11,7 +11,7 @@ const Popup = () => {
 
   useEffect(() => {
     chrome.storage.sync.get(CODIGA_API_TOKEN, function (obj) {
-        setStoredCodigaToken(obj[CODIGA_API_TOKEN] || "");
+      setStoredCodigaToken(obj[CODIGA_API_TOKEN] || "");
     });
   }, []);
 
@@ -70,13 +70,19 @@ const Popup = () => {
             )*/}
             <span className="flex">
               Set your{" "}
-              <a href="https://app.codiga.io/api-tokens" target="_blank" rel="noreferrer">
+              <a
+                href="https://app.codiga.io/api-tokens"
+                target="_blank"
+                rel="noreferrer"
+              >
                 Codiga API Token
               </a>
               :
             </span>
             <ol>
-              <li>It&apos;s used to search your private snippets from the browser</li>
+              <li>
+                It&apos;s used to search your private snippets from the browser
+              </li>
               <li>It will only be stored in your local storage</li>
             </ol>
             <input

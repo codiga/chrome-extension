@@ -3,8 +3,18 @@ import ReactShadowRoot from "react-shadow-root";
 import { BASE_URL } from "../../constants";
 const Buffer = require("buffer/").Buffer;
 
-type RecipeCreateButtonProps = {code: string, language: string, keywords: string[], isDarkMode: boolean}
-const RecipeCreateButton = ({ code, language, keywords, isDarkMode }: RecipeCreateButtonProps) => {
+type RecipeCreateButtonProps = {
+  code: string;
+  language: string;
+  keywords: string[];
+  isDarkMode: boolean;
+};
+const RecipeCreateButton = ({
+  code,
+  language,
+  keywords,
+  isDarkMode,
+}: RecipeCreateButtonProps) => {
   const linkStyle = {
     border: "solid 1px transparent",
     background: "none",
@@ -34,9 +44,7 @@ const RecipeCreateButton = ({ code, language, keywords, isDarkMode }: RecipeCrea
         <a
           href={`${BASE_URL}/assistant/recipe/create?code=${encodeURIComponent(
             encodedRecipe
-          )}${
-            language ? `&language=${language}` : ""
-          }${
+          )}${language ? `&language=${language}` : ""}${
             keywords && keywords.length ? `&keywords=${keywords.join(",")}` : ""
           }`}
           style={linkStyle}

@@ -6,9 +6,7 @@ import {
   INSTALL_NOTIFICATION_SHOWN,
 } from "../constants";
 import Toastify from "toastify-js";
-import {
-  addCodeMirrorListeners,
-} from "./containerLogic";
+import { addCodeMirrorListeners } from "./containerLogic";
 import { mutationsCallback } from "../utils";
 import ShortcutDropdown from "../components/ShortcutDropdown";
 
