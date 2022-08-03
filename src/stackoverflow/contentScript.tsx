@@ -14,15 +14,15 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     const encodedRecipe = Buffer.from(selectionText).toString("base64");
     window.open(
       `${BASE_URL}/assistant/snippet/create?code=${encodeURIComponent(
-        encodedRecipe
+        encodedRecipe,
       )}`,
-      "_blank"
+      "_blank",
     );
   }
 
   if (request.action === ADD_RECIPE_CREATION) {
     const observer = new MutationObserver(
-      mutationsCallback(addCreateLogicToCodeBlock)
+      mutationsCallback(addCreateLogicToCodeBlock),
     );
     observer.observe(document, { childList: true, subtree: true });
   }

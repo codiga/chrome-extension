@@ -40,7 +40,7 @@ const LanguageSelectField = ({
                 {language}
               </option>
             );
-          }
+          },
         )}
       </select>
     </div>

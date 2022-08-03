@@ -65,7 +65,7 @@ const CodigaDrawer = () => {
         new ApolloClient({
           link: authLink.concat(httpLink),
           cache: new InMemoryCache(),
-        })
+        }),
       );
     });
   }, []);

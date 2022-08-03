@@ -84,9 +84,9 @@ export const ALL_LANGUAGES = Object.values(Language)
   .map((l) => l.toString());
 
 export const ALL_LANGUAGES_ENUM = Object.values(Language).filter(
-  (lng) => !FILTERED_LANGUAGES.includes(lng)
+  (lng) => !FILTERED_LANGUAGES.includes(lng),
 );
 
 export const ALL_LANGUAGES_DEFAULT = [Language.ALL_LANGUAGES.toString()].concat(
-  ALL_LANGUAGES
+  ALL_LANGUAGES,
 );

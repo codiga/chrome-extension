@@ -34,14 +34,14 @@ let currentFile = undefined;
 
 export const addCodeMirrorListeners = () => {
   const codeMirrorList = Array.from(
-    document.querySelectorAll(getDetectedSelector(REPLIT_EDITOR_CLASS, false))
+    document.querySelectorAll(getDetectedSelector(REPLIT_EDITOR_CLASS, false)),
   )
     .concat(
       Array.from(
         document.querySelectorAll(
-          getDetectedSelector(REPLIT_EDITOR_CLASS, false)
-        )
-      )
+          getDetectedSelector(REPLIT_EDITOR_CLASS, false),
+        ),
+      ),
     )
     .map((element) => element as HTMLElement);
   codeMirrorList.forEach(addLogicToCodeMirrorInstance);
@@ -69,12 +69,12 @@ type CodeEventContext = {
  */
 const getRecipes = async (
   term: string | undefined,
-  dependencies: string[] = []
+  dependencies: string[] = [],
 ): Promise<AssistantRecipe[]> => {
   const recipesFromCache = getShortcutCache(
     pickFilename(),
     pickLanguage(),
-    dependencies
+    dependencies,
   );
 
   /**
@@ -152,7 +152,7 @@ const eventListenerCallback = async (codeEventContext: CodeEventContext) => {
 // instance as attributes to the CodeMirror element.
 const setCodeMirrorLinesRange = () => {
   const detectedCodeMirrorInstances = Array.from(
-    document.querySelectorAll(getDetectedSelector(REPLIT_EDITOR_CONTENT))
+    document.querySelectorAll(getDetectedSelector(REPLIT_EDITOR_CONTENT)),
   ).map((element) => element as HTMLElement);
 
   detectedCodeMirrorInstances.reduce((acc, cm) => {
@@ -179,19 +179,19 @@ export const addLogicToCodeMirrorInstance = (codeMirror: HTMLElement) => {
   document.head.appendChild(style);
 
   const shortcutDropdownElement = document.createElement(
-    "codiga-shortcut-dropdown"
+    "codiga-shortcut-dropdown",
   ) as ShortcutDropdown;
   codeMirror.appendChild(shortcutDropdownElement);
 
   const codeElement = pickCodeElement();
 
   const scrollerElement = codeMirror.querySelector(
-    REPLIT_EDITOR_SCROLL
+    REPLIT_EDITOR_SCROLL,
   ) as HTMLElement;
 
   codeElement?.setAttribute(
     CODIGA_ELEMENT_ID_KEY,
-    JSON.stringify(getPos(codeElement))
+    JSON.stringify(getPos(codeElement)),
   );
 
   const onCodeElementChange = () => {
@@ -200,7 +200,7 @@ export const addLogicToCodeMirrorInstance = (codeMirror: HTMLElement) => {
     const cursor = document.querySelector(REPLIT_EDITOR_CURSOR) as HTMLElement;
 
     const activeLine = document.querySelector(
-      REPLIT_EDITOR_ACTIVE_LINE
+      REPLIT_EDITOR_ACTIVE_LINE,
     ) as HTMLElement;
 
     const context = {

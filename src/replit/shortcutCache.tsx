@@ -46,7 +46,7 @@ const cache: Map<string, ShortcutCacheValue> = new Map();
 export const getShortcutCache = (
   filename: string | undefined,
   language: string,
-  dependencies: string[]
+  dependencies: string[],
 ): AssistantRecipe[] | undefined => {
   const cacheKey = {
     language,
@@ -79,7 +79,7 @@ export const enableShortcutsPolling = () => {
 };
 
 export const garbageCollection = (
-  cacheToCollect: Map<string, ShortcutCacheValue>
+  cacheToCollect: Map<string, ShortcutCacheValue>,
 ) => {
   const nowMs = Date.now();
   const keysToCollect = [];
@@ -131,7 +131,7 @@ export const fetchShortcuts = async () => {
   };
 
   const lastTimestamp = await getRecipesForClientByShorcutLastTimestamp(
-    language
+    language,
   );
 
   /**
@@ -200,7 +200,7 @@ export const fetchPeriodicShortcuts = async (file: string) => {
     garbageCollection(cache);
     setTimeout(
       () => fetchPeriodicShortcuts(file),
-      CODING_ASSISTANT_SHORTCUTS_POLLING_MS
+      CODING_ASSISTANT_SHORTCUTS_POLLING_MS,
     );
   }
 };

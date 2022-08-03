@@ -32,7 +32,7 @@ chrome.storage.sync.get(
     if (!token && !installedNotificationShown) {
       Toastify({
         text: `<img src='${chrome.runtime.getURL(
-          "icon16.png"
+          "icon16.png",
         )}'/><br/> We invite you to add your Codiga token`,
         destination: "https://app.codiga.io/api-tokens",
         newWindow: true,
@@ -57,10 +57,10 @@ chrome.storage.sync.get(
         { [INSTALL_NOTIFICATION_SHOWN]: "true" },
         function () {
           console.log("Updated shown notification flag");
-        }
+        },
       );
     }
-  }
+  },
 );
 
 // Components register

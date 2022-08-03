@@ -43,7 +43,7 @@ const RecipeCreateButton = ({
         {/* The shadow root will be attached to this DIV */}
         <a
           href={`${BASE_URL}/assistant/snippet/create?code=${encodeURIComponent(
-            encodedRecipe
+            encodedRecipe,
           )}${language ? `&language=${language}` : ""}${
             keywords && keywords.length ? `&keywords=${keywords.join(",")}` : ""
           }`}

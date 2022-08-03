@@ -4,7 +4,7 @@ import { AssistantRecipe } from "../types";
 export const getRecipesByShortcut = (
   fingerprint: string,
   shortcut: string,
-  language: string
+  language: string,
 ) =>
   gql`{
       getRecipesForClientByShortcut(
@@ -22,7 +22,7 @@ export const getRecipesByShortcut = (
 
 export const getRecipesByShortcutLastTimestamp = (
   fingerprint: string,
-  language: string
+  language: string,
 ) => gql`
 {
   getRecipesForClientByShortcutLastTimestamp(

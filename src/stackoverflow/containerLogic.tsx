@@ -10,15 +10,15 @@ export const addCreateLogicToCodeBlock = () => {
   const codeBlockList = Array.from(
     Array.from(
       document.querySelectorAll(
-        `${CODE_MIRROR_CLASS}${NOT_DETECTED_CREATE_BUTTON_SELECTOR}`
-      )
+        `${CODE_MIRROR_CLASS}${NOT_DETECTED_CREATE_BUTTON_SELECTOR}`,
+      ),
     ).concat(
       Array.from(
         document.querySelectorAll(
-          `${STACK_OVERFLOW_CODE_CLASS}${NOT_DETECTED_CREATE_BUTTON_SELECTOR}`
-        )
-      )
-    )
+          `${STACK_OVERFLOW_CODE_CLASS}${NOT_DETECTED_CREATE_BUTTON_SELECTOR}`,
+        ),
+      ),
+    ),
   ).map((element) => element as HTMLElement);
   codeBlockList.forEach(addCreateRecipeToCodeBlockInstance);
 };
@@ -31,7 +31,7 @@ export const addCreateRecipeToCodeBlockInstance = (codeBlock: HTMLElement) => {
   codeBlock.parentElement.insertBefore(searchBarElement, codeBlock);
   const language = pickLanguage(codeBlock.getAttribute("class"));
   const isDarkMode = ![undefined, null].includes(
-    document.querySelector(".theme-dark")
+    document.querySelector(".theme-dark"),
   );
   const keywords = Array.from(document.querySelectorAll(".post-tag"))
     .map((element) => element.textContent)
@@ -44,7 +44,7 @@ export const addCreateRecipeToCodeBlockInstance = (codeBlock: HTMLElement) => {
       keywords={keywords}
       isDarkMode={isDarkMode}
     />,
-    searchBarElement
+    searchBarElement,
   );
 };
 

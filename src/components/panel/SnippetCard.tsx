@@ -8,7 +8,7 @@ const SnippetCard = ({ snippet }: { snippet: AssistantRecipe }) => {
   const [isCopied, setCopied] = useState<boolean>(false);
 
   const code = Buffer.from(snippet.presentableFormat, "base64").toString(
-    "utf8"
+    "utf8",
   );
 
   const copyButtonStyle = (isCopied: boolean) => {

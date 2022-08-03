@@ -8,9 +8,9 @@ chrome.runtime.onMessage.addListener((request) => {
     const encodedRecipe = Buffer.from(selectionText).toString("base64");
     window.open(
       `${BASE_URL}/assistant/snippet/create?code=${encodeURIComponent(
-        encodedRecipe
+        encodedRecipe,
       )}`,
-      "_blank"
+      "_blank",
     );
   }
 });
