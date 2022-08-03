@@ -3,7 +3,7 @@
 
   "name": "Codiga",
   "description": "Create, share and use Code Snippets from your browser",
-  "version": "0.0.10",
+  "version": "0.0.11",
 
   "options_ui": {
     "page": "options.html"
@@ -15,10 +15,17 @@
       "js": ["js/content_script_stackoverflow.js"]
     },
     {
+      "matches": ["<all_urls>"],
+      "js": ["js/content_script_all.js"]
+    },
+    {
       "matches": [
-        "<all_urls>"
+        "https://replit.com/*",
+        "https://github.com/*",
+        "https://bitbucket.org/",
+        "https://stackoverflow.com/*"
       ],
-      "js": ["js/content_script_all.js", "js/web_styles.js"]
+      "js": ["js/content_script_replit.js", "js/web_styles.js"]
     }
   ],
 

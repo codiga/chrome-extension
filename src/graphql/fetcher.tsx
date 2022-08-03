@@ -48,8 +48,9 @@ export const getAssistantRecipesByShortcut = async (request: {
   const codeElementId = request.id;
   runningValidationsCache[codeElementId] = executionId;
 
+
   const recipesByShortcut = await client
-    .query(getRecipesByShortcut(fingerprint, shortcut.slice(1), language))
+    .query(getRecipesByShortcut(fingerprint, shortcut?shortcut.slice(1):undefined, language))
     .toPromise();
 
   return recipesByShortcut.data.getRecipesForClientByShortcut.slice(0, 10);

@@ -8,7 +8,7 @@ import {
 } from "../graphql/fetcher";
 import { AssistantRecipe } from "../types";
 import { CODIGA_ELEMENT_ID_KEY } from "./containerLogic";
-import { pickCodeElement, pickLanguage } from "./picker";
+import { pickCodeElement, pickFilename, pickLanguage } from "./picker";
 
 let enablePeriodicPolling = true;
 
@@ -53,8 +53,10 @@ export const getShortcutCache = (
     filename,
     dependencies,
   };
+
   const cacheKeyString = JSON.stringify(cacheKey);
   const cacheValue = cache.get(cacheKeyString);
+
   if (!cacheValue) {
     return undefined;
   } else {
@@ -119,11 +121,11 @@ export const fetchShortcuts = async () => {
   // TODO: Complete this when reading dependencies
   const dependencies: string[] = [];
   // TODO: Complete this when
-  const relativePath = "";
+  const relativePath = pickFilename();
   const language: string = pickLanguage();
 
   const cacheKey: ShortcutCacheKey = {
-    language: language,
+    language,
     filename: relativePath,
     dependencies: dependencies,
   };
@@ -167,17 +169,17 @@ export const fetchShortcuts = async () => {
   if (shouldFetch) {
     const recipes = await getAssistantRecipesByShortcut({
       language,
-      shortcut: undefined,
+      shortcut: ".",
       id: pickCodeElement().getAttribute(CODIGA_ELEMENT_ID_KEY),
     });
-
+    
     // associated the new timestamp with the cache value
     const cacheValue: ShortcutCacheValue = {
       lastUpdateTimestampMs: lastTimestamp,
       lastAccessTimestampMs: nowTimestampMs,
       values: recipes,
     };
-
+    
     // need to stringify since we take a string as a key
     const newCacheKey = JSON.stringify(cacheKey);
     cache.set(newCacheKey, cacheValue);
@@ -189,12 +191,13 @@ export const fetchShortcuts = async () => {
  * the polling function and wait for the next
  * execution.
  */
-export const fetchPeriodicShortcuts = async () => {
-  if (enablePeriodicPolling) {
-    await fetchShortcuts().catch(() => {
+export const fetchPeriodicShortcuts = async (file: string) => {
+  if (enablePeriodicPolling && file === pickFilename()) {
+    await fetchShortcuts().catch((e) => {
+      console.error(e);
       console.error("error while fetching shortcuts");
     });
     garbageCollection(cache);
-    setTimeout(fetchPeriodicShortcuts, CODING_ASSISTANT_SHORTCUTS_POLLING_MS);
+    setTimeout(() => fetchPeriodicShortcuts(file), CODING_ASSISTANT_SHORTCUTS_POLLING_MS);
   }
 };

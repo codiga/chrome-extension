@@ -9,6 +9,7 @@ module.exports = {
       background: path.join(srcDir, 'background.ts'),
       content_script_stackoverflow: path.join(srcDir, 'stackoverflow/contentScript.tsx'),
       content_script_all: path.join(srcDir, 'allPages/contentScript.tsx'),
+      content_script_replit: path.join(srcDir, 'replit/contentScript.tsx'),
       styles: path.join(__dirname, '../styles/app.scss'),
       web_styles: path.join(__dirname, '../styles/webapp.scss')
     },
@@ -37,10 +38,19 @@ module.exports = {
                   "sass-loader",
                 ],
             },
+            {
+                test: /\.css$/i,
+                use: [
+                  // Creates `style` nodes from JS strings
+                  "style-loader",
+                  // Translates CSS into CommonJS
+                  "css-loader"
+                ],
+            },
         ]
     },
     resolve: {
-        extensions: [".ts", ".tsx", ".js", ".scss"],
+        extensions: [".ts", ".tsx", ".js", ".scss", ".css"],
     },
     plugins: [
         new CopyPlugin({
