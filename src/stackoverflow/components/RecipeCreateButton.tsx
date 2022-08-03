@@ -3,8 +3,18 @@ import ReactShadowRoot from "react-shadow-root";
 import { BASE_URL } from "../../constants";
 const Buffer = require("buffer/").Buffer;
 
-type RecipeCreateButtonProps = {code: string, language: string, keywords: string[], isDarkMode: boolean}
-const RecipeCreateButton = ({ code, language, keywords, isDarkMode }: RecipeCreateButtonProps) => {
+type RecipeCreateButtonProps = {
+  code: string;
+  language: string;
+  keywords: string[];
+  isDarkMode: boolean;
+};
+const RecipeCreateButton = ({
+  code,
+  language,
+  keywords,
+  isDarkMode,
+}: RecipeCreateButtonProps) => {
   const linkStyle = {
     border: "solid 1px transparent",
     background: "none",
@@ -29,14 +39,12 @@ const RecipeCreateButton = ({ code, language, keywords, isDarkMode }: RecipeCrea
 
   return (
     <ReactShadowRoot>
-      <div id="codiga-create-recipe" style={blockStyle}>
+      <div id="codiga-create-snippet" style={blockStyle}>
         {/* The shadow root will be attached to this DIV */}
         <a
-          href={`${BASE_URL}/assistant/recipe/create?code=${encodeURIComponent(
+          href={`${BASE_URL}/assistant/snippet/create?code=${encodeURIComponent(
             encodedRecipe
-          )}${
-            language ? `&language=${language}` : ""
-          }${
+          )}${language ? `&language=${language}` : ""}${
             keywords && keywords.length ? `&keywords=${keywords.join(",")}` : ""
           }`}
           style={linkStyle}
@@ -48,7 +56,7 @@ const RecipeCreateButton = ({ code, language, keywords, isDarkMode }: RecipeCrea
             style={{ marginRight: ".4rem" }}
             src={`${chrome.runtime.getURL("icon16.png")}`}
           />{" "}
-          + Recipe
+          + Snippet
         </a>
       </div>
     </ReactShadowRoot>

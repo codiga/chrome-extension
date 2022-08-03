@@ -1,6 +1,9 @@
 import { v4 as uuidv4 } from "uuid";
 import { createClient } from "@urql/core";
-import { getRecipesByShortcut, getRecipesByShortcutLastTimestamp } from "./queries";
+import {
+  getRecipesByShortcut,
+  getRecipesByShortcutLastTimestamp,
+} from "./queries";
 import { AssistantRecipe } from "../types";
 
 const client = createClient({
@@ -61,8 +64,8 @@ export async function getRecipesForClientByShorcutLastTimestamp(
   const userFingerprint = await generateFingerprint();
 
   const lastTimestamp = await client
-  .query(getRecipesByShortcutLastTimestamp(userFingerprint, language))
-  .toPromise();
+    .query(getRecipesByShortcutLastTimestamp(userFingerprint, language))
+    .toPromise();
 
   if (!lastTimestamp) {
     return undefined;
