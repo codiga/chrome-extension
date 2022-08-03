@@ -27,7 +27,6 @@ export type ShortcutContext = {
   activeLineIndex: number;
 };
 
-
 export type LanguageEnumeration =
   | Language.LANGUAGE_UNKNOWN
   | Language.LANGUAGE_VISUAL

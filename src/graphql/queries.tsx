@@ -87,8 +87,8 @@ export type UserResponse = {
   user: {
     accountType: string;
     username: string;
-  }
-}
+  };
+};
 
 export const GET_USER = gql`
   query getUser {

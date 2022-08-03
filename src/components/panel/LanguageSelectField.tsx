@@ -28,7 +28,7 @@ const LanguageSelectField = ({
           margin: "0.2rem 0",
           color: "black",
           borderRadius: "3px",
-          border: "1px solid rgb(118, 118, 118)"
+          border: "1px solid rgb(118, 118, 118)",
         }}
         value={language || ""}
         onChange={onLanguageChange}

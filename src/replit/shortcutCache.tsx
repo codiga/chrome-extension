@@ -172,14 +172,14 @@ export const fetchShortcuts = async () => {
       shortcut: ".",
       id: pickCodeElement().getAttribute(CODIGA_ELEMENT_ID_KEY),
     });
-    
+
     // associated the new timestamp with the cache value
     const cacheValue: ShortcutCacheValue = {
       lastUpdateTimestampMs: lastTimestamp,
       lastAccessTimestampMs: nowTimestampMs,
       values: recipes,
     };
-    
+
     // need to stringify since we take a string as a key
     const newCacheKey = JSON.stringify(cacheKey);
     cache.set(newCacheKey, cacheValue);
@@ -198,6 +198,9 @@ export const fetchPeriodicShortcuts = async (file: string) => {
       console.error("error while fetching shortcuts");
     });
     garbageCollection(cache);
-    setTimeout(() => fetchPeriodicShortcuts(file), CODING_ASSISTANT_SHORTCUTS_POLLING_MS);
+    setTimeout(
+      () => fetchPeriodicShortcuts(file),
+      CODING_ASSISTANT_SHORTCUTS_POLLING_MS
+    );
   }
 };

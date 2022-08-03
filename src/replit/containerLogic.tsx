@@ -77,7 +77,6 @@ const getRecipes = async (
     dependencies
   );
 
-
   /**
    * If we find recipes from the cache, get them and filter
    * using the one that start with the given term.
@@ -262,7 +261,6 @@ const getCodeFromActiveLine = (codeElement: HTMLElement): string => {
     .textContent.replace(/\u200B/g, "");
 };
 
-
 /**
  * Panel for looking for snippets easily from Replit
  */
@@ -272,4 +270,4 @@ export const addCodigaPanel = (container: HTMLElement) => {
   root.render(<CodigaDrawer />);
 
   container.append(mountPoint);
-}
+};
