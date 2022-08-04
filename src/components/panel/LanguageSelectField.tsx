@@ -7,20 +7,17 @@ export type LanguageSelectFieldProps = {
   language: LanguageEnumeration;
   onLanguageChange: (_: ChangeEvent<HTMLSelectElement>) => void;
   useDefault: boolean;
-  className: string;
 };
 
 const LanguageSelectField = ({
   language,
   onLanguageChange,
   useDefault = false,
-  className,
 }: LanguageSelectFieldProps) => {
   return (
     <div>
       <select
         name="select"
-        className="w-100"
         style={{
           padding: ".3rem",
           fontSize: "15px",

@@ -1,28 +1,43 @@
 # Codiga Plugin for Chrome
 
-## General structure of the project
+This is the source code for the Codiga Chrome Extension.
 
-This is the source code for the Chrome plugin for Codiga.
+## Features
 
-Codiga provides two main functionalities:
+This extension links features from our [Coding Assistant]() and [Hub]() right to your browser.
 
-- **Coding Assistant**: import or create reusable code blocks based on your context
+1. Quickly save/create a snippet found online
+2. Search through our and/or your catalogue of code snippets.
 
-## Quickstart
+### Creating a Snippet
 
-The plugin is available on the [Chrome web store](https://chrome.google.com/webstore/detail/codiga/dbkhkhonmelajjempmoadocgneoadjge)
-and you can install it by just clicking "Add to Chrome"
+After you install the plugin, you will have an item named "Create Codiga Snippet" in the context menu of your browser whenever you right-click **a selection** in any page.
 
-![image](https://user-images.githubusercontent.com/90006571/145100624-073d5344-4fa8-4e1e-b036-8f8a572cb377.png)
+Once clicked, we'll redirect you to [Codiga](https://app.codiga.io/assistant/snippet/create) where you can customize your code snippet before saving.
 
-## Coding Assistant
+Later, you can visit [all your snippets](https://app.codiga.io/assistant/snippet/list) on Codiga. Here you can manage your snippets, create more, or even start putting related snippets in a cookbook together.
 
-### Creating a snippet
+Don't forget to browse [Codiga's Hub](https://app.codiga.io/hub) to see what other's have created. You might even find some inspiration out of what other's have posted.
 
-After you install the plugin, you will have an item named "Create Codiga Snippet" in the context menu of your browser by right clicking a selection in any page.
+### Searching for Snippets
 
-![image](https://user-images.githubusercontent.com/90006571/145613477-6d16d4f1-16c0-48e0-ae62-ffa7853cde39.png)
+Once installed, when you are on a designated page ([GitHub](https://github.com), [GitLab](https://gitlab.com), [Bitbucket](https://bitbucket.org), [Replit](https://replit.com), [StackOverflow](https://stackoverflow.com)), you can open the `Codiga Code Snippet Search` panel by clicking on the Codiga icon button.
 
-When you click this item it will redirect you to [Codiga's Coding Assistant](https://app.codiga.io/assistant/snippet/list) where you can manage your own private code snippets and cookbooks, or even you can make it public so they're posted in [Codiga's Hub](https://app.codiga.io/hub).
+Now you can filter your search until you find the desired snippet. If we're missing something, take the time to create and share it for others.
 
-![codiga-create-snippet](https://user-images.githubusercontent.com/90006571/145614983-e495c13b-8f51-4f98-a232-e9160005e2f7.gif)
+## Getting Started
+
+### Installation
+
+This extension is available on the [Chrome Web Store](https://chrome.google.com/webstore/detail/codiga/dbkhkhonmelajjempmoadocgneoadjge) where you can install it by clicking "Add to Chrome"
+
+### Development
+
+- pull the repo
+- run the `release.sh` script
+  - `./release.sh`
+- visit [chrome://extensions](chrome://extensions) and click "Load unpacked"
+  - upload the `dist` folder now
+- run `npm run watch`
+
+> Note: You'll need to click "Update" on the link above when changes are made

@@ -63,14 +63,13 @@ const RecipeSearchPanel = (props: { isOpen: boolean }) => {
   };
 
   return (
-    <div style={{ padding: "1rem", overflow: "scroll", maxHeight: "90vh" }}>
+    <div style={{ padding: "1rem", overflowY: "scroll", maxHeight: "90vh" }}>
       <h2>Code Snippets Search</h2>
       {userData && userData.user && (
         <div>
           Logged as{" "}
           <a
             target="_blank"
-            style={{ marginLeft: "0.5rem" }}
             rel="noreferrer"
             href={`https://app.codiga.io/hub/user/${userData.user.accountType.toLowerCase()}/${userData.user.username.toLowerCase()}/assistant`}
           >
@@ -90,7 +89,6 @@ const RecipeSearchPanel = (props: { isOpen: boolean }) => {
         {/* register your input into the hook by invoking the "register" function */}
         <LanguageSelectField
           useDefault={false}
-          className="col-4"
           language={language}
           onLanguageChange={onLanguageChange}
         />

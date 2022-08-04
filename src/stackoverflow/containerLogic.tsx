@@ -6,6 +6,7 @@ import { pickLanguage } from "./pickLanguage";
 
 const NOT_DETECTED_CREATE_BUTTON_SELECTOR =
   ":not([detectedCodeFunctionalities=true])";
+
 export const addCreateLogicToCodeBlock = () => {
   const codeBlockList = Array.from(
     Array.from(

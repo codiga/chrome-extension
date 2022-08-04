@@ -1,3 +1,4 @@
+import React, { CSSProperties, useEffect, useState } from "react";
 import {
   ApolloClient,
   ApolloProvider,
@@ -6,19 +7,16 @@ import {
   NormalizedCacheObject,
 } from "@apollo/client";
 import { setContext } from "@apollo/client/link/context";
-import React, { CSSProperties, useEffect, useState } from "react";
-
 import Drawer from "react-modern-drawer";
 import "react-modern-drawer/dist/index.css";
-import { CODIGA_API_TOKEN } from "../../constants";
+
+import { CODIGA_API_TOKEN, API_URL } from "../../constants";
 import { Codiga } from "../Codiga";
 import CodigaHeader from "./Header";
 import RecipeSearchPanel from "./RecipeSearchPanel";
 
-const CODIGA_BASE_URL = "https://api.codiga.io/graphql";
-
 const httpLink = new HttpLink({
-  uri: CODIGA_BASE_URL,
+  uri: API_URL,
 });
 
 const CodigaDrawer = () => {
@@ -44,8 +42,6 @@ const CodigaDrawer = () => {
     justifyContent: "center",
     color: "white",
   };
-
-  // eslint-disable-next-line
 
   useEffect(() => {
     chrome.storage.sync.get([CODIGA_API_TOKEN], function (obj) {

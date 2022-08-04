@@ -1,8 +1,8 @@
-import { AssistantRecipe } from "../../types";
 import React, { useState } from "react";
-import { copyToClipboard } from "../../utils";
-const Buffer = require("buffer/").Buffer;
+import { Buffer } from "buffer";
 import ReactMarkdown from "react-markdown";
+import { AssistantRecipe } from "../../types";
+import { copyToClipboard } from "../../utils";
 
 const SnippetCard = ({ snippet }: { snippet: AssistantRecipe }) => {
   const [isCopied, setCopied] = useState<boolean>(false);

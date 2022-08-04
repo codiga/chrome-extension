@@ -1,6 +1,5 @@
+import { Buffer } from "buffer";
 import { BASE_URL, CREATE_RECIPE_FROM_SELECTION } from "../constants";
-
-const Buffer = require("buffer/").Buffer;
 
 chrome.runtime.onMessage.addListener((request) => {
   if (request.action === CREATE_RECIPE_FROM_SELECTION) {

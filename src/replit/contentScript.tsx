@@ -1,13 +1,12 @@
+import { Buffer } from "buffer";
+import Toastify from "toastify-js";
 import {
   ADD_CODE_ASSISTANCE,
   CODIGA_API_TOKEN,
   INSTALL_NOTIFICATION_SHOWN,
 } from "../constants";
-import Toastify from "toastify-js";
 import { addCodigaPanel } from "./containerLogic";
 import ShortcutDropdown from "../components/ShortcutDropdown";
-
-const Buffer = require("buffer/").Buffer;
 
 chrome.runtime.onMessage.addListener((request) => {
   if (request.action === ADD_CODE_ASSISTANCE) {
@@ -32,7 +31,7 @@ chrome.storage.sync.get(
     if (!token && !installedNotificationShown) {
       Toastify({
         text: `<img src='${chrome.runtime.getURL(
-          "icon16.png",
+          "icon_16.png",
         )}'/><br/> We invite you to add your Codiga token`,
         destination: "https://app.codiga.io/api-tokens",
         newWindow: true,

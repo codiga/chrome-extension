@@ -1,7 +1,7 @@
 import React from "react";
 import ReactShadowRoot from "react-shadow-root";
+import { Buffer } from "buffer";
 import { BASE_URL } from "../../constants";
-const Buffer = require("buffer/").Buffer;
 
 type RecipeCreateButtonProps = {
   code: string;
@@ -50,12 +50,11 @@ const RecipeCreateButton = ({
           style={linkStyle}
           rel="noreferrer"
           target="_blank"
-          type="button"
         >
           <img
             style={{ marginRight: ".4rem" }}
-            src={`${chrome.runtime.getURL("icon16.png")}`}
-          />{" "}
+            src={`${chrome.runtime.getURL("icon_16.png")}`}
+          />
           + Snippet
         </a>
       </div>

@@ -1,6 +1,9 @@
 import { Language } from "./constants";
 
-export type Position = { x: number; y: number };
+export type Position = {
+  x: number;
+  y: number;
+};
 
 export type Dimensions = {
   width: number;

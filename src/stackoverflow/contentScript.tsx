@@ -1,3 +1,4 @@
+import { Buffer } from "buffer";
 import {
   ADD_RECIPE_CREATION,
   BASE_URL,
@@ -5,9 +6,9 @@ import {
 } from "../constants";
 import { mutationsCallback } from "../utils";
 import { addCreateLogicToCodeBlock } from "./containerLogic";
-const Buffer = require("buffer/").Buffer;
 
 addCreateLogicToCodeBlock();
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.action === CREATE_RECIPE_FROM_SELECTION) {
     const selectionText = window.getSelection().toString();
