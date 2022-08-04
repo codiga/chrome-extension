@@ -1,10 +1,18 @@
-# Codiga Plugin for Chrome
+[![Code Quality Score](https://api.codiga.io/project/30142/score/svg)](https://app.codiga.io/hub/project/30142/chrome-extension)
+[![Code Grade](https://api.codiga.io/project/30142/status/svg)](https://app.codiga.io/hub/project/30142/chrome-extension)
+![Chrome Web Store](https://img.shields.io/chrome-web-store/users/dbkhkhonmelajjempmoadocgneoadjge)
 
-This is the source code for the Codiga Chrome Extension.
+# Codiga for Chrome: Code Snippets in your Browser
+
+This is the Codiga Chrome extension. Create, search and use code snippets within your browser. Find code snippets from your account or from the [Codiga Hub](https://app.codiga.io/hub).
+
+## Installation
+
+This extension is available on the [Chrome Web Store](https://chrome.google.com/webstore/detail/codiga/dbkhkhonmelajjempmoadocgneoadjge) where you can install it by clicking "Add to Chrome"
 
 ## Features
 
-This extension links features from our [Coding Assistant]() and [Hub]() right to your browser.
+This extension links features from our [Coding Assistant](https://www.codiga.io/coding-assistant/) and [Hub](https://app.codiga.io/hub) right to your browser.
 
 1. Quickly save/create a snippet found online
 2. Search through our and/or your catalogue of code snippets.
@@ -26,10 +34,6 @@ Once installed, when you are on a designated page ([GitHub](https://github.com),
 Now you can filter your search until you find the desired snippet. If we're missing something, take the time to create and share it for others.
 
 ## Getting Started
-
-### Installation
-
-This extension is available on the [Chrome Web Store](https://chrome.google.com/webstore/detail/codiga/dbkhkhonmelajjempmoadocgneoadjge) where you can install it by clicking "Add to Chrome"
 
 ### Development
 
