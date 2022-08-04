@@ -1,10 +1,9 @@
-# https://github.com/marketplace/actions/publish-a-release
 on:
   push:
     branches:
-      - master
+      - "master"
     tags:
-      - "!v*"
+      - "v*"
 
 jobs:
   build:
@@ -22,9 +21,9 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ env.EXTENSION_RELEASE_VERSION }}
-          release_name: Release Draft for ${{ env.EXTENSION_RELEASE_VERSION }}
-          draft: true
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
           prerelease: false
       - name: Upload release asset
         uses: actions/upload-release-asset@v1
@@ -35,3 +34,9 @@ jobs:
           asset_path: ./build/extension-${{ env.EXTENSION_RELEASE_VERSION }}.zip
           asset_name: extension-${{ env.EXTENSION_RELEASE_VERSION }}.zip
           asset_content_type: application/zip
+      - name: Publish release
+        uses: StuYarrow/publish-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          id: ${{ steps.create_release.outputs.id }}
