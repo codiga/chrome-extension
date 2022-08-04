@@ -9,7 +9,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - run: ./release.sh
+      - name: "Test release script"
+        run: ./release.sh
       - name: Set release number
         run: echo "EXTENSION_RELEASE_VERSION=$(grep \"version\" public/manifest.json | awk -F\" '{print $4}')" >> $GITHUB_ENV
       - name: Create release
@@ -18,7 +19,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag: ${{ env.EXTENSION_RELEASE_VERSION }}
+          tag_name: ${{ env.EXTENSION_RELEASE_VERSION }}
           release_name: Release ${{ env.EXTENSION_RELEASE_VERSION }}
           draft: true
           prerelease: false
