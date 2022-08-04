@@ -1,7 +1,7 @@
 import { useLazyQuery } from "@apollo/client";
 import React, { useEffect, useState } from "react";
 import { DebounceInput } from "react-debounce-input";
-import { ALL_LANGUAGES_ENUM, Language } from "../../constants";
+import { Language } from "../../constants";
 import {
   GET_RECIPES_SEMANTIC,
   GET_USER,
