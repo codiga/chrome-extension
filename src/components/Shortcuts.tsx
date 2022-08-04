@@ -1,6 +1,6 @@
 import React from "react";
+import { Buffer } from "buffer";
 import { ShortcutContext } from "../types";
-const Buffer = require("buffer/").Buffer;
 
 type PropsType = {
   context: ShortcutContext;
@@ -19,7 +19,7 @@ const Shortcuts = (props: PropsType) => {
             const splitCode = context.code.split("\n");
             const shortcutCode = Buffer.from(
               shortcut.presentableFormat,
-              "base64"
+              "base64",
             ).toString("utf8");
 
             const topCode = splitCode

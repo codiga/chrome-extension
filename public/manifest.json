@@ -3,34 +3,44 @@
 
   "name": "Codiga",
   "description": "Create, share and use Code Snippets from your browser",
-  "version": "0.0.10",
+  "version": "0.0.11",
 
   "options_ui": {
-    "page": "options.html"
+    "page": "options.html",
+    "open_in_tab": false
   },
 
   "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["js/content_script_all.js"]
+    },
     {
       "matches": ["https://stackoverflow.com/*"],
       "js": ["js/content_script_stackoverflow.js"]
     },
     {
       "matches": [
-        "<all_urls>"
+        "https://github.com/*",
+        "https://gitlab.com/*",
+        "https://bitbucket.org/",
+        "https://stackoverflow.com/*",
+        "https://replit.com/*"
       ],
-      "js": ["js/content_script_all.js", "js/web_styles.js"]
+      "js": ["js/content_script_replit.js", "js/web_styles.js"]
     }
   ],
 
   "action": {
     "default_icon": {
-      "16": "icon16.png",
-      "48": "icon48.png",
-      "128": "icon128.png"
+      "16": "icon_16.png",
+      "48": "icon_48.png",
+      "128": "icon_128.png"
     },
     "default_popup": "popup.html",
     "default_title": "Codiga"
   },
+
   "background": {
     "service_worker": "js/background.js"
   },
@@ -45,8 +55,8 @@
   ],
 
   "icons": {
-    "16": "icon16.png",
-    "48": "icon48.png",
-    "128": "icon128.png"
+    "16": "icon_16.png",
+    "48": "icon_48.png",
+    "128": "icon_128.png"
   }
 }

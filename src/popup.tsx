@@ -44,7 +44,7 @@ const Popup = () => {
     <>
       <div id="popup">
         <div id="popup-header">
-          <CodigaLogo /> <span id="for-chrome">for chrome</span>
+          <CodigaLogo />
         </div>
         {!(storedCodigaToken.length === 0) && (
           <div id="popup-body" className="flex column align-center text-center">
@@ -112,5 +112,5 @@ ReactDOM.render(
   <React.StrictMode>
     <Popup />
   </React.StrictMode>,
-  document.getElementById("root")
+  document.getElementById("root"),
 );

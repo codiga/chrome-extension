@@ -1,25 +1,29 @@
 import { Dimensions, Position } from "./types";
 
 const getBoudingClientRect = (el: HTMLElement) => {
-  if (el && el.getBoundingClientRect()) {
-    return el.getBoundingClientRect();
-  }
+  if (el) {
+    if (el.getBoundingClientRect()) return el.getBoundingClientRect();
 
-  let range = document.createRange();
-  range.selectNode(el);
-  const rect = range.getBoundingClientRect();
-  range.detach();
-  return rect;
+    const range = document.createRange();
+    range.selectNode(el);
+    const rect = range.getBoundingClientRect();
+    range.detach();
+    return rect;
+  }
 };
 
 export const getPos = (el: HTMLElement): Position => {
-  const rect = getBoudingClientRect(el);
-  return { x: rect.left, y: rect.top };
+  if (el) {
+    const rect = getBoudingClientRect(el);
+    return { x: rect.left, y: rect.top };
+  }
 };
 
 export const getDimensions = (el: HTMLElement): Dimensions => {
-  const rect = getBoudingClientRect(el);
-  return { width: rect.width > 1 ? rect.width : 100, height: rect.height };
+  if (el) {
+    const rect = getBoudingClientRect(el);
+    return { width: rect.width > 1 ? rect.width : 100, height: rect.height };
+  }
 };
 
 export const resetComponentShadowDOM = (element: HTMLElement) => {
@@ -56,3 +60,7 @@ export const getDetectedSelector = (selector: string, isDetected = true) => {
     isDetected ? "[detected=true]" : ":not([detected=true])"
   }`;
 };
+
+export function copyToClipboard(text: string) {
+  navigator.clipboard.writeText(text);
+}

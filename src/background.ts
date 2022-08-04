@@ -11,7 +11,7 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
       { action: ADD_RECIPE_CREATION },
       function () {
         return;
-      }
+      },
     );
   }
 
@@ -33,6 +33,6 @@ chrome.contextMenus.onClicked.addListener((event, tab) => {
     { action: CREATE_RECIPE_FROM_SELECTION },
     function () {
       return;
-    }
+    },
   );
 });

@@ -26,7 +26,7 @@ export const generateFingerprint = (): Promise<string> => {
           { [STORAGE_FINGERPRINT_KEY]: fingerprint },
           () => {
             resolve(fingerprint);
-          }
+          },
         );
       } else {
         resolve(result[STORAGE_FINGERPRINT_KEY]);
@@ -49,14 +49,20 @@ export const getAssistantRecipesByShortcut = async (request: {
   runningValidationsCache[codeElementId] = executionId;
 
   const recipesByShortcut = await client
-    .query(getRecipesByShortcut(fingerprint, shortcut.slice(1), language))
+    .query(
+      getRecipesByShortcut(
+        fingerprint,
+        shortcut ? shortcut.slice(1) : undefined,
+        language,
+      ),
+    )
     .toPromise();
 
   return recipesByShortcut.data.getRecipesForClientByShortcut.slice(0, 10);
 };
 
 export async function getRecipesForClientByShorcutLastTimestamp(
-  language: string
+  language: string,
 ): Promise<number | undefined> {
   // Convert array of parameters into k1=v1;k2=v2
 
