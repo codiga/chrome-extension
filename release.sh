@@ -8,7 +8,8 @@ rm -rf dist
 mkdir dist
 npm i
 npm run build
-(cd dist && zip -r ../build/extension.zip \
+VERSION=`grep '\"version\"' public/manifest.json | awk -F\" '{print $4}'`
+(cd dist && zip -r ../build/extension-${VERSION}.zip \
                      *.js\
                      *.ttf \
                      *.css \

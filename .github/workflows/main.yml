@@ -7,6 +7,26 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
-    - run: ./release.sh
+      - name: Checkout
+        uses: actions/checkout@v2
+      - run: ./release.sh
+      - name: Set release number
+        run: echo "EXTENSION_RELEASE_VERSION=$(grep \"version\" public/manifest.json | awk -F\" '{print $4}')" >> $GITHUB_ENV
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          release_name: Release ${{ env.EXTENSION_RELEASE_VERSION }}
+          draft: true
+          prerelease: false
+      - name: Upload release asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./build/extension-${{ EXTENSION_RELEASE_VERSION }}.zip
+          asset_name: extension-${{ EXTENSION_RELEASE_VERSION }}.zip
+          asset_content_type: application/zip
