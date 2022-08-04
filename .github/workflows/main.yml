@@ -11,7 +11,7 @@ jobs:
         uses: actions/checkout@v2
       - name: "Test release script"
         run: ./release.sh
-      - name: Set release number
+      - name: Set release number for publication
         run: echo "EXTENSION_RELEASE_VERSION=$(grep \"version\" public/manifest.json | awk -F\" '{print $4}')" >> $GITHUB_ENV
       - name: Create release
         id: create_release
