@@ -8,7 +8,7 @@ This is the Codiga Chrome extension. Create, search and use code snippets within
 
 ## Installation
 
-This extension is available on the [Chrome Web Store](https://chrome.google.com/webstore/detail/codiga/dbkhkhonmelajjempmoadocgneoadjge) where you can install it by clicking "Add to Chrome"
+This extension is available on the [Chrome Web Store](https://chrome.google.com/webstore/detail/codiga/dbkhkhonmelajjempmoadocgneoadjge) where you can install it by clicking "Add to Chrome".
 
 ## Features
 
@@ -29,7 +29,7 @@ Don't forget to browse [Codiga's Hub](https://app.codiga.io/hub) to see what oth
 
 ### Searching for Snippets
 
-Once installed, when you are on a designated page ([GitHub](https://github.com), [GitLab](https://gitlab.com), [Bitbucket](https://bitbucket.org), [Replit](https://replit.com), [StackOverflow](https://stackoverflow.com)), you can open the `Codiga Code Snippet Search` panel by clicking on the Codiga icon button.
+Once installed, when you are on a designated page ([GitHub](https://github.com), [GitLab](https://gitlab.com), [Bitbucket](https://bitbucket.org), [Replit](https://replit.com), [StackOverflow](https://stackoverflow.com)), you can open the `Codiga Code Snippet Search` panel by clicking on the "Codiga for Chrome" button.
 
 Now you can filter your search until you find the desired snippet. If we're missing something, take the time to create and share it for others.
 
