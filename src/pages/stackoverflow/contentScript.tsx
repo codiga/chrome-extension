@@ -3,8 +3,8 @@ import {
   ADD_RECIPE_CREATION,
   BASE_URL,
   CREATE_RECIPE_FROM_SELECTION,
-} from "../constants";
-import { mutationsCallback } from "../utils";
+} from "../../lib/constants";
+import { mutationsCallback } from "../../lib/utils";
 import { addCreateLogicToCodeBlock } from "./containerLogic";
 
 addCreateLogicToCodeBlock();

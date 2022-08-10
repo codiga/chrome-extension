@@ -18,9 +18,19 @@ export type AssistantRecipe = {
   name: string;
   description: string;
   isPublic: boolean;
+  isSubscribed: boolean;
   owner: {
     username: string;
     accountType: string;
+  };
+  groups: {
+    id: number;
+    name: string;
+  }[];
+  cookbook?: {
+    id: number;
+    name: string;
+    isSubscribed: boolean;
   };
 };
 

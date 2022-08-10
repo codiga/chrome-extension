@@ -1,12 +1,12 @@
 import {
   CODING_ASSISTANT_MAX_TIME_IN_CACHE_MS,
   CODING_ASSISTANT_SHORTCUTS_POLLING_MS,
-} from "../constants";
+} from "../../lib/constants";
 import {
   getAssistantRecipesByShortcut,
   getRecipesForClientByShorcutLastTimestamp,
-} from "../graphql/fetcher";
-import { AssistantRecipe } from "../types";
+} from "../../graphql/fetcher";
+import { AssistantRecipe } from "../../lib/types";
 import { CODIGA_ELEMENT_ID_KEY } from "./containerLogic";
 import { pickCodeElement, pickFilename, pickLanguage } from "./picker";
 

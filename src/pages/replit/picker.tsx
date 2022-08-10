@@ -1,10 +1,8 @@
 import {
-  ALL_LANGUAGES,
   Language,
   REPLIT_ACTIVE_FILE,
   REPLIT_EDITOR_CONTENT,
-  REPLIT_FILE_TREE,
-} from "../constants";
+} from "../../lib/constants";
 
 export const getLanguageFromFilename = (fileName: string) => {
   if (fileName) {

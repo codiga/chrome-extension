@@ -1,80 +1,72 @@
-@font-face {
-  font-family: "Open Sans";
-  src: url(/public/OpenSans-Regular.ttf) format("truetype");
-}
 @import "./variables.scss";
+@import "./reset.scss";
+@import "./button.scss";
+@import "./header.scss";
 @import "./popup.scss";
+@import "./panel.scss";
 
-.flex {
-  display: flex;
+#codiga-app-root,
+#codiga-popup-root {
+  p {
+    font-family: $font-body;
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 20px;
+    color: $color-black;
+    margin: 0;
+  }
 
   a {
-    margin-left: 0.2rem;
+    color: $color-rose;
+    text-decoration: none;
+
+    &:hover {
+      color: $color-rose;
+      text-decoration: underline;
+    }
   }
 
-  &.column {
-    flex-direction: column;
+  button:focus {
+    outline: 0;
   }
 
-  &.align-center {
-    align-items: center;
-  }
-}
+  input,
+  select {
+    height: 42px;
+    width: 100%;
+    border-radius: 4px;
+    border: 1px solid $color-neutral-50;
+    outline: 0;
+    padding: 8px 16px;
+    font-family: $font-body;
+    font-size: 14px;
+    line-height: 26px;
+    box-sizing: border-box;
 
-.text-center {
-  text-align: center;
-}
+    &:hover,
+    &:active,
+    &:focus {
+      border-color: $color-rose;
+    }
 
-.top-bottom-margin-1 {
-  margin-top: 8px;
-  margin-bottom: 8px;
-}
-
-.side-margin-auto {
-  margin-left: auto;
-  margin-right: auto;
-}
-
-.error-text {
-  color: $error-red;
-}
-
-%input-border {
-  border: 2px solid;
-  outline: none;
-  border-radius: 4px;
-  background-origin: border-box;
-}
-
-input {
-  width: 100%;
-  height: 1.2rem;
-  border: 2px solid transparent;
-  background: #f2f2f2;
-  padding: 12px;
-  border-radius: 4px;
-  width: 250px;
-  font-size: 14px;
-
-  &:focus-visible {
-    @extend %input-border;
-    border-image: $gradient-1;
-    border-image-slice: 1;
+    &:invalid {
+      border-color: $color-red;
+    }
   }
 
-  &.error-input {
-    @extend %input-border;
-    border-color: $error-red;
+  select {
+    cursor: pointer;
+    width: 200px;
+    appearance: none;
+    background-image: linear-gradient(
+        45deg,
+        transparent 50%,
+        $color-neutral-50 50%
+      ),
+      linear-gradient(135deg, $color-neutral-50 50%, transparent 50%);
+    background-position: calc(100% - 20px) calc(1em + 3px),
+      calc(100% - 16px) calc(1em + 3px), calc(100% - 0.5em) 0.5em;
+    background-size: 4px 4px, 4px 4px;
+    background-repeat: no-repeat;
   }
-}
-
-.error-block {
-  color: white;
-  background: $error-red;
-  border-radius: 4px;
-  font-size: 0.8rem;
-  padding: 8px;
-  display: flex;
-  justify-content: center;
-  margin-bottom: 8px;
 }

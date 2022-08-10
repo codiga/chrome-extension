@@ -1,7 +1,7 @@
 import React from "react";
 import ReactShadowRoot from "react-shadow-root";
 import { Buffer } from "buffer";
-import { BASE_URL } from "../../constants";
+import { BASE_URL } from "../../../lib/constants";
 
 type RecipeCreateButtonProps = {
   code: string;

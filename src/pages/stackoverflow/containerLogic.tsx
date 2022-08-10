@@ -1,7 +1,10 @@
 import ReactDOM from "react-dom";
 import React from "react";
-import { CODE_MIRROR_CLASS, STACK_OVERFLOW_CODE_CLASS } from "../constants";
 import RecipeCreateButton from "./components/RecipeCreateButton";
+import {
+  CODE_MIRROR_CLASS,
+  STACK_OVERFLOW_CODE_CLASS,
+} from "../../lib/constants";
 import { pickLanguage } from "./pickLanguage";
 
 const NOT_DETECTED_CREATE_BUTTON_SELECTOR =

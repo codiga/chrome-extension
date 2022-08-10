@@ -1,4 +1,3 @@
-import ShortcutDropdown from "../components/ShortcutDropdown";
 import {
   CODE_MIRROR_LINE_CLASS,
   CODIGA_END,
@@ -8,10 +7,12 @@ import {
   REPLIT_EDITOR_CONTENT,
   REPLIT_EDITOR_CURSOR,
   REPLIT_EDITOR_SCROLL,
-} from "../constants";
-import { getAssistantRecipesByShortcut } from "../graphql/fetcher";
-import { AssistantRecipe } from "../types";
-import { getDetectedSelector, getDimensions, getPos } from "../utils";
+} from "../../lib/constants";
+import { AssistantRecipe } from "../../lib/types";
+import { getDetectedSelector, getDimensions, getPos } from "../../lib/utils";
+import { getAssistantRecipesByShortcut } from "../../graphql/fetcher";
+
+import ShortcutDropdown from "../../components/ShortcutDropdown";
 import {
   pickCodeElement,
   pickCodeElementId,
@@ -23,9 +24,6 @@ import {
   fetchPeriodicShortcuts,
   getShortcutCache,
 } from "./shortcutCache";
-import * as ReactDOM from "react-dom/client";
-import React from "react";
-import CodigaDrawer from "../components/panel/Drawer";
 
 export const CODIGA_ELEMENT_ID_KEY = "codiga-id";
 export let cacheCode = "";
@@ -259,15 +257,4 @@ const getCodeFromActiveLine = (codeElement: HTMLElement): string => {
   return Array.from(codeElement.children)
     .find((el) => el.classList.contains("cm-activeLine"))
     .textContent.replace(/\u200B/g, "");
-};
-
-/**
- * Panel for looking for snippets easily from Replit
- */
-export const addCodigaPanel = (container: HTMLElement) => {
-  const mountPoint = document.createElement("div");
-  const root = ReactDOM.createRoot(mountPoint);
-  root.render(<CodigaDrawer />);
-
-  container.append(mountPoint);
 };

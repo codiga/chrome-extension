@@ -4,7 +4,7 @@ import {
   getRecipesByShortcut,
   getRecipesByShortcutLastTimestamp,
 } from "./queries";
-import { AssistantRecipe } from "../types";
+import { AssistantRecipe } from "../lib/types";
 
 const client = createClient({
   url: "https://api.codiga.io/graphql",

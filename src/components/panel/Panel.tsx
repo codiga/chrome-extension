@@ -1,4 +1,4 @@
-import React, { CSSProperties, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ApolloClient,
   ApolloProvider,
@@ -10,38 +10,20 @@ import { setContext } from "@apollo/client/link/context";
 import Drawer from "react-modern-drawer";
 import "react-modern-drawer/dist/index.css";
 
-import { CODIGA_API_TOKEN, API_URL } from "../../constants";
-import { Codiga } from "../Codiga";
-import CodigaHeader from "./Header";
-import RecipeSearchPanel from "./RecipeSearchPanel";
+import PanelContent from "./PanelContent";
+import Header from "../header";
+import { ForChromeWithoutCodigaText } from "../common/CodigaForChrome";
+import { CODIGA_API_TOKEN, API_URL } from "../../lib/constants";
 
 const httpLink = new HttpLink({
   uri: API_URL,
 });
 
-const CodigaDrawer = () => {
-  const [isOpen, setIsOpen] = React.useState(false);
-  const toggleDrawer = () => {
-    setIsOpen((prevState) => !prevState);
-  };
+const Panel = () => {
+  const [isOpen, setIsOpen] = useState(false);
   const [client, setClient] = useState<ApolloClient<NormalizedCacheObject>>();
 
-  const buttonStyle: CSSProperties = {
-    position: "fixed",
-    right: 0,
-    top: "60px",
-    background: "#300623",
-    cursor: "pointer",
-    padding: "0.2rem",
-    display: "flex",
-    zIndex: 10000,
-    border: "none",
-    borderRadius: "3px",
-    boxShadow: "rgba(0, 0, 0, 0.16) 0px 1px 4px",
-    alignItems: "center",
-    justifyContent: "center",
-    color: "white",
-  };
+  const toggleDrawer = () => setIsOpen((prevState) => !prevState);
 
   useEffect(() => {
     chrome.storage.sync.get([CODIGA_API_TOKEN], function (obj) {
@@ -70,21 +52,21 @@ const CodigaDrawer = () => {
     <>
       {client && (
         <ApolloProvider client={client}>
-          <button style={buttonStyle} onClick={toggleDrawer}>
-            <Codiga />
+          <button onClick={toggleDrawer} className="codiga-panel-opener">
+            <ForChromeWithoutCodigaText />
           </button>
+
           <Drawer
             open={isOpen}
             onClose={toggleDrawer}
             direction="right"
-            style={{ color: "black" }}
             size={600}
             zIndex={20000}
             enableOverlay={false}
           >
-            <div>
-              <CodigaHeader toggleDrawer={toggleDrawer} />
-              <RecipeSearchPanel isOpen={isOpen} />
+            <div className="codiga-panel">
+              <Header toggleDrawer={toggleDrawer} />
+              <PanelContent isOpen={isOpen} />
             </div>
           </Drawer>
         </ApolloProvider>
@@ -93,4 +75,4 @@ const CodigaDrawer = () => {
   );
 };
 
-export default CodigaDrawer;
+export default Panel;
