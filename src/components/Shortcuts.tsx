@@ -1,6 +1,6 @@
 import React from "react";
 import { Buffer } from "buffer";
-import { ShortcutContext } from "../types";
+import { ShortcutContext } from "../lib/types";
 
 type PropsType = {
   context: ShortcutContext;

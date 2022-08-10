@@ -1,5 +1,5 @@
 import { gql } from "@urql/core";
-import { AssistantRecipe } from "../types";
+import { AssistantRecipe } from "../lib/types";
 
 export const getRecipesByShortcut = (
   fingerprint: string,
@@ -60,6 +60,7 @@ export const GET_RECIPES_SEMANTIC = gql`
       name
       description
       isPublic
+      isSubscribed
       keywords
       tags
       code
@@ -78,6 +79,11 @@ export const GET_RECIPES_SEMANTIC = gql`
       groups {
         id
         name
+      }
+      cookbook {
+        id
+        name
+        isSubscribed
       }
     }
   }

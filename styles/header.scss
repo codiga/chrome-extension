@@ -1,0 +1,28 @@
+@import "./variables.scss";
+
+#codiga-app-root,
+#codiga-popup-root {
+  .codiga-header {
+    background-color: #300623;
+    color: #fff;
+    height: 48px;
+    padding: 8px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+
+    &__close-button {
+      height: 32px;
+      width: 32px;
+      padding: 0px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: none;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+  }
+}

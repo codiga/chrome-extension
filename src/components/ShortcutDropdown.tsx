@@ -3,7 +3,7 @@ import "@webcomponents/custom-elements";
 import * as ReactDOM from "react-dom/client";
 import React from "react";
 import Shortcuts from "./Shortcuts";
-import { Position, ShortcutContext } from "../types";
+import { Position, ShortcutContext } from "../lib/types";
 
 const style = `
   .codiga-shortcut-dropdown button {

@@ -13,7 +13,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["js/content_script_all.js"]
+      "js": ["js/styles.js", "js/content_script_all.js"]
     },
     {
       "matches": ["https://stackoverflow.com/*"],
@@ -23,11 +23,11 @@
       "matches": [
         "https://github.com/*",
         "https://gitlab.com/*",
-        "https://bitbucket.org/",
+        "https://bitbucket.org/*",
         "https://stackoverflow.com/*",
         "https://replit.com/*"
       ],
-      "js": ["js/content_script_replit.js", "js/web_styles.js"]
+      "js": ["js/content_script_replit.js", "js/web_styles.js", "js/styles.js"]
     }
   ],
 
@@ -49,7 +49,7 @@
 
   "web_accessible_resources": [
     {
-      "resources": ["icon*"],
+      "resources": ["icon*", "*.ttf", "*.woff2", "*/styles.js"],
       "matches": ["<all_urls>"]
     }
   ],

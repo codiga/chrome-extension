@@ -1,77 +1,43 @@
-body {
-  margin: 0;
-  font-family: "Open Sans";
-}
+@import "./variables.scss";
 
-#popup {
-  min-width: 280px;
+#codiga-popup-root {
+  .popup {
+    width: 320px;
 
-  #popup-header {
-    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-    padding: 8px 16px;
-    background: #300623;
-    color: white;
-    display: flex;
-    align-items: center;
+    &__body {
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      grid-gap: 8px;
+      box-sizing: border-box;
 
-    img {
-      max-width: 20px;
-      max-height: 27px;
-      margin-right: 0.5rem;
-    }
+      a {
+        color: $color-rose;
+      }
 
-    #codiga {
-      font-size: 1.2rem;
-      font-weight: 600;
-    }
+      p {
+        font-family: $font-body;
+        font-size: 12px;
+        line-height: 20px;
+      }
 
-    #for-chrome {
-      font-size: 0.9rem;
-      margin-left: 0.5rem;
-      color: #fc8926;
-      font-weight: bolder;
-    }
-  }
+      form {
+        width: 100%;
 
-  #popup-toggle-section {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid rgb(194, 194, 194);
-    padding: 0.3rem;
-    color: whte;
+        div {
+          margin-bottom: 8px;
+          width: 100%;
+        }
 
-    label {
-      margin-left: 0.7rem;
-    }
-  }
+        button {
+          margin: 0 auto;
+        }
+      }
 
-  #popup-body {
-    padding: 8px 16px 16px;
-    font-size: 0.8rem;
-    color: #1a1a1a;
-
-    li {
-      margin: 0.4rem 0;
-    }
-
-    #good-news-text {
-      margin: 8px 0px;
-    }
-
-    button {
-      background: $gradient-1;
-      border-radius: 100px;
-      color: white;
-      font-weight: 600;
-      font-size: 0.8rem;
-      border: none;
-      padding: 0.5rem 1.3rem;
-      cursor: pointer;
-
-      &[disabled] {
-        background: #cecece;
-        color: white;
+      .error-text {
+        color: $color-red;
       }
     }
   }

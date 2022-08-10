@@ -1,23 +1,27 @@
 const webpack = require("webpack");
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
-const srcDir = path.join(__dirname, "..", "src");
+const rootDir = path.join(__dirname, "..");
 
 module.exports = {
   entry: {
-    popup: path.join(srcDir, "popup.tsx"),
-    background: path.join(srcDir, "background.ts"),
+    popup: path.join(rootDir, "src/pages/popup.tsx"),
+    background: path.join(rootDir, "src/lib/background.ts"),
     content_script_stackoverflow: path.join(
-      srcDir,
-      "stackoverflow/contentScript.tsx",
+      rootDir,
+      "src/pages/stackoverflow/contentScript.tsx",
     ),
-    content_script_all: path.join(srcDir, "allPages/contentScript.tsx"),
-    content_script_replit: path.join(srcDir, "replit/contentScript.tsx"),
-    styles: path.join(__dirname, "../styles/app.scss"),
-    web_styles: path.join(__dirname, "../styles/webapp.scss"),
+    content_script_all: path.join(rootDir, "src/pages/contentScriptAll.tsx"),
+    content_script_replit: path.join(
+      rootDir,
+      "src/pages/replit/contentScript.tsx",
+    ),
+    styles: path.join(rootDir, "styles/app.scss"),
+    web_styles: path.join(rootDir, "styles/webapp.scss"),
   },
   output: {
-    path: path.join(__dirname, "../dist/js"),
+    publicPath: "",
+    path: path.join(rootDir, "dist/js"),
     filename: "[name].js",
   },
   optimization: {
@@ -49,6 +53,10 @@ module.exports = {
           // Translates CSS into CommonJS
           "css-loader",
         ],
+      },
+      {
+        test: /\.(woff|woff2|eot|ttf|otf)$/i,
+        type: "asset/resource",
       },
     ],
   },

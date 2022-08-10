@@ -1,2 +1,27 @@
-$error-red: #ff4a4a;
-$gradient-1: linear-gradient(90deg, #f81c9d 0%, #fc8926 100%);
+$color-rose: #f81c9d;
+$color-rose-75: #fa55b6;
+$color-rose-25: #fdc6e6;
+$color-orange: #fc8926;
+$color-red: #ff4a4a;
+$color-dark: #300623;
+$color-black: #1a1a1a;
+$color-white: #ffffff;
+$color-neutral-25: #f6f6f6;
+$color-neutral-50: #d7d7d7;
+$color-neutral-75: #9c9c9c;
+
+$codiga-gradient: linear-gradient(to right, $color-rose, $color-orange);
+$codiga-gradient-rose: linear-gradient(to right, $color-rose, $color-rose);
+$codiga-gradient-orange: linear-gradient(
+  to right,
+  $color-orange,
+  $color-orange
+);
+$codiga-gradient-rose-75: linear-gradient(
+  to right,
+  $color-rose-75,
+  $color-rose-75
+);
+
+$font-body: "Open Sans", sans-serif;
+$font-heading: "Outfit", sans-serif;

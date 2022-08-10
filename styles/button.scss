@@ -1,0 +1,62 @@
+@import "./variables.scss";
+
+.codiga-button {
+  cursor: pointer;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  grid-gap: 4px;
+  font-size: 12px;
+  line-height: 15px;
+  text-align: center;
+  width: fit-content;
+  outline: 0;
+
+  &__pill {
+    padding: 8px 24px;
+    border-radius: 99999px;
+    font-family: $font-heading;
+    font-weight: 700;
+    height: 32px;
+  }
+
+  &__square {
+    padding: 0 8px;
+    border-radius: 4px;
+    font-family: $font-body;
+    font-weight: 400;
+    height: 28px;
+    color: $color-black !important;
+  }
+
+  &__primary {
+    color: $color-white;
+    background: $codiga-gradient;
+    border: 0px solid transparent;
+    transition: 200ms background;
+    &:hover {
+      background: $codiga-gradient-rose;
+    }
+    &:active,
+    &:focus {
+      background: $codiga-gradient-rose-75;
+    }
+  }
+
+  &__secondary {
+    color: $color-dark;
+    background: $codiga-gradient;
+    border: 1px solid transparent;
+    background-origin: border-box;
+    box-shadow: 0 1000px 0 #ffffff inset;
+    transition: 200ms box-shadow;
+    &:hover {
+      background: $codiga-gradient-orange;
+    }
+    &:active,
+    &:focus {
+      background: $codiga-gradient-orange;
+      box-shadow: 0 1000px 0 $color-rose-25 inset !important;
+    }
+  }
+}
