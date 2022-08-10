@@ -68,7 +68,7 @@ const Popup = () => {
 
             <form
               onSubmit={(e) => {
-                // e.preventDefault();
+                e.preventDefault();
                 saveGitHubToken(newCodigaTokenValue);
               }}
             >
