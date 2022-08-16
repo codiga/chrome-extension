@@ -103,13 +103,17 @@ const PanelSnippetCard = ({
       <div className="card-subheading">
         <p className="card-subheading--group" title="The snippet owner">
           <UserIcon />
-          <a
-            target="_blank"
-            rel="noreferrer"
-            href={`https://app.codiga.io/hub/user/${snippet.owner.accountType}/${snippet.owner.username}/assistant`.toLowerCase()}
-          >
-            {snippet.owner.username.toLowerCase()}
-          </a>
+          {snippet.owner.hasSlug && snippet.owner.slug ? (
+            <a
+              target="_blank"
+              rel="noreferrer"
+              href={`https://app.codiga.io/hub/user/${snippet.owner.slug}/assistant`.toLowerCase()}
+            >
+              {snippet.owner.displayName}
+            </a>
+          ) : (
+            <>{snippet.owner.displayName}</>
+          )}
         </p>
         {snippet.groups.length > 0 && (
           <p

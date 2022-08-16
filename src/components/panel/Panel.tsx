@@ -12,8 +12,8 @@ import "react-modern-drawer/dist/index.css";
 
 import PanelContent from "./PanelContent";
 import Header from "../header";
-import { ForChromeWithoutCodigaText } from "../common/CodigaForChrome";
 import { CODIGA_API_TOKEN, API_URL } from "../../lib/constants";
+import CodigaIcon from "../../assets/CodigaIcon";
 
 const httpLink = new HttpLink({
   uri: API_URL,
@@ -53,7 +53,7 @@ const Panel = () => {
       {client && (
         <ApolloProvider client={client}>
           <button onClick={toggleDrawer} className="codiga-panel-opener">
-            <ForChromeWithoutCodigaText />
+            <CodigaIcon />
           </button>
 
           <Drawer
