@@ -74,13 +74,17 @@ export default function PanelContent({ isOpen }: PanelContentProps) {
           ) : (
             <>
               Logged in as{" "}
-              <a
-                target="_blank"
-                rel="noreferrer"
-                href={`https://app.codiga.io/hub/user/${userData.user.accountType}/${userData.user.username}/assistant`.toLowerCase()}
-              >
-                {userData.user.username.toLowerCase()}
-              </a>
+              {userData.user.hasSlug && userData.user?.slug ? (
+                <a
+                  target="_blank"
+                  rel="noreferrer"
+                  href={`https://app.codiga.io/hub/user/${userData.user.slug}/assistant`.toLowerCase()}
+                >
+                  {userData.user.username}
+                </a>
+              ) : (
+                userData.user.username
+              )}
             </>
           )}
         </p>

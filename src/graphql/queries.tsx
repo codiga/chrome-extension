@@ -73,8 +73,9 @@ export const GET_RECIPES_SEMANTIC = gql`
       downvotes
       upvotes
       owner {
-        username
-        accountType
+        displayName
+        hasSlug
+        slug
       }
       groups {
         id
@@ -91,16 +92,18 @@ export const GET_RECIPES_SEMANTIC = gql`
 
 export type UserResponse = {
   user: {
-    accountType: string;
     username: string;
+    hasSlug: boolean;
+    slug?: string;
   };
 };
 
 export const GET_USER = gql`
   query getUser {
     user {
-      accountType
       username
+      hasSlug
+      slug
     }
   }
 `;
