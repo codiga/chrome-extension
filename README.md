@@ -1,5 +1,6 @@
-[![Code Quality Score](https://api.codiga.io/project/30142/score/svg)](https://app.codiga.io/hub/project/30142/chrome-extension)
-[![Code Grade](https://api.codiga.io/project/30142/status/svg)](https://app.codiga.io/hub/project/30142/chrome-extension)
+[Datadog acquired Codiga](https://www.codiga.io/blog/codiga-joins-datadog/). This repository is no longer active.
+
+
 ![Chrome Web Store](https://img.shields.io/chrome-web-store/users/dbkhkhonmelajjempmoadocgneoadjge)
 
 # Codiga for Chrome: Code Snippets in your Browser
